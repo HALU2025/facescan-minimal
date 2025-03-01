@@ -32,3 +32,6 @@ body {
     border: 2px solid #ccc;
     border-radius: 4px;
   }
+  .clabel {
+    display: inline-block;
+  }
