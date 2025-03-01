@@ -178,12 +178,15 @@ analyzeBtn.addEventListener('click', () => {
 
 // ===================== 5. 診断結果のHTML表示（テキスト→HTML変換） =====================
 function transformResultToHTML(resultText) {
-    // 改行で分割。改行がない場合は適宜、セパレータで分割する処理に変更してください。
-    const lines = resultText.split("\n").filter(line => line.trim() !== "" && !line.includes('----------------------------'));
-    
+    // 改行で分割。不要な行はフィルターで除外。
+    const lines = resultText.split("\n").filter(line => {
+      const trimmed = line.trim();
+      return trimmed !== "" && !trimmed.includes('----------------------------');
+    });
+  
     let html = "<div class='result'>";
-    
-    // 各出力項目のラベルとクラス名の対応を定義
+  
+    // 定義する項目とそれに対応するクラス名、かつラベル部分を <span> でラップするようにする
     const fields = {
       "美人度/イケメン度:": "beauty-score",
       "キャッチフレーズ:": "catchphrase",
@@ -194,15 +197,25 @@ function transformResultToHTML(resultText) {
       "似ている芸能人:": "celeb",
       "コメント:": "comment"
     };
-    
-    // 各フィールドのラベルに一致する行を探して追加
+  
     Object.keys(fields).forEach(key => {
+      // 検索対象の行を探す
       const matchingLine = lines.find(line => line.trim().startsWith(key));
       if (matchingLine) {
-        html += `<div class="${fields[key]}">${matchingLine.trim()}</div>`;
+        // ラベルと内容に分割する。コロンで分割して最初の部分はラベル、残りは内容とする
+        const parts = matchingLine.split(":");
+        const label = parts.shift().trim() + ":";
+        const content = parts.join(":").trim();
+        
+        // ここで「美人度/イケメン度:」の場合、もしプロンプトで性別が分かるなら、条件分岐で適宜置換できる
+        // 例: (dummyコード) if(key === "美人度/イケメン度:" && content.includes("男性")) { label = "イケメン度:"; }
+        // 今回はその情報がないので、そのままとする
+  
+        // 出力時にラベル部分を <span> タグでラップする
+        html += `<div class="${fields[key]}"><span>${label}</span> ${content}</div>`;
       }
     });
-    
+  
     html += "</div>";
     return html;
   }
@@ -223,6 +236,7 @@ function transformResultToHTML(resultText) {
     resultContainer.innerHTML = transformResultToHTML(resultText);
     preview.style.display = "none";
   }
+  
   
 
 // ===================== 6. 各種再操作ボタンの処理 =====================
