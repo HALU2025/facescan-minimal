@@ -1,59 +1,122 @@
+import { OpenAI } from "openai";
+
 export default async function handler(req, res) {
-    if (req.method !== "POST") {
-      res.status(405).json({ error: "Method not allowed" });
-      return;
-    }
-    
-    const { image } = req.body;
-    if (!image) {
-      res.status(400).json({ error: "Image data is required." });
-      return;
-    }
-    
-    try {
-      const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: "gpt-4-turbo",
-          messages: [
-            {
-              role: "system",
-              content: `
-  あなたは、画像解析を行う専門AIです。
-  以下の診断項目を正確に評価し、指定のフォーマットで出力してください。
-  
-  # 🔹 診断ルール
-  1️⃣ **美人度/イケメン度（必須判定）**
-  - 女性の場合は美人度、男性の場合はイケメン度を表示
-  - 小数点2桁まで算出、最高点は99.99点
-  - ...（ルールの全文を記述）
-  `
-            },
-            {
-              role: "user",
-              content: `この画像の人物を診断してください。画像データ: ${image}`
-            }
-          ],
-          max_tokens: 300
-        })
-      });
-      
-      const data = await openaiResponse.json();
-      const result = data.choices?.[0]?.message?.content;
-      if (!result) {
-        res.status(500).json({ error: "No result returned from OpenAI API" });
-        return;
-      }
-      
-      res.status(200).json({ result });
-      
-    } catch (error) {
-      console.error("OpenAI API call error:", error);
-      res.status(500).json({ error: "OpenAI API call failed", details: error.message });
-    }
+  if (req.method !== "POST") {
+    res.status(405).json({ error: "Method not allowed" });
+    return;
   }
-  
+
+  const imageData = req.body.image;
+
+  try {
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4-turbo",
+      messages: [
+        {
+          role: "system",
+          content: `
+あなたは、画像解析を行う専門AIです。
+以下の診断項目を正確に評価し、指定のフォーマットで出力してください。
+
+# 【診断ルール】
+- 複数人写っている場合は、判定不能にする。
+- 過去に評価した同じ写真は、全く同じ評価を出す
+- 正面の写真、光量、顔に影が無いことなどの写真のクオリティも評価基準となる
+- がっかりする人が少なくなるよう、高めの点に分布させる
+- スコアの最高点は99.99点。スコアを決め、小数点2ケタをランダムに付与。
+- 基準となる最低スコアは70点
+- 目をつぶったり、変顔・ピンボケの場合は70点以下の低い得点～判定不能
+
+① **美人度/イケメン度（必須判定）**
+- 女性の場合は美人度、男性の場合はイケメン度を表示
+- スコア分布は【美人度/イケメン度スコア分布】を参照
+- 若さだけでなく、洗練・品格・バランス・知的な魅力も評価
+- 40代以上の洗練された美しさも正しく評価し、高得点を適切に出すこと
+
+② **評価軸（美人度 + 3つ）**
+- 美人度とは異なる評価軸を【評価軸】から3つ選び、各スコアを出力
+- 可能な限りポジティブな評価軸を選択する
+
+③ **キャッチフレーズ（10文字以内）**
+- 診断の特徴を端的に表す短いフレーズ
+- ポジティブ、もしくはおもしろいフレーズで
+- 例：「1000年に1人の美人」「坂道系アイドルフェイス」「アジアンビューティー」「クラスの人気者」など、バリエーション豊かに。
+
+④ **推定年齢**
+- 見た目の印象から年齢を推定し、「〇〇歳」の形式で出力
+
+⑤ **似ている芸能人**
+- 顔の特徴や髪型、雰囲気などを詳細に分析し、その特徴に近い芸能人・有名人を2名挙げる
+
+⑥ **一言コメント（200文字以内）**
+- なるべくポジティブな内容にする
+- 例：「知的な雰囲気があり、落ち着いた品のある印象。カリスマ性も感じさせる顔立ち。」
+- 写真のクオリティが低くてスコアが低い場合（顔の向き・顔の影など）は、その原因を指摘して再トライを促す
+- インカメラのレンズに目線が向いていない写真の場合は、インカメラのレンズを見るようにアドバイス
+- 判定不能の場合は、その理由を記載し再トライを促す
+
+---
+
+### 【美人度/イケメン度スコア分布】
+- **0点～69点**  （目をつぶっている写真・変顔をしている写真・ピンボケ・手振れ写真など）
+- **70～74点** → 5%（ある程度ちゃんと撮影できている写真の下限スコア）
+- **75～79点** → 15%（標準より低め）
+- **80～84.99点** → 20%（一般的な評価）
+- **85～89.99点** → 30%（やや高評価）
+- **90～94.99点** → 20%（高評価）
+- **95～97.99点** → 8%（かなりの評価）
+- **98～99.99点** → 2%（非常に高い評価）
+
+---
+
+### 【評価軸】（以下のリストから3つを選択）
+#### 【美的要素】
+- フェイスライン、瞳の魅力、鼻筋の美しさ、口元の魅力、肌の透明感、左右対称性  
+
+#### 【雰囲気・オーラ】
+- クールビューティー、癒し系美人、エネルギッシュなオーラ、清潔感、親しみやすさ、信頼感、落ち着きのある雰囲気、知的美人、都会的な雰囲気、ミステリアス度  
+
+#### 【個性・キャラ性】
+- ユーモアのある表情、アーティスティックな雰囲気、ワイルドな雰囲気、アイドルっぽさ、ムードメーカー、ナチュラルな魅力、カメラ映えする顔、色気のある雰囲気、ヘルシーな魅力  
+
+#### 【その他の特徴】
+- 個性的な魅力、さりげない色気、爽やかさ、芯の強さを感じる顔
+
+---
+
+# 【出力フォーマット】
+以下のフォーマットに厳密に従い、余計な装飾や区切り線、余分な改行などは一切入れず、必要な項目のみをプレーンテキストで出力してください。
+
+\`\`\`
+美人度/イケメン度:{美人度/イケメン度}{スコア}点
+キャッチフレーズ: {10文字以内のキャッチフレーズ}
+推定年齢: {〇〇歳}
+評価軸1: {評価軸1}{スコア}点
+評価軸2: {評価軸2}{スコア}点
+評価軸3: {評価軸3}{スコア}点
+似ている芸能人:{芸能人1}{芸能人2}
+コメント: {200文字以内のコメント}
+\`\`\`
+`
+        },
+        {
+          role: "user",
+          content: [
+            { type: "text", text: "この画像の人物を診断し、【出力フォーマット】に厳密に従って、結果を出力してください" },
+            { type: "image_url", image_url: { url: imageData } }
+          ]
+        }
+      ],
+      max_tokens: 300
+    });
+
+    const result = completion.choices[0].message.content;
+
+    console.log("AIからの結果:", result);
+    res.json({ result });
+  } catch (error) {
+    console.error("エラー:", error);
+    res.status(500).json({ error: "AI判定でエラーが発生しました。" });
+  }
+}

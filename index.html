@@ -3,15 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FaceScan Minimal Test</title>
+  <title>FaceScan</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>FaceScan Minimal Test</h1>
-    <button id="testBtn">テスト送信</button>
-    <pre id="result" style="background: #eee; padding: 10px; margin-top:20px;"></pre>
+    <!-- カメラ映像を表示するためのvideo要素（初期は非表示） -->
+    <video id="video" autoplay playsinline muted style="display: none;"></video>
+    <!-- 撮影結果を保持するcanvas要素（非表示） -->
+    <canvas id="canvas" style="display: none;"></canvas>
+    
+    <!-- 診断開始ボタン：カメラを起動する -->
+    <button id="startScan">診断を開始</button>
+    <!-- 撮影ボタン：撮影後、画像をキャプチャする -->
+    <button id="capture" style="display: none;">撮影</button>
+    <!-- 撮影または参照した画像のプレビュー表示 -->
+    <img id="preview" style="width:300px; margin-top:20px; border-radius:8px; display: none;">
+    <!-- この写真で診断ボタン：撮影または参照した画像で診断を実行 -->
+    <button id="analyze" style="display: none;">この写真で診断</button>
   </div>
+  
   <script src="script.js"></script>
 </body>
 </html>
