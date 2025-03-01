@@ -206,7 +206,7 @@ function transformResultToHTML(resultText) {
       "コメント:": "comment"
     };
   
-    // ① 美人度/イケメン度の処理
+    // ① 美人度/イケメン度の処理（評価軸と同様のフォーマットにする）
     const beautyLine = lines.find(line => {
       const t = line.trim();
       return t.startsWith("美人度:") || t.startsWith("イケメン度:");
@@ -214,10 +214,20 @@ function transformResultToHTML(resultText) {
     if (beautyLine) {
       const parts = beautyLine.split(":");
       const label = parts.shift().trim() + ":";
-      const content = parts.join(":").trim();
-      html += `<div class="${fields["beauty"]}"><span>${label}</span> ${content}</div>`;
+      let content = parts.join(":").trim();
+      // 数値の整数部分と少数部分を分離して <span> タグで包む
+      const regex = /^([\D]*)(\d+)(\.\d+)?(.*)$/;
+      const match = content.match(regex);
+      if (match) {
+        const prefix = match[1] || "";
+        const integerPart = match[2] || "";
+        const fractionalPart = match[3] || "";
+        const suffix = match[4] || "";
+        content = `${prefix}${integerPart}<span>${fractionalPart}${suffix}</span>`;
+      }
+      html += `<div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}</div>`;
     }
-  
+    
     // ② 他の項目の処理
     Object.keys(fields).forEach(key => {
       if (key === "beauty") return; // すでに処理済み
@@ -229,8 +239,6 @@ function transformResultToHTML(resultText) {
         
         // 評価軸については、数値の整数部分と少数部分を分離して <span> で包む
         if (key === "評価軸1:" || key === "評価軸2:" || key === "評価軸3:") {
-          // 例: "知的美人93.75点" を "知的美人93<span>.75点</span>" に変換
-          // 正規表現で、先頭の非数字部分、数字部分、少数部分、その他を分離
           const regex = /^([\D]*)(\d+)(\.\d+)?(.*)$/;
           const match = content.match(regex);
           if (match) {
@@ -249,6 +257,8 @@ function transformResultToHTML(resultText) {
     html += "</div>";
     return html;
   }
+  
+  
   
   function displayResultHTML(resultText) {
     let resultContainer = document.getElementById('resultContainer');
