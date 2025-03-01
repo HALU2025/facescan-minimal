@@ -109,7 +109,7 @@ captureBtn.addEventListener('click', () => {
   canvas.height = video.videoHeight;
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   
-  currentImageData = canvas.toDataURL('image/jpeg', 0.7);
+  currentImageData = canvas.toDataURL('image/webp', 0.7);
   preview.src = currentImageData;
   preview.style.display = "block";
   
