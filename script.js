@@ -186,9 +186,9 @@ function transformResultToHTML(resultText) {
   
     let html = "<div class='result'>";
   
-    // 定義する項目とそれに対応するクラス名、かつラベル部分を <span> でラップするようにする
+    // 出力項目のラベルとクラス名の対応（「美人度/イケメン度:」は両方対応）
     const fields = {
-      "美人度/イケメン度:": "beauty-score",
+      "beauty": "beauty-score", // 対象：美人度: または イケメン度:
       "キャッチフレーズ:": "catchphrase",
       "推定年齢:": "age",
       "評価軸1:": "score1",
@@ -198,20 +198,26 @@ function transformResultToHTML(resultText) {
       "コメント:": "comment"
     };
   
+    // 「美人度:」または「イケメン度:」に対応するための処理
+    const beautyLine = lines.find(line => {
+      const t = line.trim();
+      return t.startsWith("美人度:") || t.startsWith("イケメン度:");
+    });
+    if (beautyLine) {
+      const parts = beautyLine.split(":");
+      const label = parts.shift().trim() + ":";
+      const content = parts.join(":").trim();
+      html += `<div class="${fields["beauty"]}"><span>${label}</span> ${content}</div>`;
+    }
+  
+    // 他の項目について、キーに一致する行を順に処理
     Object.keys(fields).forEach(key => {
-      // 検索対象の行を探す
+      if (key === "beauty") return; // 既に処理済み
       const matchingLine = lines.find(line => line.trim().startsWith(key));
       if (matchingLine) {
-        // ラベルと内容に分割する。コロンで分割して最初の部分はラベル、残りは内容とする
         const parts = matchingLine.split(":");
         const label = parts.shift().trim() + ":";
         const content = parts.join(":").trim();
-        
-        // ここで「美人度/イケメン度:」の場合、もしプロンプトで性別が分かるなら、条件分岐で適宜置換できる
-        // 例: (dummyコード) if(key === "美人度/イケメン度:" && content.includes("男性")) { label = "イケメン度:"; }
-        // 今回はその情報がないので、そのままとする
-  
-        // 出力時にラベル部分を <span> タグでラップする
         html += `<div class="${fields[key]}"><span>${label}</span> ${content}</div>`;
       }
     });
