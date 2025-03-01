@@ -412,3 +412,59 @@ if (!isMobile()) {
     alert("Instagramへの直接シェアはできません。画像を保存してInstagramアプリから投稿してください。");
   });
 }
+
+
+// ================================================
+// スコア補正用の関数（美人度/イケメン度と評価軸向け）
+
+// 美人度/イケメン度: 生スコアが80～95の場合、最終スコア = (raw - 80) * (29/15) + 70
+// 生スコアが80未満の場合は raw - 10、下限は0にする
+function calculateBeautyScore(rawScore) {
+    let finalScore;
+    if (rawScore < 80) {
+      finalScore = rawScore - 10;
+    } else {
+      finalScore = (rawScore - 80) * (29 / 15) + 70;
+    }
+    return Math.max(0, finalScore);
+  }
+  
+  // 評価軸: 生スコアが75～95の場合、最終スコア = (raw - 75) * 0.8 + 83
+  // 生スコアが75未満の場合は raw - 10、下限は0にする
+  function calculateEvaluationScore(rawScore) {
+    let finalScore;
+    if (rawScore < 75) {
+      finalScore = rawScore - 10;
+    } else {
+      finalScore = (rawScore - 75) * 0.8 + 83;
+    }
+    return Math.max(0, finalScore);
+  }
+  
+  // ランダムな小数部分 (0.00～0.99) を加えて、最終スコアを小数点2桁にフォーマットする関数
+  function calculateScoreWithRandomFraction(rawScore, type) {
+    let baseScore;
+    if (type === "beauty") {
+      baseScore = calculateBeautyScore(rawScore);
+    } else if (type === "evaluation") {
+      baseScore = calculateEvaluationScore(rawScore);
+    } else {
+      baseScore = rawScore;
+    }
+    const integerPart = Math.floor(baseScore);
+    const randomFraction = Math.floor(Math.random() * 100) / 100;
+    return (integerPart + randomFraction).toFixed(2);
+  }
+  
+  // ===== 使用例 =====
+  // 美人度/イケメン度の生スコアが AI から 84 点だった場合（整数値）
+  const rawBeautyScore = 84;
+  const finalBeautyScore = calculateScoreWithRandomFraction(rawBeautyScore, "beauty");
+  console.log("最終 美人度/イケメン度:", finalBeautyScore);
+  
+  // 例えば、評価軸の生スコアが 88 点だった場合
+  const rawEvalScore = 88;
+  const finalEvalScore = calculateScoreWithRandomFraction(rawEvalScore, "evaluation");
+  console.log("最終 評価軸スコア:", finalEvalScore);
+  
+
