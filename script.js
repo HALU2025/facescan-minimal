@@ -239,7 +239,24 @@ function transformResultToHTML(resultText) {
       const container = document.querySelector('.container');
       container.appendChild(resultContainer);
     }
-    resultContainer.innerHTML = transformResultToHTML(resultText);
+    
+    // サムネイル画像を追加するための要素を作成
+    if (currentImageData) {
+      // サムネイル用の div を作成
+      const thumbDiv = document.createElement('div');
+      thumbDiv.className = "result-thumbnail";
+      // img タグを作成
+      const thumbImg = document.createElement('img');
+      thumbImg.src = currentImageData;
+      thumbImg.alt = "診断対象のサムネイル";
+      // CSSでサイズやスタイルを指定できるように、クラス名を付与
+      thumbDiv.appendChild(thumbImg);
+      // 結果コンテナの上部にサムネイルを挿入（先頭に追加）
+      resultContainer.appendChild(thumbDiv);
+    }
+    
+    // 診断結果のテキスト部分を追加
+    resultContainer.innerHTML += transformResultToHTML(resultText);
     preview.style.display = "none";
   }
   
