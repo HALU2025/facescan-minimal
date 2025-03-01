@@ -197,19 +197,19 @@ function transformResultToHTML(resultText) {
     // 定義する出力項目と対応するクラス
     const fields = {
       "beauty": "beauty-score",   // 対象: 美人度: または イケメン度:
-      "キャッチフレーズ:": "catchphrase",
-      "推定年齢:": "age",
-      "評価軸1:": "score1",
-      "評価軸2:": "score2",
-      "評価軸3:": "score3",
-      "似ている芸能人:": "celeb",
-      "コメント:": "comment"
+      "キャッチフレーズ": "catchphrase",
+      "推定年齢": "age",
+      "評価軸1": "score1",
+      "評価軸2": "score2",
+      "評価軸3": "score3",
+      "似ている芸能人": "celeb",
+      "コメント": "comment"
     };
   
     // ① 美人度/イケメン度の処理
     const beautyLine = lines.find(line => {
       const t = line.trim();
-      return t.startsWith("美人度:") || t.startsWith("イケメン度:");
+      return t.startsWith("美人度") || t.startsWith("イケメン度");
     });
     if (beautyLine) {
       const parts = beautyLine.split(":");
@@ -228,7 +228,7 @@ function transformResultToHTML(resultText) {
         let content = parts.join(":").trim();
         
         // 評価軸については、数値の整数部分と少数部分を分離して <span> で包む
-        if (key === "評価軸1:" || key === "評価軸2:" || key === "評価軸3:") {
+        if (key === "評価軸1" || key === "評価軸2" || key === "評価軸3") {
           // 例: "知的美人93.75点" を "知的美人93<span>.75点</span>" に変換
           // 正規表現で、先頭の非数字部分、数字部分、少数部分、その他を分離
           const regex = /^([\D]*)(\d+)(\.\d+)?(.*)$/;
