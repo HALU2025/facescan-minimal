@@ -61,25 +61,33 @@ document.body.appendChild(instaBtn);
 
 // ===================== 2. ユーティリティ関数と状態リセット =====================
 function resetToInitial() {
-  startScanBtn.style.display = "block";
-  video.style.display = "none";
-  captureBtn.style.display = "none";
-  fileInput.style.display = "none";
-  analyzeBtn.style.display = "none";
-  reCaptureBtn.style.display = "none";
-  selectAgainBtn.style.display = "none";
-  takePhotoBtn.style.display = "none";
-  retryBtn.style.display = "none";
-  shareBtn.style.display = "none";
-  twitterBtn.style.display = "none";
-  fbBtn.style.display = "none";
-  instaBtn.style.display = "none";
-  preview.style.display = "none";
-  currentImageData = "";
-  currentResult = "";
-  mode = "";
-}
-resetToInitial();
+    // 既存の UI 部品の表示状態をリセット
+    startScanBtn.style.display = "block";
+    video.style.display = "none";
+    captureBtn.style.display = "none";
+    fileInput.style.display = "none";
+    analyzeBtn.style.display = "none";
+    reCaptureBtn.style.display = "none";
+    selectAgainBtn.style.display = "none";
+    takePhotoBtn.style.display = "none";
+    retryBtn.style.display = "none";
+    shareBtn.style.display = "none";
+    twitterBtn.style.display = "none";
+    fbBtn.style.display = "none";
+    instaBtn.style.display = "none";
+    preview.style.display = "none";
+    
+    // global variables reset
+    currentImageData = "";
+    currentResult = "";
+    mode = "";
+    
+    // もし診断結果エリアが存在すれば削除する
+    const resultContainer = document.getElementById('resultContainer');
+    if (resultContainer) {
+      resultContainer.remove();
+    }
+  }
 
 function isMobile() {
   return /Mobi|Android/i.test(navigator.userAgent);
