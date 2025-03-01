@@ -186,17 +186,17 @@ analyzeBtn.addEventListener('click', () => {
 
 // ===================== 5. 診断結果のHTML表示（テキスト→HTML変換） =====================
 function transformResultToHTML(resultText) {
-    // 改行で分割。不要な行はフィルターで除外。
+    // 改行で分割し、不要な行を除外
     const lines = resultText.split("\n").filter(line => {
       const trimmed = line.trim();
       return trimmed !== "" && !trimmed.includes('----------------------------');
     });
-  
+    
     let html = "<div class='result'>";
-  
-    // 出力項目のラベルとクラス名の対応（「美人度/イケメン度:」は両方対応）
+    
+    // 定義する出力項目と対応するクラス
     const fields = {
-      "beauty": "beauty-score", // 対象：美人度: または イケメン度:
+      "beauty": "beauty-score",   // 対象: 美人度: または イケメン度:
       "キャッチフレーズ:": "catchphrase",
       "推定年齢:": "age",
       "評価軸1:": "score1",
@@ -206,7 +206,7 @@ function transformResultToHTML(resultText) {
       "コメント:": "comment"
     };
   
-    // 「美人度:」または「イケメン度:」に対応するための処理
+    // ① 美人度/イケメン度の処理
     const beautyLine = lines.find(line => {
       const t = line.trim();
       return t.startsWith("美人度:") || t.startsWith("イケメン度:");
@@ -218,18 +218,34 @@ function transformResultToHTML(resultText) {
       html += `<div class="${fields["beauty"]}"><span>${label}</span> ${content}</div>`;
     }
   
-    // 他の項目について、キーに一致する行を順に処理
+    // ② 他の項目の処理
     Object.keys(fields).forEach(key => {
-      if (key === "beauty") return; // 既に処理済み
+      if (key === "beauty") return; // すでに処理済み
       const matchingLine = lines.find(line => line.trim().startsWith(key));
       if (matchingLine) {
         const parts = matchingLine.split(":");
         const label = parts.shift().trim() + ":";
-        const content = parts.join(":").trim();
-        html += `<div class="${fields[key]}"><span>${label}</span> ${content}</div>`;
+        let content = parts.join(":").trim();
+        
+        // 評価軸については、数値の整数部分と少数部分を分離して <span> で包む
+        if (key === "評価軸1:" || key === "評価軸2:" || key === "評価軸3:") {
+          // 例: "知的美人93.75点" を "知的美人93<span>.75点</span>" に変換
+          // 正規表現で、先頭の非数字部分、数字部分、少数部分、その他を分離
+          const regex = /^([\D]*)(\d+)(\.\d+)?(.*)$/;
+          const match = content.match(regex);
+          if (match) {
+            const prefix = match[1] || "";
+            const integerPart = match[2] || "";
+            const fractionalPart = match[3] || "";
+            const suffix = match[4] || "";
+            content = `${prefix}${integerPart}<span>${fractionalPart}${suffix}</span>`;
+          }
+        }
+        
+        html += `<div class="${fields[key]}"><div class="clabel">${label}</div> ${content}</div>`;
       }
     });
-  
+    
     html += "</div>";
     return html;
   }
@@ -244,29 +260,35 @@ function transformResultToHTML(resultText) {
       resultContainer.style.backgroundColor = "#fff";
       resultContainer.style.border = "1px solid #ccc";
       resultContainer.style.borderRadius = "8px";
+      // サムネイルを含む div を作成
+      if (currentImageData) {
+        const thumbDiv = document.createElement('div');
+        thumbDiv.className = "result-thumbnail";
+        const thumbImg = document.createElement('img');
+        thumbImg.src = currentImageData;
+        thumbImg.alt = "診断対象のサムネイル";
+        thumbDiv.appendChild(thumbImg);
+        resultContainer.appendChild(thumbDiv);
+      }
       const container = document.querySelector('.container');
       container.appendChild(resultContainer);
+    } else {
+      // 既存の結果コンテナがあれば、サムネイル部分もクリアする
+      resultContainer.innerHTML = "";
+      if (currentImageData) {
+        const thumbDiv = document.createElement('div');
+        thumbDiv.className = "result-thumbnail";
+        const thumbImg = document.createElement('img');
+        thumbImg.src = currentImageData;
+        thumbImg.alt = "診断対象のサムネイル";
+        thumbDiv.appendChild(thumbImg);
+        resultContainer.appendChild(thumbDiv);
+      }
     }
-    
-    // サムネイル画像を追加するための要素を作成
-    if (currentImageData) {
-      // サムネイル用の div を作成
-      const thumbDiv = document.createElement('div');
-      thumbDiv.className = "result-thumbnail";
-      // img タグを作成
-      const thumbImg = document.createElement('img');
-      thumbImg.src = currentImageData;
-      thumbImg.alt = "診断対象のサムネイル";
-      // CSSでサイズやスタイルを指定できるように、クラス名を付与
-      thumbDiv.appendChild(thumbImg);
-      // 結果コンテナの上部にサムネイルを挿入（先頭に追加）
-      resultContainer.appendChild(thumbDiv);
-    }
-    
-    // 診断結果のテキスト部分を追加
     resultContainer.innerHTML += transformResultToHTML(resultText);
     preview.style.display = "none";
   }
+  
   
   
 
