@@ -178,73 +178,52 @@ analyzeBtn.addEventListener('click', () => {
 
 // ===================== 5. 診断結果のHTML表示（テキスト→HTML変換） =====================
 function transformResultToHTML(resultText) {
-    const lines = resultText.split("\n").filter(line => {
-      const trimmed = line.trim();
-      return trimmed !== "" && !trimmed.includes('----------------------------');
-    });
+    // 改行で分割。改行がない場合は適宜、セパレータで分割する処理に変更してください。
+    const lines = resultText.split("\n").filter(line => line.trim() !== "" && !line.includes('----------------------------'));
     
     let html = "<div class='result'>";
     
-    if (lines.length >= 1 && lines[0].includes("キャッチフレーズ:")) {
-      html += "<div class='catchphrase'>" + lines[0] + "</div>";
-    }
+    // 各出力項目のラベルとクラス名の対応を定義
+    const fields = {
+      "美人度/イケメン度:": "beauty-score",
+      "キャッチフレーズ:": "catchphrase",
+      "推定年齢:": "age",
+      "評価軸1:": "score1",
+      "評価軸2:": "score2",
+      "評価軸3:": "score3",
+      "似ている芸能人:": "celeb",
+      "コメント:": "comment"
+    };
     
-    if (lines.length >= 2 && lines[1].includes("美人度:")) {
-      html += "<div class='main-score'>" + lines[1] + "</div>";
-    }
-    
-    if (lines.length >= 3 && lines[2].includes("推定年齢:")) {
-      html += "<div class='age'>" + lines[2] + "</div>";
-    }
-    
-    if (lines.length >= 6) {
-      html += "<div class='score1'>" + lines[3] + "</div>";
-      html += "<div class='score2'>" + lines[4] + "</div>";
-      html += "<div class='score3'>" + lines[5] + "</div>";
-    }
-    
-    const celebHeaderIndex = lines.findIndex(line => line.includes("似ている芸能人"));
-    if (celebHeaderIndex !== -1) {
-      html += "<div class='celeb-header'>" + lines[celebHeaderIndex] + "</div>";
-      for (let i = celebHeaderIndex + 1; i < lines.length; i++) {
-        if (lines[i].trim().startsWith("-")) {
-          html += "<div class='celeb'>" + lines[i] + "</div>";
-        } else {
-          break;
-        }
+    // 各フィールドのラベルに一致する行を探して追加
+    Object.keys(fields).forEach(key => {
+      const matchingLine = lines.find(line => line.trim().startsWith(key));
+      if (matchingLine) {
+        html += `<div class="${fields[key]}">${matchingLine.trim()}</div>`;
       }
-    }
-    
-    const commentIndex = lines.findIndex(line => line.startsWith("コメント:"));
-    if (commentIndex !== -1) {
-      html += "<div class='comment'>" + lines[commentIndex] + "</div>";
-    }
-    
-    const footnoteIndex = lines.findIndex(line => line.startsWith("※"));
-    if (footnoteIndex !== -1) {
-      html += "<div class='footnote'>" + lines[footnoteIndex] + "</div>";
-    }
+    });
     
     html += "</div>";
     return html;
-}
-
-function displayResultHTML(resultText) {
-  let resultContainer = document.getElementById('resultContainer');
-  if (!resultContainer) {
-    resultContainer = document.createElement('div');
-    resultContainer.id = 'resultContainer';
-    resultContainer.style.marginTop = "20px";
-    resultContainer.style.padding = "20px";
-    resultContainer.style.backgroundColor = "#fff";
-    resultContainer.style.border = "1px solid #ccc";
-    resultContainer.style.borderRadius = "8px";
-    const container = document.querySelector('.container');
-    container.appendChild(resultContainer);
   }
-  resultContainer.innerHTML = transformResultToHTML(resultText);
-  preview.style.display = "none";
-}
+  
+  function displayResultHTML(resultText) {
+    let resultContainer = document.getElementById('resultContainer');
+    if (!resultContainer) {
+      resultContainer = document.createElement('div');
+      resultContainer.id = 'resultContainer';
+      resultContainer.style.marginTop = "20px";
+      resultContainer.style.padding = "20px";
+      resultContainer.style.backgroundColor = "#fff";
+      resultContainer.style.border = "1px solid #ccc";
+      resultContainer.style.borderRadius = "8px";
+      const container = document.querySelector('.container');
+      container.appendChild(resultContainer);
+    }
+    resultContainer.innerHTML = transformResultToHTML(resultText);
+    preview.style.display = "none";
+  }
+  
 
 // ===================== 6. 各種再操作ボタンの処理 =====================
 reCaptureBtn.addEventListener('click', () => {
