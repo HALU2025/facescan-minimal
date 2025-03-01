@@ -35,3 +35,13 @@ body {
   .clabel {
     display: inline-block;
   }
+
+  .beauty-score{
+    font-size: 40px;
+  }
+  .beauty-score span{
+    font-size: 25px;
+  }
+  .beauty-score .clabel{
+    font-size: 20px;
+  }
