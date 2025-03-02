@@ -204,17 +204,55 @@ analyzeBtn.addEventListener('click', () => {
 
 
 
-// ===================== Section5. 診断結果のHTML表示（テキスト→HTML変換） =====================
+// ===================== Section5. スコア調整 & 診断結果のHTML表示 =====================
+
+// ✅ 美人度スコアの調整
+function calculateBeautyScore(rawScore) {
+  let finalScore;
+  if (rawScore < 85.0) {
+      finalScore = rawScore - 10;
+  } else {
+      finalScore = (rawScore - 85.0) * (14.9 / 10.9) + 85.0;
+  }
+  return Math.max(0, finalScore);
+}
+
+// ✅ 評価軸スコアの調整
+function calculateEvaluationScore(rawScore) {
+  let finalScore;
+  if (rawScore < 85.0) {
+      finalScore = rawScore - 10;
+  } else {
+      finalScore = (rawScore - 85.0) * (14.9 / 10.9) + 85.0;
+  }
+  return Math.max(0, finalScore);
+}
+
+// ✅ 小数点以下3桁をランダム追加し、99.999形式に統一
+function calculateScoreWithRandomFraction(rawScore, type) {
+  let baseScore;
+  if (type === "beauty") {
+      baseScore = calculateBeautyScore(rawScore);
+  } else if (type === "evaluation") {
+      baseScore = calculateEvaluationScore(rawScore);
+  } else {
+      baseScore = rawScore;
+  }
+
+  // 小数点以下3桁のランダム数を追加
+  const randomFraction = Math.floor(Math.random() * 100) / 1000; // 0.000～0.099
+  let finalScore = baseScore + randomFraction;
+
+  // 上限を 99.999 に制限
+  finalScore = Math.min(finalScore, 99.999);
+
+  return finalScore.toFixed(3);
+}
 
 function transformResultToHTML(resultText) {
-  const lines = resultText.split("\n").filter(line => {
-      const trimmed = line.trim();
-      return trimmed !== "" && !trimmed.includes('----------------------------');
-  });
-
+  const lines = resultText.split("\n").filter(line => line.trim() !== "" && !line.includes('----------------------------'));
   let html = "<div class='result'>";
 
-  // 定義する出力項目と対応するクラス
   const fields = {
       "beauty": "beauty-score",
       "キャッチフレーズ:": "catchphrase",
@@ -226,49 +264,23 @@ function transformResultToHTML(resultText) {
       "コメント:": "comment"
   };
 
-  // 美人度/イケメン度の処理
-  const beautyLine = lines.find(line => {
-      const t = line.trim();
-      return t.startsWith("美人度:") || t.startsWith("イケメン度:");
-  });
-  if (beautyLine) {
-      const parts = beautyLine.split(":");
-      const label = parts.shift().trim() + ":";
-      let content = parts.join(":").trim();
-
-      // 小数点以下3桁を維持
-      const regex = /^([\D]*)(\d+)(\.\d{1,3})?(.*)$/;
-      const match = content.match(regex);
-      if (match) {
-          const prefix = match[1] || "";
-          const integerPart = match[2] || "";
-          let fractionalPart = match[3] || ".000"; // 小数3桁を保証
-          const suffix = match[4] || "";
-
-          content = `${prefix}${integerPart}<span>${fractionalPart}${suffix}</span>`;
-      }
-      html += `<div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}</div>`;
-  }
-
-  // 他の項目の処理
   Object.keys(fields).forEach(key => {
-      if (key === "beauty") return;
       const matchingLine = lines.find(line => line.trim().startsWith(key));
       if (matchingLine) {
           const parts = matchingLine.split(":");
           const label = parts.shift().trim() + ":";
           let content = parts.join(":").trim();
+          
+          // ✅ スコア調整（小数点以下3桁に統一）
+          if (key === "beauty" || key.includes("評価軸")) {
+              content = content.replace(/(\d+\.\d{1,2})/, (match) => {
+                  return parseFloat(match).toFixed(3);
+              });
+          }
 
-          // 小数点以下3桁を維持
-          const regex = /^([\D]*)(\d+)(\.\d{1,3})?(.*)$/;
-          const match = content.match(regex);
-          if (match) {
-              const prefix = match[1] || "";
-              const integerPart = match[2] || "";
-              let fractionalPart = match[3] || ".000";
-              const suffix = match[4] || "";
-
-              content = `${prefix}${integerPart}<span>${fractionalPart}${suffix}</span>`;
+          // ✅ 推定年齢は整数のまま表示
+          if (key === "推定年齢:") {
+              content = content.replace(/(\d+)\.000/, "$1");
           }
 
           html += `<div class="${fields[key]}"><div class="clabel">${label}</div> ${content}</div>`;
@@ -312,11 +324,15 @@ function displayResultHTML(resultText) {
           resultContainer.appendChild(thumbDiv);
       }
   }
+
+  // ✅ ここでスコア調整を適用してから表示
   resultContainer.innerHTML += transformResultToHTML(resultText);
   preview.style.display = "none";
 }
 
 // ===================== End Section5 =====================
+
+
 
 
   
@@ -445,61 +461,7 @@ if (!isMobile()) {
 
 
 
-// ===================== Section9. スコア調整 =====================
 
-function calculateBeautyScore(rawScore) {
-  let finalScore;
-  if (rawScore < 85.0) {
-    finalScore = rawScore - 10;
-  } else {
-    finalScore = (rawScore - 85.0) * (14.9 / 10.9) + 85.0;
-  }
-  return Math.max(0, finalScore);
-}
-
-function calculateEvaluationScore(rawScore) {
-  let finalScore;
-  if (rawScore < 85.0) {
-    finalScore = rawScore - 10;
-  } else {
-    finalScore = (rawScore - 85.0) * (14.9 / 10.9) + 85.0;
-  }
-  return Math.max(0, finalScore);
-}
-
-// 小数点以下3桁をランダム追加し、99.999形式に統一
-function calculateScoreWithRandomFraction(rawScore, type) {
-  let baseScore;
-  if (type === "beauty") {
-    baseScore = calculateBeautyScore(rawScore);
-  } else if (type === "evaluation") {
-    baseScore = calculateEvaluationScore(rawScore);
-  } else {
-    baseScore = rawScore;
-  }
-
-  // 小数点以下3桁のランダム数を追加
-  const randomFraction = Math.floor(Math.random() * 100) / 1000; // 0.000～0.099
-  let finalScore = baseScore + randomFraction;
-
-  // 上限を 99.999 に制限
-  finalScore = Math.min(finalScore, 99.999);
-
-  return finalScore.toFixed(3);
-}
-
-// ===== 使用例 =====
-// 例：美人度/イケメン度の生スコアが 89.5 点の場合
-const rawBeautyScore = 89.5;
-const finalBeautyScore = calculateScoreWithRandomFraction(rawBeautyScore, "beauty");
-console.log("最終 美人度/イケメン度:", finalBeautyScore);
-
-// 例：評価軸の生スコアが 89.5 点の場合（同じ数式を適用）
-const rawEvalScore = 89.5;
-const finalEvalScore = calculateScoreWithRandomFraction(rawEvalScore, "evaluation");
-console.log("最終 評価軸スコア:", finalEvalScore);
-
-// ===================== End Section9 =====================
 
 
   
