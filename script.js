@@ -10,7 +10,6 @@ const preview = document.getElementById('preview');          // プレビュー�
 let currentImageData = "";   // 撮影または選択した画像データ
 let currentResult = "";      // AI診断結果のテキスト（HTML形式の文字列）
 let mode = "";               // 状態: "capture"（撮影）または "file"（画像参照）など
-let resultImageData = "";    // 生成された診断結果の画像データ
 
 // 動的に生成する追加UI要素（初期状態は非表示）
 const fileInput = document.createElement('input');
@@ -59,7 +58,6 @@ const instaBtn = document.createElement('button');
 instaBtn.textContent = "Instagramでシェア";
 instaBtn.style.display = "none";
 document.body.appendChild(instaBtn);
-
 
 // ===================== 2. ユーティリティ関数と状態リセット =====================
 function resetToInitial() {
@@ -170,9 +168,6 @@ analyzeBtn.addEventListener('click', () => {
     currentResult = result.result;  // 診断結果（HTML形式の文字列）を保存
     // 4-1. 診断結果をHTMLとして表示する
     displayResultHTML(currentResult);
-    // ※ここで結果エリアを画像に置き換える
-    generateResultImage();
-    
     analyzeBtn.style.display = "none";  // 「この写真で診断」ボタン非表示
     // 結果取得後、再操作ボタン群を表示
     retryBtn.style.display = "block";
@@ -228,9 +223,9 @@ function transformResultToHTML(resultText) {
         const integerPart = match[2] || "";
         const fractionalPart = match[3] || "";
         const suffix = match[4] || "";
-        content = ${prefix}${integerPart}<span>${fractionalPart}${suffix}</span>;
+        content = `${prefix}${integerPart}<span>${fractionalPart}${suffix}</span>`;
       }
-      html += <div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}</div>;
+      html += `<div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}</div>`;
     }
     
     // ② 他の項目の処理
@@ -251,21 +246,21 @@ function transformResultToHTML(resultText) {
             const integerPart = match[2] || "";
             const fractionalPart = match[3] || "";
             const suffix = match[4] || "";
-            content = ${prefix}${integerPart}<span>${fractionalPart}${suffix}</span>;
+            content = `${prefix}${integerPart}<span>${fractionalPart}${suffix}</span>`;
           }
         }
         
-        html += <div class="${fields[key]}"><div class="clabel">${label}</div> ${content}</div>;
+        html += `<div class="${fields[key]}"><div class="clabel">${label}</div> ${content}</div>`;
       }
     });
     
     html += "</div>";
     return html;
-}
+  }
   
   
   
-function displayResultHTML(resultText) {
+  function displayResultHTML(resultText) {
     let resultContainer = document.getElementById('resultContainer');
     if (!resultContainer) {
       resultContainer = document.createElement('div');
@@ -302,10 +297,11 @@ function displayResultHTML(resultText) {
     }
     resultContainer.innerHTML += transformResultToHTML(resultText);
     preview.style.display = "none";
-}
+  }
   
   
   
+
 // ===================== 6. 各種再操作ボタンの処理 =====================
 reCaptureBtn.addEventListener('click', () => {
   currentImageData = "";
@@ -378,49 +374,37 @@ function updateShareUI() {
   }
 }
 
-// ===================== 8. 診断結果画像生成 =====================
-function generateResultImage() {
-  const resultContainer = document.getElementById('resultContainer');
-  html2canvas(resultContainer).then((canvas) => {
-    // 画像データURLとして保持
-    resultImageData = canvas.toDataURL('image/png');
-    // 生成した画像を新たな img 要素として作成
-    const resultImg = document.createElement('img');
-    resultImg.src = resultImageData;
-    resultImg.alt = "診断結果画像";
-    // 必要に応じてスタイル調整（例：幅100%）
-    resultImg.style.width = "100%";
-    // 結果エリアの内容を全てクリアして画像を追加
-    resultContainer.innerHTML = "";
-    resultContainer.appendChild(resultImg);
-  }).catch((err) => {
-    console.error("診断結果の画像生成エラー:", err);
-  });
-}
-
-// ===================== 9. シェア/保存ボタンのイベント =====================
+// ===================== 8. シェア/保存ボタンのイベント =====================
 if (!isMobile()) {
   shareBtn.addEventListener('click', () => {
-    if (!resultImageData) {
-      alert("画像データが生成されていません。しばらくしてから再度お試しください。");
+    const resultContainer = document.getElementById('resultContainer');
+    if (!resultContainer) {
+      alert("診断結果表示エリアが見つかりません。");
       return;
     }
-    const a = document.createElement('a');
-    a.href = resultImageData;
-    a.download = "face_scan_result.png";
-    a.click();
+    
+    html2canvas(resultContainer).then((canvas) => {
+      const dataUrl = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = "face_scan_result.png";
+      a.click();
+    }).catch((err) => {
+      console.error("html2canvasエラー:", err);
+      alert("画像の生成に失敗しました。");
+    });
   });
   
   twitterBtn.addEventListener('click', () => {
     const text = encodeURIComponent("【診断結果】 Check out my FaceScan result!");
     const url = encodeURIComponent(window.location.href);
-    const shareUrl = https://twitter.com/intent/tweet?text=${text}&url=${url};
+    const shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
     window.open(shareUrl, '_blank');
   });
   
   fbBtn.addEventListener('click', () => {
     const url = encodeURIComponent(window.location.href);
-    const shareUrl = https://www.facebook.com/sharer/sharer.php?u=${url};
+    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
     window.open(shareUrl, '_blank');
   });
   
@@ -429,7 +413,8 @@ if (!isMobile()) {
   });
 }
 
-// ===================== 美人度/イケメン度と評価軸の計算 =====================
+
+// 美人度/イケメン度の計算：生スコア85.0→95.9を線形変換して基礎スコアに
 function calculateBeautyScore(rawScore) {
   let finalScore;
   if (rawScore < 85.0) {
@@ -440,6 +425,7 @@ function calculateBeautyScore(rawScore) {
   return Math.max(0, finalScore);
 }
 
+// 評価軸の計算も同じ数式で実装
 function calculateEvaluationScore(rawScore) {
   let finalScore;
   if (rawScore < 85.0) {
@@ -450,6 +436,7 @@ function calculateEvaluationScore(rawScore) {
   return Math.max(0, finalScore);
 }
 
+// ランダムな小数部分 (0.00～0.99) を加えて、最終スコアを xx.xxx 形式にフォーマットする関数
 function calculateScoreWithRandomFraction(rawScore, type) {
   let baseScore;
   if (type === "beauty") {
@@ -459,19 +446,25 @@ function calculateScoreWithRandomFraction(rawScore, type) {
   } else {
     baseScore = rawScore;
   }
+  // 基礎スコアを四捨五入して小数点以下1桁に
   baseScore = Math.round(baseScore * 10) / 10;
   const integerPart = Math.floor(baseScore);
   const randomFraction = Math.floor(Math.random() * 100) / 100; // 0.00～0.99
   let finalScore = integerPart + randomFraction;
+  // 上限チェック：99.999を超えないように
   finalScore = Math.min(finalScore, 99.999);
   return finalScore.toFixed(3);
 }
 
 // ===== 使用例 =====
+// 例：美人度/イケメン度の生スコアが 89.5 点の場合
 const rawBeautyScore = 89.5;
 const finalBeautyScore = calculateScoreWithRandomFraction(rawBeautyScore, "beauty");
 console.log("最終 美人度/イケメン度:", finalBeautyScore);
 
+// 例：評価軸の生スコアが 89.5 点の場合（同じ数式を適用）
 const rawEvalScore = 89.5;
 const finalEvalScore = calculateScoreWithRandomFraction(rawEvalScore, "evaluation");
 console.log("最終 評価軸スコア:", finalEvalScore);
+
+  
