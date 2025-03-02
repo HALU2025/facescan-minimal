@@ -191,18 +191,17 @@ analyzeBtn.addEventListener('click', () => {
 
 // ===================== 5. 診断結果のHTML表示（テキスト→HTML変換） =====================
 function transformResultToHTML(resultText) {
-  // 5-A: 入力テキストを改行で分割し、不要な行を除外する
+  // 改行で分割し、不要な行を除外
   const lines = resultText.split("\n").filter(line => {
     const trimmed = line.trim();
     return trimmed !== "" && !trimmed.includes('----------------------------');
   });
   
-  // 5-B: HTMLの開始タグを設定
   let html = "<div class='result'>";
-  
-  // 5-C: 出力項目と対応するクラスの定義
+
+  // 定義する出力項目と対応するクラス
   const fields = {
-    "beauty": "beauty-score",       // 対象: 美人度: または イケメン度:
+    "beauty": "beauty-score",   // 美人度 or イケメン度
     "キャッチフレーズ:": "catchphrase",
     "推定年齢:": "age",
     "評価軸1:": "score1",
@@ -211,34 +210,30 @@ function transformResultToHTML(resultText) {
     "似ている芸能人:": "celeb",
     "コメント:": "comment"
   };
-  
-  // 5-D: 美人度/イケメン度の処理（ランダムな小数部分を加算して補正する）
-  const beautyLine = lines.find(line => {
-    const t = line.trim();
-    return t.startsWith("美人度:") || t.startsWith("イケメン度:");
-  });
+
+  // ① 美人度/イケメン度の処理（スコア補正 + 小数点以下のランダム追加）
+  const beautyLine = lines.find(line => line.trim().startsWith("美人度:") || line.trim().startsWith("イケメン度:"));
   if (beautyLine) {
-    // 5-D-1: 行を ":" で分割し、ラベル部分と数値部分を分離
     const parts = beautyLine.split(":");
     const label = parts.shift().trim() + ":";
     let content = parts.join(":").trim();
-    // 5-D-2: 正規表現で数値部分（整数部＋小数部）とその他の部分を抽出
-    const regex = /^([\D]*)(\d+(\.\d+)?)(.*)$/;
+    
+    // スコア部分を抽出して補正
+    const regex = /^([\D]*)(\d+)(\.\d+)?(.*)$/;
     const match = content.match(regex);
     if (match) {
-      const prefix = match[1] || "";             // 数値前の文字列（例："知的美人"）
-      const rawNumber = Number(match[2]);          // 元の数値（例: 92.8）
-      const suffix = match[4] || "";               // 数値後の文字列（例："点"）
-      // 5-D-3: calculateScoreWithRandomFraction を使って補正後の数値を算出
-      const adjustedScore = calculateScoreWithRandomFraction(rawNumber, "beauty");
-      // 5-D-4: 補正後の値で内容を再構築
+      const prefix = match[1] || "";     // 例："知的美人"
+      const rawScore = Number(match[2]); // 例：92
+      const suffix = match[4] || "";     // 例："点"
+      
+      // スコア補正（ランダム小数追加）
+      const adjustedScore = calculateScoreWithRandomFraction(rawScore, "beauty");
       content = `${prefix}${adjustedScore}${suffix}`;
     }
-    // 5-D-5: 出力用HTMLに追加
     html += `<div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}</div>`;
   }
-  
-  // 5-E: 他の項目の処理
+
+  // ② その他の項目（評価軸にもランダム小数を追加）
   Object.keys(fields).forEach(key => {
     if (key === "beauty") return; // 美人度/イケメン度は既に処理済み
     const matchingLine = lines.find(line => line.trim().startsWith(key));
@@ -246,32 +241,31 @@ function transformResultToHTML(resultText) {
       const parts = matchingLine.split(":");
       const label = parts.shift().trim() + ":";
       let content = parts.join(":").trim();
-      
-      // 5-E-1: 評価軸（評価軸1～3）の場合、数値を補正して置換する
-      if (key === "評価軸1:" || key === "評価軸2:" || key === "評価軸3:") {
-        const regex = /^([\D]*)(\d+(\.\d+)?)(.*)$/;
+
+      // 評価軸のスコアにランダム小数を追加
+      if (key.startsWith("評価軸")) {
+        const regex = /^([\D]*)(\d+)(\.\d+)?(.*)$/;
         const match = content.match(regex);
         if (match) {
           const prefix = match[1] || "";
-          const rawNumber = Number(match[2]);
+          const rawScore = Number(match[2]);
           const suffix = match[4] || "";
-          const adjustedScore = calculateScoreWithRandomFraction(rawNumber, "evaluation");
+          
+          // スコア補正（ランダム小数追加）
+          const adjustedScore = calculateScoreWithRandomFraction(rawScore, "evaluation");
           content = `${prefix}${adjustedScore}${suffix}`;
         }
       }
-      
-      // 5-E-2: 出力用HTMLに追加（その他項目はそのまま出力）
+
       html += `<div class="${fields[key]}"><div class="clabel">${label}</div> ${content}</div>`;
     }
   });
-  
-  // 5-F: HTMLの終了タグを追加
+
   html += "</div>";
-  
-  // 5-G: 生成したHTMLを返す
   return html;
 }
 
+  
   
   
 // ===================== 6. 各種再操作ボタンの処理 =====================
@@ -427,13 +421,10 @@ function calculateScoreWithRandomFraction(rawScore, type) {
   } else {
     baseScore = rawScore;
   }
-  // 基礎スコアを小数点以下1桁に丸める（例: 89.5）
   baseScore = Math.round(baseScore * 10) / 10;
-  // 0.00～0.99 のランダムな小数部分を生成
-  const randomFraction = Math.floor(Math.random() * 100) / 100;
-  // 丸めた基礎スコアにランダムな小数部分を加算（基礎スコアの小数部分はそのまま残る）
-  let finalScore = baseScore + randomFraction;
-  // 上限チェック：99.999 を超えないように
+  const integerPart = Math.floor(baseScore);
+  const randomFraction = Math.floor(Math.random() * 100) / 100; // 0.00～0.99
+  let finalScore = integerPart + randomFraction;
   finalScore = Math.min(finalScore, 99.999);
   return finalScore.toFixed(3);
 }
