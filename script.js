@@ -409,10 +409,6 @@ if (!isMobile()) {
     a.download = "face_scan_result.png";
     a.click();
   });
-}
-
-
-
 
 
   
