@@ -459,10 +459,13 @@ function calculateScoreWithRandomFraction(rawScore, type) {
   } else {
     baseScore = rawScore;
   }
+  // 基礎スコアを小数点以下1桁に丸める（例: 89.5）
   baseScore = Math.round(baseScore * 10) / 10;
-  const integerPart = Math.floor(baseScore);
-  const randomFraction = Math.floor(Math.random() * 100) / 100; // 0.00～0.99
-  let finalScore = integerPart + randomFraction;
+  // 0.00～0.99 のランダムな小数部分を生成
+  const randomFraction = Math.floor(Math.random() * 100) / 100;
+  // 丸めた基礎スコアにランダムな小数部分を加算（基礎スコアの小数部分はそのまま残る）
+  let finalScore = baseScore + randomFraction;
+  // 上限チェック：99.999 を超えないように
   finalScore = Math.min(finalScore, 99.999);
   return finalScore.toFixed(3);
 }
