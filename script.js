@@ -10,6 +10,7 @@ const preview = document.getElementById('preview');          // プレビュー�
 let currentImageData = "";   // 撮影または選択した画像データ
 let currentResult = "";      // AI診断結果のテキスト（HTML形式の文字列）
 let mode = "";               // 状態: "capture"（撮影）または "file"（画像参照）など
+let resultImageData = "";    // 生成された診断結果の画像データ
 
 // 動的に生成する追加UI要素（初期状態は非表示）
 const fileInput = document.createElement('input');
@@ -58,6 +59,7 @@ const instaBtn = document.createElement('button');
 instaBtn.textContent = "Instagramでシェア";
 instaBtn.style.display = "none";
 document.body.appendChild(instaBtn);
+
 
 // ===================== 2. ユーティリティ関数と状態リセット =====================
 function resetToInitial() {
@@ -374,26 +376,45 @@ function updateShareUI() {
   }
 }
 
-// ===================== 8. シェア/保存ボタンのイベント =====================
+// ===================== 8. 診断結果画像生成 =====================
+function generateResultImage() {
+  const resultContainer = document.getElementById('resultContainer');
+  html2canvas(resultContainer).then((canvas) => {
+    // 画像データURLとして保持
+    resultImageData = canvas.toDataURL('image/png');
+    // 生成した画像を新たな img 要素として作成
+    const resultImg = document.createElement('img');
+    resultImg.src = resultImageData;
+    resultImg.alt = "診断結果画像";
+    // 必要に応じてスタイル調整（例：幅100%）
+    resultImg.style.width = "100%";
+    // 結果エリアの内容を全てクリアして画像を追加
+    resultContainer.innerHTML = "";
+    resultContainer.appendChild(resultImg);
+  }).catch((err) => {
+    console.error("診断結果の画像生成エラー:", err);
+  });
+}
+
+
+// ===================== 9. シェア/保存ボタンのイベント =====================
 if (!isMobile()) {
   shareBtn.addEventListener('click', () => {
-    const resultContainer = document.getElementById('resultContainer');
-    if (!resultContainer) {
-      alert("診断結果表示エリアが見つかりません。");
+    if (!resultImageData) {
+      alert("画像データが生成されていません。しばらくしてから再度お試しください。");
       return;
     }
-    
-    html2canvas(resultContainer).then((canvas) => {
-      const dataUrl = canvas.toDataURL('image/png');
-      const a = document.createElement('a');
-      a.href = dataUrl;
-      a.download = "face_scan_result.png";
-      a.click();
-    }).catch((err) => {
-      console.error("html2canvasエラー:", err);
-      alert("画像の生成に失敗しました。");
-    });
+    const a = document.createElement('a');
+    a.href = resultImageData;
+    a.download = "face_scan_result.png";
+    a.click();
   });
+}
+
+
+
+
+
   
   twitterBtn.addEventListener('click', () => {
     const text = encodeURIComponent("【診断結果】 Check out my FaceScan result!");
