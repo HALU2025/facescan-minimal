@@ -170,6 +170,9 @@ analyzeBtn.addEventListener('click', () => {
     currentResult = result.result;  // 診断結果（HTML形式の文字列）を保存
     // 4-1. 診断結果をHTMLとして表示する
     displayResultHTML(currentResult);
+    // ※ここで結果エリアを画像に置き換える
+    generateResultImage();
+    
     analyzeBtn.style.display = "none";  // 「この写真で診断」ボタン非表示
     // 結果取得後、再操作ボタン群を表示
     retryBtn.style.display = "block";
@@ -258,11 +261,11 @@ function transformResultToHTML(resultText) {
     
     html += "</div>";
     return html;
-  }
+}
   
   
   
-  function displayResultHTML(resultText) {
+function displayResultHTML(resultText) {
     let resultContainer = document.getElementById('resultContainer');
     if (!resultContainer) {
       resultContainer = document.createElement('div');
@@ -299,11 +302,10 @@ function transformResultToHTML(resultText) {
     }
     resultContainer.innerHTML += transformResultToHTML(resultText);
     preview.style.display = "none";
-  }
+}
   
   
   
-
 // ===================== 6. 各種再操作ボタンの処理 =====================
 reCaptureBtn.addEventListener('click', () => {
   currentImageData = "";
@@ -396,7 +398,6 @@ function generateResultImage() {
   });
 }
 
-
 // ===================== 9. シェア/保存ボタンのイベント =====================
 if (!isMobile()) {
   shareBtn.addEventListener('click', () => {
@@ -409,8 +410,6 @@ if (!isMobile()) {
     a.download = "face_scan_result.png";
     a.click();
   });
-
-
   
   twitterBtn.addEventListener('click', () => {
     const text = encodeURIComponent("【診断結果】 Check out my FaceScan result!");
@@ -430,8 +429,7 @@ if (!isMobile()) {
   });
 }
 
-
-// 美人度/イケメン度の計算：生スコア85.0→95.9を線形変換して基礎スコアに
+// ===================== 美人度/イケメン度と評価軸の計算 =====================
 function calculateBeautyScore(rawScore) {
   let finalScore;
   if (rawScore < 85.0) {
@@ -442,7 +440,6 @@ function calculateBeautyScore(rawScore) {
   return Math.max(0, finalScore);
 }
 
-// 評価軸の計算も同じ数式で実装
 function calculateEvaluationScore(rawScore) {
   let finalScore;
   if (rawScore < 85.0) {
@@ -453,7 +450,6 @@ function calculateEvaluationScore(rawScore) {
   return Math.max(0, finalScore);
 }
 
-// ランダムな小数部分 (0.00～0.99) を加えて、最終スコアを xx.xxx 形式にフォーマットする関数
 function calculateScoreWithRandomFraction(rawScore, type) {
   let baseScore;
   if (type === "beauty") {
@@ -463,26 +459,19 @@ function calculateScoreWithRandomFraction(rawScore, type) {
   } else {
     baseScore = rawScore;
   }
-  // 基礎スコアを四捨五入して小数点以下1桁に
   baseScore = Math.round(baseScore * 10) / 10;
   const integerPart = Math.floor(baseScore);
   const randomFraction = Math.floor(Math.random() * 100) / 100; // 0.00～0.99
   let finalScore = integerPart + randomFraction;
-  // 上限チェック：99.999を超えないように
   finalScore = Math.min(finalScore, 99.999);
   return finalScore.toFixed(3);
 }
 
 // ===== 使用例 =====
-// 例：美人度/イケメン度の生スコアが 89.5 点の場合
 const rawBeautyScore = 89.5;
 const finalBeautyScore = calculateScoreWithRandomFraction(rawBeautyScore, "beauty");
 console.log("最終 美人度/イケメン度:", finalBeautyScore);
 
-// 例：評価軸の生スコアが 89.5 点の場合（同じ数式を適用）
 const rawEvalScore = 89.5;
 const finalEvalScore = calculateScoreWithRandomFraction(rawEvalScore, "evaluation");
 console.log("最終 評価軸スコア:", finalEvalScore);
-
-  
-
