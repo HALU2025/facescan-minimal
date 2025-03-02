@@ -239,8 +239,8 @@ function calculateScoreWithRandomFraction(rawScore, type) {
       baseScore = rawScore;
   }
 
-  // 小数点以下3桁のランダム数を追加
-  const randomFraction = Math.floor(Math.random() * 100) / 1000; // 0.000～0.099
+  // 小数点以下3桁のランダム値（0.000～0.099）を追加
+  const randomFraction = Math.floor(Math.random() * 100) / 1000;
   let finalScore = baseScore + randomFraction;
 
   // 上限を 99.999 に制限
@@ -264,19 +264,19 @@ function transformResultToHTML(resultText) {
       "コメント:": "comment"
   };
 
-  // ✅ 美人度/イケメン度の表示（欠落していたものを復活）
+  // ✅ 美人度/イケメン度の表示（ランダムな小数点以下3桁を適用）
   const beautyLine = lines.find(line => line.trim().startsWith("美人度:") || line.trim().startsWith("イケメン度:"));
   if (beautyLine) {
       const parts = beautyLine.split(":");
       const label = parts.shift().trim() + ":";
       let content = parts.join(":").trim();
 
-      // 小数点以下3桁にする
+      // 数値を 99.999 形式にする
       content = content.replace(/(\d+\.\d{1,2})/, (match) => {
-          return parseFloat(match).toFixed(3);
+          return calculateScoreWithRandomFraction(parseFloat(match), "beauty");
       });
 
-      html += `<div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}</div>`;
+      html += `<div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}点</div>`;
   }
 
   // ✅ 他の項目の処理
@@ -292,7 +292,7 @@ function transformResultToHTML(resultText) {
           if (key.includes("評価軸")) {
               content = content.replace(/(\d+\.\d{1,2})/, (match) => {
                   return calculateScoreWithRandomFraction(parseFloat(match), "evaluation");
-              }) + "点";
+              });
           }
 
           // ✅ 推定年齢は整数のまま表示
@@ -348,6 +348,7 @@ function displayResultHTML(resultText) {
 }
 
 // ===================== End Section5 =====================
+
 
 
   
