@@ -264,16 +264,16 @@ function transformResultToHTML(resultText) {
       "コメント:": "comment"
   };
 
-  // ✅ 美人度/イケメン度の表示（ランダムな小数点以下3桁を適用）
+  // ✅ 美人度/イケメン度の表示（99.999形式 & <span>で小数点以下を分離）
   const beautyLine = lines.find(line => line.trim().startsWith("美人度:") || line.trim().startsWith("イケメン度:"));
   if (beautyLine) {
       const parts = beautyLine.split(":");
       const label = parts.shift().trim() + ":";
       let content = parts.join(":").trim();
 
-      // 数値を 99.999 形式にする
-      content = content.replace(/(\d+\.\d{1,2})/, (match) => {
-          return calculateScoreWithRandomFraction(parseFloat(match), "beauty");
+      // 数値を 99.999 形式にする & <span>で小数点以下を分離
+      content = content.replace(/(\d+)(\.\d+)/, (match, intPart, fracPart) => {
+          return `${intPart}<span>${fracPart}</span>`;
       });
 
       html += `<div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}</div>`;
@@ -288,10 +288,10 @@ function transformResultToHTML(resultText) {
           const label = parts.shift().trim();
           let content = parts.join(":").trim();
           
-          // ✅ 評価軸だけラベル削除（「評価軸1:」 → 「クールビューティー: 92.987点」 形式に変更）
+          // ✅ 評価軸だけラベル削除（「評価軸1:」 → 「クールビューティー: 92.987点」 形式に変更）し、小数点を分離
           if (key.includes("評価軸")) {
-              content = content.replace(/(.+?)(\d+\.\d{1,2})/, (match, label, score) => {
-                  return `${label.trim()}: ${calculateScoreWithRandomFraction(parseFloat(score), "evaluation")}点`;
+              content = content.replace(/(.+?)(\d+)(\.\d+)/, (match, label, intPart, fracPart) => {
+                  return `<div class="clabel">${label.trim()}:</div> ${intPart}<span>${fracPart}</span>`;
               });
               html += `<div class="score">${content}</div>`;
           } else {
@@ -348,6 +348,7 @@ function displayResultHTML(resultText) {
 }
 
 // ===================== End Section5 =====================
+
 
 
 
