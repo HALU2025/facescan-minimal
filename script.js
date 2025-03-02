@@ -164,30 +164,45 @@ analyzeBtn.addEventListener('click', () => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ image: currentImageData })
   })
-  .then(response => response.json())
+  .then(response => {
+    console.log("サーバーからのレスポンス:", response);
+    if (!response.ok) {
+      throw new Error(`HTTPエラー: ${response.status}`);
+    }
+    return response.json();
+  })
   .then(result => {
-    console.log('サーバーからのレスポンス:', result);
+    console.log('解析結果:', result);
+
+    // 診断結果が取得できているかチェック
+    if (!result || !result.result) {
+      throw new Error("診断結果が取得できませんでした。");
+    }
+
     currentResult = result.result;  // 診断結果（HTML形式の文字列）を保存
+
     // 4-1. 診断結果をHTMLとして表示する
     displayResultHTML(currentResult);
-    // ※ここで結果エリアを画像に置き換える
+
+    // 診断結果画像の生成
     generateResultImage();
-    
+
     analyzeBtn.style.display = "none";  // 「この写真で診断」ボタン非表示
-    // 結果取得後、再操作ボタン群を表示
     retryBtn.style.display = "block";
     reCaptureBtn.style.display = "none";
     selectAgainBtn.style.display = "none";
     takePhotoBtn.style.display = "none";
-    
+
     mode = "result";
     updateShareUI();  // シェア用UIの更新（モバイル/PCで分岐）
+
   })
   .catch(error => {
     console.error('エラー発生:', error);
-    alert("診断に失敗しました。");
+    alert(`診断に失敗しました: ${error.message}`);
   });
 });
+
 
 // ===================== 5. 診断結果のHTML表示（テキスト→HTML変換） =====================
 function transformResultToHTML(resultText) {
