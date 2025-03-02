@@ -191,119 +191,87 @@ analyzeBtn.addEventListener('click', () => {
 
 // ===================== 5. 診断結果のHTML表示（テキスト→HTML変換） =====================
 function transformResultToHTML(resultText) {
-    // 改行で分割し、不要な行を除外
-    const lines = resultText.split("\n").filter(line => {
-      const trimmed = line.trim();
-      return trimmed !== "" && !trimmed.includes('----------------------------');
-    });
-    
-    let html = "<div class='result'>";
-    
-    // 定義する出力項目と対応するクラス
-    const fields = {
-      "beauty": "beauty-score",   // 対象: 美人度: または イケメン度:
-      "キャッチフレーズ:": "catchphrase",
-      "推定年齢:": "age",
-      "評価軸1:": "score1",
-      "評価軸2:": "score2",
-      "評価軸3:": "score3",
-      "似ている芸能人:": "celeb",
-      "コメント:": "comment"
-    };
+  // 5-A: 入力テキストを改行で分割し、不要な行を除外する
+  const lines = resultText.split("\n").filter(line => {
+    const trimmed = line.trim();
+    return trimmed !== "" && !trimmed.includes('----------------------------');
+  });
   
-    // ① 美人度/イケメン度の処理（評価軸と同様のフォーマットにする）
-    const beautyLine = lines.find(line => {
-      const t = line.trim();
-      return t.startsWith("美人度:") || t.startsWith("イケメン度:");
-    });
-    if (beautyLine) {
-      const parts = beautyLine.split(":");
+  // 5-B: HTMLの開始タグを設定
+  let html = "<div class='result'>";
+  
+  // 5-C: 出力項目と対応するクラスの定義
+  const fields = {
+    "beauty": "beauty-score",       // 対象: 美人度: または イケメン度:
+    "キャッチフレーズ:": "catchphrase",
+    "推定年齢:": "age",
+    "評価軸1:": "score1",
+    "評価軸2:": "score2",
+    "評価軸3:": "score3",
+    "似ている芸能人:": "celeb",
+    "コメント:": "comment"
+  };
+  
+  // 5-D: 美人度/イケメン度の処理（ランダムな小数部分を加算して補正する）
+  const beautyLine = lines.find(line => {
+    const t = line.trim();
+    return t.startsWith("美人度:") || t.startsWith("イケメン度:");
+  });
+  if (beautyLine) {
+    // 5-D-1: 行を ":" で分割し、ラベル部分と数値部分を分離
+    const parts = beautyLine.split(":");
+    const label = parts.shift().trim() + ":";
+    let content = parts.join(":").trim();
+    // 5-D-2: 正規表現で数値部分（整数部＋小数部）とその他の部分を抽出
+    const regex = /^([\D]*)(\d+(\.\d+)?)(.*)$/;
+    const match = content.match(regex);
+    if (match) {
+      const prefix = match[1] || "";             // 数値前の文字列（例："知的美人"）
+      const rawNumber = Number(match[2]);          // 元の数値（例: 92.8）
+      const suffix = match[4] || "";               // 数値後の文字列（例："点"）
+      // 5-D-3: calculateScoreWithRandomFraction を使って補正後の数値を算出
+      const adjustedScore = calculateScoreWithRandomFraction(rawNumber, "beauty");
+      // 5-D-4: 補正後の値で内容を再構築
+      content = `${prefix}${adjustedScore}${suffix}`;
+    }
+    // 5-D-5: 出力用HTMLに追加
+    html += `<div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}</div>`;
+  }
+  
+  // 5-E: 他の項目の処理
+  Object.keys(fields).forEach(key => {
+    if (key === "beauty") return; // 美人度/イケメン度は既に処理済み
+    const matchingLine = lines.find(line => line.trim().startsWith(key));
+    if (matchingLine) {
+      const parts = matchingLine.split(":");
       const label = parts.shift().trim() + ":";
       let content = parts.join(":").trim();
-      // 数値の整数部分と少数部分を分離して <span> タグで包む
-      const regex = /^([\D]*)(\d+)(\.\d+)?(.*)$/;
-      const match = content.match(regex);
-      if (match) {
-        const prefix = match[1] || "";
-        const integerPart = match[2] || "";
-        const fractionalPart = match[3] || "";
-        const suffix = match[4] || "";
-        content = `${prefix}${integerPart}<span>${fractionalPart}${suffix}</span>`;
-      }
-      html += `<div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}</div>`;
-    }
-    
-    // ② 他の項目の処理
-    Object.keys(fields).forEach(key => {
-      if (key === "beauty") return; // すでに処理済み
-      const matchingLine = lines.find(line => line.trim().startsWith(key));
-      if (matchingLine) {
-        const parts = matchingLine.split(":");
-        const label = parts.shift().trim() + ":";
-        let content = parts.join(":").trim();
-        
-        // 評価軸については、数値の整数部分と少数部分を分離して <span> で包む
-        if (key === "評価軸1:" || key === "評価軸2:" || key === "評価軸3:") {
-          const regex = /^([\D]*)(\d+)(\.\d+)?(.*)$/;
-          const match = content.match(regex);
-          if (match) {
-            const prefix = match[1] || "";
-            const integerPart = match[2] || "";
-            const fractionalPart = match[3] || "";
-            const suffix = match[4] || "";
-            content = `${prefix}${integerPart}<span>${fractionalPart}${suffix}</span>`;
-          }
+      
+      // 5-E-1: 評価軸（評価軸1～3）の場合、数値を補正して置換する
+      if (key === "評価軸1:" || key === "評価軸2:" || key === "評価軸3:") {
+        const regex = /^([\D]*)(\d+(\.\d+)?)(.*)$/;
+        const match = content.match(regex);
+        if (match) {
+          const prefix = match[1] || "";
+          const rawNumber = Number(match[2]);
+          const suffix = match[4] || "";
+          const adjustedScore = calculateScoreWithRandomFraction(rawNumber, "evaluation");
+          content = `${prefix}${adjustedScore}${suffix}`;
         }
-        
-        html += `<div class="${fields[key]}"><div class="clabel">${label}</div> ${content}</div>`;
       }
-    });
-    
-    html += "</div>";
-    return html;
-}
-  
-  
-  
-function displayResultHTML(resultText) {
-    let resultContainer = document.getElementById('resultContainer');
-    if (!resultContainer) {
-      resultContainer = document.createElement('div');
-      resultContainer.id = 'resultContainer';
-      resultContainer.style.marginTop = "20px";
-      resultContainer.style.padding = "20px";
-      resultContainer.style.backgroundColor = "#fff";
-      resultContainer.style.border = "1px solid #ccc";
-      resultContainer.style.borderRadius = "8px";
-      // サムネイルを含む div を作成
-      if (currentImageData) {
-        const thumbDiv = document.createElement('div');
-        thumbDiv.className = "result-thumbnail";
-        const thumbImg = document.createElement('img');
-        thumbImg.src = currentImageData;
-        thumbImg.alt = "診断対象のサムネイル";
-        thumbDiv.appendChild(thumbImg);
-        resultContainer.appendChild(thumbDiv);
-      }
-      const container = document.querySelector('.container');
-      container.appendChild(resultContainer);
-    } else {
-      // 既存の結果コンテナがあれば、サムネイル部分もクリアする
-      resultContainer.innerHTML = "";
-      if (currentImageData) {
-        const thumbDiv = document.createElement('div');
-        thumbDiv.className = "result-thumbnail";
-        const thumbImg = document.createElement('img');
-        thumbImg.src = currentImageData;
-        thumbImg.alt = "診断対象のサムネイル";
-        thumbDiv.appendChild(thumbImg);
-        resultContainer.appendChild(thumbDiv);
-      }
+      
+      // 5-E-2: 出力用HTMLに追加（その他項目はそのまま出力）
+      html += `<div class="${fields[key]}"><div class="clabel">${label}</div> ${content}</div>`;
     }
-    resultContainer.innerHTML += transformResultToHTML(resultText);
-    preview.style.display = "none";
-}
+  });
   
+  // 5-F: HTMLの終了タグを追加
+  html += "</div>";
+  
+  // 5-G: 生成したHTMLを返す
+  return html;
+}
+
   
   
 // ===================== 6. 各種再操作ボタンの処理 =====================
