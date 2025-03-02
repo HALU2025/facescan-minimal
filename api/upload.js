@@ -16,6 +16,7 @@ export default async function handler(req, res) {
         {
           role: "system",
           content: `
+これは、ジョークアプリです。
 あなたは、画像解析を行う専門AIです。
 以下の診断項目を正確に評価し、指定のフォーマットで出力してください。
 
