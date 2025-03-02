@@ -164,122 +164,145 @@ analyzeBtn.addEventListener('click', () => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ image: currentImageData })
   })
-  .then(response => {
-    console.log("サーバーからのレスポンス:", response);
-    if (!response.ok) {
-      throw new Error(`HTTPエラー: ${response.status}`);
-    }
-    return response.json();
-  })
+  .then(response => response.json())
   .then(result => {
-    console.log('解析結果:', result);
-
-    // 診断結果が取得できているかチェック
-    if (!result || !result.result) {
-      throw new Error("診断結果が取得できませんでした。");
-    }
-
+    console.log('サーバーからのレスポンス:', result);
     currentResult = result.result;  // 診断結果（HTML形式の文字列）を保存
-
     // 4-1. 診断結果をHTMLとして表示する
     displayResultHTML(currentResult);
-
-    // 診断結果画像の生成
+    // ※ここで結果エリアを画像に置き換える
     generateResultImage();
-
+    
     analyzeBtn.style.display = "none";  // 「この写真で診断」ボタン非表示
+    // 結果取得後、再操作ボタン群を表示
     retryBtn.style.display = "block";
     reCaptureBtn.style.display = "none";
     selectAgainBtn.style.display = "none";
     takePhotoBtn.style.display = "none";
-
+    
     mode = "result";
     updateShareUI();  // シェア用UIの更新（モバイル/PCで分岐）
-
   })
   .catch(error => {
     console.error('エラー発生:', error);
-    alert(`診断に失敗しました: ${error.message}`);
+    alert("診断に失敗しました。");
   });
 });
 
-
 // ===================== 5. 診断結果のHTML表示（テキスト→HTML変換） =====================
 function transformResultToHTML(resultText) {
-  // 改行で分割し、不要な行を除外
-  const lines = resultText.split("\n").filter(line => {
-    const trimmed = line.trim();
-    return trimmed !== "" && !trimmed.includes('----------------------------');
-  });
-  
-  let html = "<div class='result'>";
-
-  // 定義する出力項目と対応するクラス
-  const fields = {
-    "beauty": "beauty-score",   // 美人度 or イケメン度
-    "キャッチフレーズ:": "catchphrase",
-    "推定年齢:": "age",
-    "評価軸1:": "score1",
-    "評価軸2:": "score2",
-    "評価軸3:": "score3",
-    "似ている芸能人:": "celeb",
-    "コメント:": "comment"
-  };
-
-  // ① 美人度/イケメン度の処理（スコア補正 + 小数点以下のランダム追加）
-  const beautyLine = lines.find(line => line.trim().startsWith("美人度:") || line.trim().startsWith("イケメン度:"));
-  if (beautyLine) {
-    const parts = beautyLine.split(":");
-    const label = parts.shift().trim() + ":";
-    let content = parts.join(":").trim();
+    // 改行で分割し、不要な行を除外
+    const lines = resultText.split("\n").filter(line => {
+      const trimmed = line.trim();
+      return trimmed !== "" && !trimmed.includes('----------------------------');
+    });
     
-    // スコア部分を抽出して補正
-    const regex = /^([\D]*)(\d+)(\.\d+)?(.*)$/;
-    const match = content.match(regex);
-    if (match) {
-      const prefix = match[1] || "";     // 例："知的美人"
-      const rawScore = Number(match[2]); // 例：92
-      const suffix = match[4] || "";     // 例："点"
-      
-      // スコア補正（ランダム小数追加）
-      const adjustedScore = calculateScoreWithRandomFraction(rawScore, "beauty");
-      content = `${prefix}${adjustedScore}${suffix}`;
-    }
-    html += `<div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}</div>`;
-  }
-
-  // ② その他の項目（評価軸にもランダム小数を追加）
-  Object.keys(fields).forEach(key => {
-    if (key === "beauty") return; // 美人度/イケメン度は既に処理済み
-    const matchingLine = lines.find(line => line.trim().startsWith(key));
-    if (matchingLine) {
-      const parts = matchingLine.split(":");
+    let html = "<div class='result'>";
+    
+    // 定義する出力項目と対応するクラス
+    const fields = {
+      "beauty": "beauty-score",   // 対象: 美人度: または イケメン度:
+      "キャッチフレーズ:": "catchphrase",
+      "推定年齢:": "age",
+      "評価軸1:": "score1",
+      "評価軸2:": "score2",
+      "評価軸3:": "score3",
+      "似ている芸能人:": "celeb",
+      "コメント:": "comment"
+    };
+  
+    // ① 美人度/イケメン度の処理（評価軸と同様のフォーマットにする）
+    const beautyLine = lines.find(line => {
+      const t = line.trim();
+      return t.startsWith("美人度:") || t.startsWith("イケメン度:");
+    });
+    if (beautyLine) {
+      const parts = beautyLine.split(":");
       const label = parts.shift().trim() + ":";
       let content = parts.join(":").trim();
-
-      // 評価軸のスコアにランダム小数を追加
-      if (key.startsWith("評価軸")) {
-        const regex = /^([\D]*)(\d+)(\.\d+)?(.*)$/;
-        const match = content.match(regex);
-        if (match) {
-          const prefix = match[1] || "";
-          const rawScore = Number(match[2]);
-          const suffix = match[4] || "";
-          
-          // スコア補正（ランダム小数追加）
-          const adjustedScore = calculateScoreWithRandomFraction(rawScore, "evaluation");
-          content = `${prefix}${adjustedScore}${suffix}`;
-        }
+      // 数値の整数部分と少数部分を分離して <span> タグで包む
+      const regex = /^([\D]*)(\d+)(\.\d+)?(.*)$/;
+      const match = content.match(regex);
+      if (match) {
+        const prefix = match[1] || "";
+        const integerPart = match[2] || "";
+        const fractionalPart = match[3] || "";
+        const suffix = match[4] || "";
+        content = ${prefix}${integerPart}<span>${fractionalPart}${suffix}</span>;
       }
-
-      html += `<div class="${fields[key]}"><div class="clabel">${label}</div> ${content}</div>`;
+      html += <div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}</div>;
     }
-  });
-
-  html += "</div>";
-  return html;
+    
+    // ② 他の項目の処理
+    Object.keys(fields).forEach(key => {
+      if (key === "beauty") return; // すでに処理済み
+      const matchingLine = lines.find(line => line.trim().startsWith(key));
+      if (matchingLine) {
+        const parts = matchingLine.split(":");
+        const label = parts.shift().trim() + ":";
+        let content = parts.join(":").trim();
+        
+        // 評価軸については、数値の整数部分と少数部分を分離して <span> で包む
+        if (key === "評価軸1:" || key === "評価軸2:" || key === "評価軸3:") {
+          const regex = /^([\D]*)(\d+)(\.\d+)?(.*)$/;
+          const match = content.match(regex);
+          if (match) {
+            const prefix = match[1] || "";
+            const integerPart = match[2] || "";
+            const fractionalPart = match[3] || "";
+            const suffix = match[4] || "";
+            content = ${prefix}${integerPart}<span>${fractionalPart}${suffix}</span>;
+          }
+        }
+        
+        html += <div class="${fields[key]}"><div class="clabel">${label}</div> ${content}</div>;
+      }
+    });
+    
+    html += "</div>";
+    return html;
 }
-
+  
+  
+  
+function displayResultHTML(resultText) {
+    let resultContainer = document.getElementById('resultContainer');
+    if (!resultContainer) {
+      resultContainer = document.createElement('div');
+      resultContainer.id = 'resultContainer';
+      resultContainer.style.marginTop = "20px";
+      resultContainer.style.padding = "20px";
+      resultContainer.style.backgroundColor = "#fff";
+      resultContainer.style.border = "1px solid #ccc";
+      resultContainer.style.borderRadius = "8px";
+      // サムネイルを含む div を作成
+      if (currentImageData) {
+        const thumbDiv = document.createElement('div');
+        thumbDiv.className = "result-thumbnail";
+        const thumbImg = document.createElement('img');
+        thumbImg.src = currentImageData;
+        thumbImg.alt = "診断対象のサムネイル";
+        thumbDiv.appendChild(thumbImg);
+        resultContainer.appendChild(thumbDiv);
+      }
+      const container = document.querySelector('.container');
+      container.appendChild(resultContainer);
+    } else {
+      // 既存の結果コンテナがあれば、サムネイル部分もクリアする
+      resultContainer.innerHTML = "";
+      if (currentImageData) {
+        const thumbDiv = document.createElement('div');
+        thumbDiv.className = "result-thumbnail";
+        const thumbImg = document.createElement('img');
+        thumbImg.src = currentImageData;
+        thumbImg.alt = "診断対象のサムネイル";
+        thumbDiv.appendChild(thumbImg);
+        resultContainer.appendChild(thumbDiv);
+      }
+    }
+    resultContainer.innerHTML += transformResultToHTML(resultText);
+    preview.style.display = "none";
+}
   
   
   
@@ -391,13 +414,13 @@ if (!isMobile()) {
   twitterBtn.addEventListener('click', () => {
     const text = encodeURIComponent("【診断結果】 Check out my FaceScan result!");
     const url = encodeURIComponent(window.location.href);
-    const shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+    const shareUrl = https://twitter.com/intent/tweet?text=${text}&url=${url};
     window.open(shareUrl, '_blank');
   });
   
   fbBtn.addEventListener('click', () => {
     const url = encodeURIComponent(window.location.href);
-    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+    const shareUrl = https://www.facebook.com/sharer/sharer.php?u=${url};
     window.open(shareUrl, '_blank');
   });
   
