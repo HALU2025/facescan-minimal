@@ -288,11 +288,11 @@ function transformResultToHTML(resultText) {
           const label = parts.shift().trim();
           let content = parts.join(":").trim();
 
-          // ✅ 評価軸だけラベル削除（「評価軸1:」 → 「クールビューティー: 92.987点」 形式に変更）し、小数点を分離
+          // ✅ 評価軸のラベルを適切に置き換える
           if (key.includes("評価軸")) {
               content = calculateScoreWithRandomFraction(parseFloat(content.replace(/[^0-9.]/g, "")), "evaluation")
                   .replace(/(\d+)(\.\d+)/, (match, intPart, fracPart) => {
-                      return `<div class="clabel">${label}:</div> ${intPart}<span>${fracPart}</span>`;
+                      return `<div class="clabel">${label.replace("評価軸", content.split(" ")[0])}:</div> ${intPart}<span>${fracPart}</span>`;
                   });
               html += `<div class="score">${content}</div>`;
           } else {
@@ -349,11 +349,6 @@ function displayResultHTML(resultText) {
 }
 
 // ===================== End Section5 =====================
-
-
-
-
-
 
 
 
