@@ -414,57 +414,58 @@ if (!isMobile()) {
 }
 
 
-// ================================================
-// スコア補正用の関数（美人度/イケメン度と評価軸向け）
-
-// 美人度/イケメン度: 生スコアが80～95の場合、最終スコア = (raw - 80) * (29/15) + 70
-// 生スコアが80未満の場合は raw - 10、下限は0にする
+// 美人度/イケメン度の計算：生スコア85.0→95.9を線形変換して基礎スコアに
 function calculateBeautyScore(rawScore) {
-    let finalScore;
-    if (rawScore < 80) {
-      finalScore = rawScore - 10;
-    } else {
-      finalScore = (rawScore - 80) * (29 / 15) + 70;
-    }
-    return Math.max(0, finalScore);
+  let finalScore;
+  if (rawScore < 85.0) {
+    finalScore = rawScore - 10;
+  } else {
+    finalScore = (rawScore - 85.0) * (14.9 / 10.9) + 85.0;
   }
-  
-  // 評価軸: 生スコアが75～95の場合、最終スコア = (raw - 75) * 0.8 + 83
-  // 生スコアが75未満の場合は raw - 10、下限は0にする
-  function calculateEvaluationScore(rawScore) {
-    let finalScore;
-    if (rawScore < 75) {
-      finalScore = rawScore - 10;
-    } else {
-      finalScore = (rawScore - 75) * 0.8 + 83;
-    }
-    return Math.max(0, finalScore);
+  return Math.max(0, finalScore);
+}
+
+// 評価軸の計算も同じ数式で実装
+function calculateEvaluationScore(rawScore) {
+  let finalScore;
+  if (rawScore < 85.0) {
+    finalScore = rawScore - 10;
+  } else {
+    finalScore = (rawScore - 85.0) * (14.9 / 10.9) + 85.0;
   }
-  
-  // ランダムな小数部分 (0.00～0.99) を加えて、最終スコアを小数点2桁にフォーマットする関数
-  function calculateScoreWithRandomFraction(rawScore, type) {
-    let baseScore;
-    if (type === "beauty") {
-      baseScore = calculateBeautyScore(rawScore);
-    } else if (type === "evaluation") {
-      baseScore = calculateEvaluationScore(rawScore);
-    } else {
-      baseScore = rawScore;
-    }
-    const integerPart = Math.floor(baseScore);
-    const randomFraction = Math.floor(Math.random() * 100) / 100;
-    return (integerPart + randomFraction).toFixed(2);
+  return Math.max(0, finalScore);
+}
+
+// ランダムな小数部分 (0.00～0.99) を加えて、最終スコアを xx.xxx 形式にフォーマットする関数
+function calculateScoreWithRandomFraction(rawScore, type) {
+  let baseScore;
+  if (type === "beauty") {
+    baseScore = calculateBeautyScore(rawScore);
+  } else if (type === "evaluation") {
+    baseScore = calculateEvaluationScore(rawScore);
+  } else {
+    baseScore = rawScore;
   }
-  
-  // ===== 使用例 =====
-  // 美人度/イケメン度の生スコアが AI から 84 点だった場合（整数値）
-  const rawBeautyScore = 84;
-  const finalBeautyScore = calculateScoreWithRandomFraction(rawBeautyScore, "beauty");
-  console.log("最終 美人度/イケメン度:", finalBeautyScore);
-  
-  // 例えば、評価軸の生スコアが 88 点だった場合
-  const rawEvalScore = 88;
-  const finalEvalScore = calculateScoreWithRandomFraction(rawEvalScore, "evaluation");
-  console.log("最終 評価軸スコア:", finalEvalScore);
+  // 基礎スコアを四捨五入して小数点以下1桁に
+  baseScore = Math.round(baseScore * 10) / 10;
+  const integerPart = Math.floor(baseScore);
+  const randomFraction = Math.floor(Math.random() * 100) / 100; // 0.00～0.99
+  let finalScore = integerPart + randomFraction;
+  // 上限チェック：99.999を超えないように
+  finalScore = Math.min(finalScore, 99.999);
+  return finalScore.toFixed(3);
+}
+
+// ===== 使用例 =====
+// 例：美人度/イケメン度の生スコアが 89.5 点の場合
+const rawBeautyScore = 89.5;
+const finalBeautyScore = calculateScoreWithRandomFraction(rawBeautyScore, "beauty");
+console.log("最終 美人度/イケメン度:", finalBeautyScore);
+
+// 例：評価軸の生スコアが 89.5 点の場合（同じ数式を適用）
+const rawEvalScore = 89.5;
+const finalEvalScore = calculateScoreWithRandomFraction(rawEvalScore, "evaluation");
+console.log("最終 評価軸スコア:", finalEvalScore);
+
   
 
