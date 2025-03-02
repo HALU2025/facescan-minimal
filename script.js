@@ -288,13 +288,16 @@ function transformResultToHTML(resultText) {
           const label = parts.shift().trim();
           let content = parts.join(":").trim();
 
-          // ✅ 評価軸のラベルを適切に置き換える
+          // ✅ 評価軸のラベルを適切に置き換え、数値が入らないよう修正
           if (key.includes("評価軸")) {
-              content = calculateScoreWithRandomFraction(parseFloat(content.replace(/[^0-9.]/g, "")), "evaluation")
-                  .replace(/(\d+)(\.\d+)/, (match, intPart, fracPart) => {
-                      return `<div class="clabel">${label.replace("評価軸", content.split(" ")[0])}:</div> ${intPart}<span>${fracPart}</span>`;
-                  });
-              html += `<div class="score">${content}</div>`;
+              let [axisLabel, score] = content.split(/(\d+\.?\d*)/); // 評価軸名と数値を分割
+              score = calculateScoreWithRandomFraction(parseFloat(score), "evaluation");
+              
+              let formattedScore = score.replace(/(\d+)(\.\d+)/, (match, intPart, fracPart) => {
+                  return `${intPart}<span>${fracPart}</span>`;
+              });
+
+              html += `<div class="score"><div class="clabel">${axisLabel.trim()}:</div> ${formattedScore}</div>`;
           } else {
               // ✅ 推定年齢は整数のまま表示
               if (key === "推定年齢:") {
@@ -349,6 +352,7 @@ function displayResultHTML(resultText) {
 }
 
 // ===================== End Section5 =====================
+
 
 
 
