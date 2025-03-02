@@ -280,26 +280,29 @@ function transformResultToHTML(resultText) {
   }
 
   // ✅ 他の項目の処理
-  lines.forEach(line => {
-      const parts = line.split(":");
-      if (parts.length < 2) return; // 無効な行をスキップ
+  Object.keys(fields).forEach(key => {
+      if (key === "beauty") return;
+      const matchingLine = lines.find(line => line.trim().startsWith(key));
+      if (matchingLine) {
+          const parts = matchingLine.split(":");
+          const label = parts.shift().trim();
+          let content = parts.join(":").trim();
 
-      let label = parts[0].trim();
-      let content = parts.slice(1).join(":").trim();
-
-      // ✅ 評価軸のラベル調整（例: "評価軸1:" → "クールビューティー" に変更）
-      if (/^評価軸\d+:/.test(label)) {
-          label = content.split(" ")[0]; // ラベル（例: "クールビューティー"）を取得
-          content = content.replace(/^[^0-9.]+\s/, ""); // ラベル部分を削除
+          // ✅ 評価軸だけラベル削除（「評価軸1:」 → 「クールビューティー: 92.987点」 形式に変更）し、小数点を分離
+          if (key.includes("評価軸")) {
+              content = calculateScoreWithRandomFraction(parseFloat(content.replace(/[^0-9.]/g, "")), "evaluation")
+                  .replace(/(\d+)(\.\d+)/, (match, intPart, fracPart) => {
+                      return `<div class="clabel">${label}:</div> ${intPart}<span>${fracPart}</span>`;
+                  });
+              html += `<div class="score">${content}</div>`;
+          } else {
+              // ✅ 推定年齢は整数のまま表示
+              if (key === "推定年齢:") {
+                  content = content.replace(/(\d+)\.000/, "$1");
+              }
+              html += `<div class="${fields[key]}"><div class="clabel">${label}:</div> ${content}</div>`;
+          }
       }
-
-      // ✅ 数値の小数点以下を <span> で分離
-      content = calculateScoreWithRandomFraction(parseFloat(content.replace(/[^0-9.]/g, "")), "evaluation")
-          .replace(/(\d+)(\.\d+)/, (match, intPart, fracPart) => {
-              return `${intPart}<span>${fracPart}</span>`;
-          });
-
-      html += `<div class="score"><div class="clabel">${label}:</div> ${content}</div>`;
   });
 
   html += "</div>";
@@ -346,8 +349,6 @@ function displayResultHTML(resultText) {
 }
 
 // ===================== End Section5 =====================
-
-
 
 
 
@@ -478,11 +479,3 @@ if (!isMobile()) {
   });
 }
 // ===================== End Section8 =====================
-
-
-
-
-
-
-
-  
