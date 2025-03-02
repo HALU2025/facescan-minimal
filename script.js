@@ -239,8 +239,8 @@ function calculateScoreWithRandomFraction(rawScore, type) {
       baseScore = rawScore;
   }
 
-  // 小数点以下3桁のランダム値（0.000～0.099）を追加
-  const randomFraction = Math.floor(Math.random() * 100) / 1000;
+  // 小数点以下3桁のランダム値（0.000～0.999）を追加
+  const randomFraction = Math.floor(Math.random() * 1000) / 1000;
   let finalScore = baseScore + randomFraction;
 
   // 上限を 99.999 に制限
@@ -348,6 +348,7 @@ function displayResultHTML(resultText) {
 }
 
 // ===================== End Section5 =====================
+
 
 
 
