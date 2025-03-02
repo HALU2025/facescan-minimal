@@ -169,33 +169,38 @@ analyzeBtn.addEventListener('click', () => {
     alert("画像を撮影または参照してください！");
     return;
   }
+
   fetch('/api/upload', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ image: currentImageData })
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTPエラー! ステータス: ${response.status}`);
+    }
+    return response.json();
+  })
   .then(result => {
-    console.log('サーバーからのレスポンス:', result);
+    console.log("APIからのレスポンス:", result); // 追加
+
     currentResult = result.result;  // 診断結果（HTML形式の文字列）を保存
-    // 4-1. 診断結果をHTMLとして表示する
     displayResultHTML(currentResult);
-    analyzeBtn.style.display = "none";  // 「この写真で診断」ボタン非表示
-    // 結果取得後、再操作ボタン群を表示
+    analyzeBtn.style.display = "none";  
     retryBtn.style.display = "block";
     reCaptureBtn.style.display = "none";
     selectAgainBtn.style.display = "none";
     takePhotoBtn.style.display = "none";
-    
     mode = "result";
-    updateShareUI();  // シェア用UIの更新（モバイル/PCで分岐）
+    updateShareUI();
   })
   .catch(error => {
     console.error('エラー発生:', error);
-    alert("診断に失敗しました。");
+    alert(`診断に失敗しました。\n詳細: ${error.message}`);
   });
 });
 // ===================== End Section4 =====================
+
 
 
 
