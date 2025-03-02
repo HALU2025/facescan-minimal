@@ -1,4 +1,4 @@
-// ===================== 1. 初期設定と DOM 要素の取得 =====================
+// ===================== Section1. 初期設定と DOM 要素の取得 =====================
 const startScanBtn = document.getElementById('startScan'); // 「診断を開始」ボタン
 const video = document.getElementById('video');            // カメラ映像用の video 要素
 const captureBtn = document.getElementById('capture');       // 撮影ボタン
@@ -58,8 +58,12 @@ const instaBtn = document.createElement('button');
 instaBtn.textContent = "Instagramでシェア";
 instaBtn.style.display = "none";
 document.body.appendChild(instaBtn);
+// ===================== End Section1 =====================
 
-// ===================== 2. ユーティリティ関数と状態リセット =====================
+
+
+
+// ===================== Section2. ユーティリティ関数と状態リセット =====================
 function resetToInitial() {
     // 既存の UI 部品の表示状態をリセット
     startScanBtn.style.display = "block";
@@ -92,8 +96,12 @@ function resetToInitial() {
 function isMobile() {
   return /Mobi|Android/i.test(navigator.userAgent);
 }
+// ===================== End Section2 =====================
 
-// ===================== 3. カメラ起動・ファイル選択の処理 =====================
+
+
+
+// ===================== Section3. カメラ起動・ファイル選択の処理 =====================
 // 3-1. 診断開始（カメラ起動）処理
 startScanBtn.addEventListener('click', async () => {
   try {
@@ -150,8 +158,12 @@ fileInput.addEventListener('change', (event) => {
     reader.readAsDataURL(file);
   }
 });
+// ===================== End Section3 =====================
 
-// ===================== 4. 診断実行（API 呼び出し） =====================
+
+
+
+// ===================== Section4. 診断実行（API 呼び出し） =====================
 analyzeBtn.addEventListener('click', () => {
   if (!currentImageData) {
     alert("画像を撮影または参照してください！");
@@ -183,8 +195,11 @@ analyzeBtn.addEventListener('click', () => {
     alert("診断に失敗しました。");
   });
 });
+// ===================== End Section4 =====================
 
-// ===================== 5. 診断結果のHTML表示（テキスト→HTML変換） =====================
+
+
+// ===================== Section5. 診断結果のHTML表示（テキスト→HTML変換） =====================
 function transformResultToHTML(resultText) {
     // 改行で分割し、不要な行を除外
     const lines = resultText.split("\n").filter(line => {
@@ -256,9 +271,7 @@ function transformResultToHTML(resultText) {
     
     html += "</div>";
     return html;
-  }
-  
-  
+  }  
   
   function displayResultHTML(resultText) {
     let resultContainer = document.getElementById('resultContainer');
@@ -298,11 +311,13 @@ function transformResultToHTML(resultText) {
     resultContainer.innerHTML += transformResultToHTML(resultText);
     preview.style.display = "none";
   }
-  
+
+
+// ===================== End Section5 =====================
   
   
 
-// ===================== 6. 各種再操作ボタンの処理 =====================
+// ===================== Section6. 各種再操作ボタンの処理 =====================
 reCaptureBtn.addEventListener('click', () => {
   currentImageData = "";
   currentResult = "";
@@ -344,8 +359,12 @@ takePhotoBtn.addEventListener('click', () => {
 retryBtn.addEventListener('click', () => {
   resetToInitial();
 });
+// ===================== End Section6 =====================
 
-// ===================== 7. シェア/保存用UIの更新（モバイル/PC分岐） =====================
+
+
+
+// ===================== Section7. シェア/保存用UIの更新（モバイル/PC分岐） =====================
 function updateShareUI() {
   const container = document.querySelector('.container');
   
@@ -373,8 +392,12 @@ function updateShareUI() {
     }
   }
 }
+// ===================== End Section7 =====================
 
-// ===================== 8. シェア/保存ボタンのイベント =====================
+
+
+
+// ===================== Section8. シェア/保存ボタンのイベント =====================
 if (!isMobile()) {
   shareBtn.addEventListener('click', () => {
     const resultContainer = document.getElementById('resultContainer');
@@ -412,9 +435,13 @@ if (!isMobile()) {
     alert("Instagramへの直接シェアはできません。画像を保存してInstagramアプリから投稿してください。");
   });
 }
+// ===================== End Section8 =====================
 
 
-// 美人度/イケメン度の計算：生スコア85.0→95.9を線形変換して基礎スコアに
+
+
+// ===================== Section9. スコア調整 =====================
+
 function calculateBeautyScore(rawScore) {
   let finalScore;
   if (rawScore < 85.0) {
@@ -425,7 +452,6 @@ function calculateBeautyScore(rawScore) {
   return Math.max(0, finalScore);
 }
 
-// 評価軸の計算も同じ数式で実装
 function calculateEvaluationScore(rawScore) {
   let finalScore;
   if (rawScore < 85.0) {
@@ -436,7 +462,7 @@ function calculateEvaluationScore(rawScore) {
   return Math.max(0, finalScore);
 }
 
-// ランダムな小数部分 (0.00～0.99) を加えて、最終スコアを xx.xxx 形式にフォーマットする関数
+// 小数点以下3桁をランダム追加し、99.999形式に統一
 function calculateScoreWithRandomFraction(rawScore, type) {
   let baseScore;
   if (type === "beauty") {
@@ -446,13 +472,14 @@ function calculateScoreWithRandomFraction(rawScore, type) {
   } else {
     baseScore = rawScore;
   }
-  // 基礎スコアを四捨五入して小数点以下1桁に
-  baseScore = Math.round(baseScore * 10) / 10;
-  const integerPart = Math.floor(baseScore);
-  const randomFraction = Math.floor(Math.random() * 100) / 100; // 0.00～0.99
-  let finalScore = integerPart + randomFraction;
-  // 上限チェック：99.999を超えないように
+
+  // 小数点以下3桁のランダム数を追加
+  const randomFraction = Math.floor(Math.random() * 100) / 1000; // 0.000～0.099
+  let finalScore = baseScore + randomFraction;
+
+  // 上限を 99.999 に制限
   finalScore = Math.min(finalScore, 99.999);
+
   return finalScore.toFixed(3);
 }
 
@@ -466,5 +493,8 @@ console.log("最終 美人度/イケメン度:", finalBeautyScore);
 const rawEvalScore = 89.5;
 const finalEvalScore = calculateScoreWithRandomFraction(rawEvalScore, "evaluation");
 console.log("最終 評価軸スコア:", finalEvalScore);
+
+// ===================== End Section9 =====================
+
 
   
