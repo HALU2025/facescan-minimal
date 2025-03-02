@@ -205,92 +205,119 @@ analyzeBtn.addEventListener('click', () => {
 
 
 // ===================== Section5. 診断結果のHTML表示（テキスト→HTML変換） =====================
+
 function transformResultToHTML(resultText) {
   const lines = resultText.split("\n").filter(line => {
-    const trimmed = line.trim();
-    return trimmed !== "" && !trimmed.includes('----------------------------');
+      const trimmed = line.trim();
+      return trimmed !== "" && !trimmed.includes('----------------------------');
   });
 
   let html = "<div class='result'>";
 
   // 定義する出力項目と対応するクラス
   const fields = {
-    "beauty": "beauty-score",
-    "キャッチフレーズ:": "catchphrase",
-    "推定年齢:": "age",
-    "評価軸1:": "score1",
-    "評価軸2:": "score2",
-    "評価軸3:": "score3",
-    "似ている芸能人:": "celeb",
-    "コメント:": "comment"
+      "beauty": "beauty-score",
+      "キャッチフレーズ:": "catchphrase",
+      "推定年齢:": "age",
+      "評価軸1:": "score1",
+      "評価軸2:": "score2",
+      "評価軸3:": "score3",
+      "似ている芸能人:": "celeb",
+      "コメント:": "comment"
   };
 
-  // ① 美人度/イケメン度の処理
+  // 美人度/イケメン度の処理
   const beautyLine = lines.find(line => {
-    const t = line.trim();
-    return t.startsWith("美人度:") || t.startsWith("イケメン度:");
+      const t = line.trim();
+      return t.startsWith("美人度:") || t.startsWith("イケメン度:");
   });
   if (beautyLine) {
-    const parts = beautyLine.split(":");
-    const label = parts.shift().trim() + ":";
-    let content = parts.join(":").trim();
-    // **小数点以下3桁を維持しつつ、元の処理を尊重**
-    const regex = /^([\D]*)(\d+)(\.\d+)?(.*)$/;
-    const match = content.match(regex);
-    if (match) {
-      const prefix = match[1] || "";
-      const integerPart = match[2] || "";
-      let fractionalPart = match[3] || ""; // 変更: 余計な上書きをしない
-      const suffix = match[4] || "";
-      
-      // **小数点以下がある場合のみ .000 を補完**
-      if (fractionalPart.length === 0) {
-        fractionalPart = ".000";
-      } else if (fractionalPart.length === 2) {
-        fractionalPart += "0"; // `99.99` → `99.990`
-      }
-
-      content = `${prefix}${integerPart}<span>${fractionalPart}${suffix}</span>`;
-    }
-    html += `<div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}</div>`;
-  }
-
-  // ② 他の項目の処理
-  Object.keys(fields).forEach(key => {
-    if (key === "beauty") return;
-    const matchingLine = lines.find(line => line.trim().startsWith(key));
-    if (matchingLine) {
-      const parts = matchingLine.split(":");
+      const parts = beautyLine.split(":");
       const label = parts.shift().trim() + ":";
       let content = parts.join(":").trim();
-      
-      // **スコアの小数点以下を3桁に統一（ただし元のデータを尊重）**
-      const regex = /^([\D]*)(\d+)(\.\d+)?(.*)$/;
+
+      // 小数点以下3桁を維持
+      const regex = /^([\D]*)(\d+)(\.\d{1,3})?(.*)$/;
       const match = content.match(regex);
       if (match) {
-        const prefix = match[1] || "";
-        const integerPart = match[2] || "";
-        let fractionalPart = match[3] || ""; // 変更: 余計な上書きをしない
-        const suffix = match[4] || "";
+          const prefix = match[1] || "";
+          const integerPart = match[2] || "";
+          let fractionalPart = match[3] || ".000"; // 小数3桁を保証
+          const suffix = match[4] || "";
 
-        if (fractionalPart.length === 0) {
-          fractionalPart = ".000";
-        } else if (fractionalPart.length === 2) {
-          fractionalPart += "0";
-        }
-
-        content = `${prefix}${integerPart}<span>${fractionalPart}${suffix}</span>`;
+          content = `${prefix}${integerPart}<span>${fractionalPart}${suffix}</span>`;
       }
+      html += `<div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}</div>`;
+  }
 
-      html += `<div class="${fields[key]}"><div class="clabel">${label}</div> ${content}</div>`;
-    }
+  // 他の項目の処理
+  Object.keys(fields).forEach(key => {
+      if (key === "beauty") return;
+      const matchingLine = lines.find(line => line.trim().startsWith(key));
+      if (matchingLine) {
+          const parts = matchingLine.split(":");
+          const label = parts.shift().trim() + ":";
+          let content = parts.join(":").trim();
+
+          // 小数点以下3桁を維持
+          const regex = /^([\D]*)(\d+)(\.\d{1,3})?(.*)$/;
+          const match = content.match(regex);
+          if (match) {
+              const prefix = match[1] || "";
+              const integerPart = match[2] || "";
+              let fractionalPart = match[3] || ".000";
+              const suffix = match[4] || "";
+
+              content = `${prefix}${integerPart}<span>${fractionalPart}${suffix}</span>`;
+          }
+
+          html += `<div class="${fields[key]}"><div class="clabel">${label}</div> ${content}</div>`;
+      }
   });
 
   html += "</div>";
   return html;
 }
 
+function displayResultHTML(resultText) {
+  let resultContainer = document.getElementById('resultContainer');
+  if (!resultContainer) {
+      resultContainer = document.createElement('div');
+      resultContainer.id = 'resultContainer';
+      resultContainer.style.marginTop = "20px";
+      resultContainer.style.padding = "20px";
+      resultContainer.style.backgroundColor = "#fff";
+      resultContainer.style.border = "1px solid #ccc";
+      resultContainer.style.borderRadius = "8px";
+
+      if (currentImageData) {
+          const thumbDiv = document.createElement('div');
+          thumbDiv.className = "result-thumbnail";
+          const thumbImg = document.createElement('img');
+          thumbImg.src = currentImageData;
+          thumbImg.alt = "診断対象のサムネイル";
+          thumbDiv.appendChild(thumbImg);
+          resultContainer.appendChild(thumbDiv);
+      }
+      document.querySelector('.container').appendChild(resultContainer);
+  } else {
+      resultContainer.innerHTML = "";
+      if (currentImageData) {
+          const thumbDiv = document.createElement('div');
+          thumbDiv.className = "result-thumbnail";
+          const thumbImg = document.createElement('img');
+          thumbImg.src = currentImageData;
+          thumbImg.alt = "診断対象のサムネイル";
+          thumbDiv.appendChild(thumbImg);
+          resultContainer.appendChild(thumbDiv);
+      }
+  }
+  resultContainer.innerHTML += transformResultToHTML(resultText);
+  preview.style.display = "none";
+}
+
 // ===================== End Section5 =====================
+
 
   
   
