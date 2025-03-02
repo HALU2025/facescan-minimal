@@ -206,7 +206,7 @@ analyzeBtn.addEventListener('click', () => {
 
 // ===================== Section5. スコア調整 & 診断結果のHTML表示 =====================
 
-// ✅ 美人度スコアの調整
+// ✅ 美人度/イケメン度のスコア調整
 function calculateBeautyScore(rawScore) {
   let finalScore;
   if (rawScore < 85.0) {
@@ -264,18 +264,35 @@ function transformResultToHTML(resultText) {
       "コメント:": "comment"
   };
 
+  // ✅ 美人度/イケメン度の表示（欠落していたものを復活）
+  const beautyLine = lines.find(line => line.trim().startsWith("美人度:") || line.trim().startsWith("イケメン度:"));
+  if (beautyLine) {
+      const parts = beautyLine.split(":");
+      const label = parts.shift().trim() + ":";
+      let content = parts.join(":").trim();
+
+      // 小数点以下3桁にする
+      content = content.replace(/(\d+\.\d{1,2})/, (match) => {
+          return parseFloat(match).toFixed(3);
+      });
+
+      html += `<div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}</div>`;
+  }
+
+  // ✅ 他の項目の処理
   Object.keys(fields).forEach(key => {
+      if (key === "beauty") return;
       const matchingLine = lines.find(line => line.trim().startsWith(key));
       if (matchingLine) {
           const parts = matchingLine.split(":");
           const label = parts.shift().trim() + ":";
           let content = parts.join(":").trim();
           
-          // ✅ スコア調整（小数点以下3桁に統一）
-          if (key === "beauty" || key.includes("評価軸")) {
+          // ✅ スコア調整（小数点以下3桁に統一 & ランダム化）
+          if (key.includes("評価軸")) {
               content = content.replace(/(\d+\.\d{1,2})/, (match) => {
-                  return parseFloat(match).toFixed(3);
-              });
+                  return calculateScoreWithRandomFraction(parseFloat(match), "evaluation");
+              }) + "点";
           }
 
           // ✅ 推定年齢は整数のまま表示
@@ -331,8 +348,6 @@ function displayResultHTML(resultText) {
 }
 
 // ===================== End Section5 =====================
-
-
 
 
   
