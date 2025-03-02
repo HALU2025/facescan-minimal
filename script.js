@@ -276,7 +276,7 @@ function transformResultToHTML(resultText) {
           return calculateScoreWithRandomFraction(parseFloat(match), "beauty");
       });
 
-      html += `<div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}点</div>`;
+      html += `<div class="${fields["beauty"]}"><div class="clabel">${label}</div> ${content}</div>`;
   }
 
   // ✅ 他の項目の処理
@@ -290,8 +290,8 @@ function transformResultToHTML(resultText) {
           
           // ✅ スコア調整（小数点以下3桁に統一 & ランダム化）
           if (key.includes("評価軸")) {
-              content = content.replace(/(\d+\.\d{1,2})/, (match) => {
-                  return calculateScoreWithRandomFraction(parseFloat(match), "evaluation");
+              content = content.replace(/(.+?)(\d+\.\d{1,2})/, (match, label, score) => {
+                  return `${label.trim()}: ${calculateScoreWithRandomFraction(parseFloat(score), "evaluation")}`;
               });
           }
 
@@ -300,7 +300,7 @@ function transformResultToHTML(resultText) {
               content = content.replace(/(\d+)\.000/, "$1");
           }
 
-          html += `<div class="${fields[key]}"><div class="clabel">${label}</div> ${content}</div>`;
+          html += `<div class="${fields[key]}">${content}</div>`;
       }
   });
 
@@ -348,6 +348,7 @@ function displayResultHTML(resultText) {
 }
 
 // ===================== End Section5 =====================
+
 
 
 
