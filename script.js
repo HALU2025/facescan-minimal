@@ -285,22 +285,22 @@ function transformResultToHTML(resultText) {
       const matchingLine = lines.find(line => line.trim().startsWith(key));
       if (matchingLine) {
           const parts = matchingLine.split(":");
-          const label = parts.shift().trim() + ":";
+          const label = parts.shift().trim();
           let content = parts.join(":").trim();
           
-          // ✅ スコア調整（小数点以下3桁に統一 & ランダム化）
+          // ✅ 評価軸だけラベル削除（「評価軸1:」 → 「クールビューティー: 92.987点」 形式に変更）
           if (key.includes("評価軸")) {
               content = content.replace(/(.+?)(\d+\.\d{1,2})/, (match, label, score) => {
-                  return `${label.trim()}: ${calculateScoreWithRandomFraction(parseFloat(score), "evaluation")}`;
+                  return `${label.trim()}: ${calculateScoreWithRandomFraction(parseFloat(score), "evaluation")}点`;
               });
+              html += `<div class="score">${content}</div>`;
+          } else {
+              // ✅ 推定年齢は整数のまま表示
+              if (key === "推定年齢:") {
+                  content = content.replace(/(\d+)\.000/, "$1");
+              }
+              html += `<div class="${fields[key]}"><div class="clabel">${label}:</div> ${content}</div>`;
           }
-
-          // ✅ 推定年齢は整数のまま表示
-          if (key === "推定年齢:") {
-              content = content.replace(/(\d+)\.000/, "$1");
-          }
-
-          html += `<div class="${fields[key]}">${content}</div>`;
       }
   });
 
@@ -348,6 +348,7 @@ function displayResultHTML(resultText) {
 }
 
 // ===================== End Section5 =====================
+
 
 
 
