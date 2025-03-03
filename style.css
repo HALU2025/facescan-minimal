@@ -41,6 +41,15 @@ body {
   align-items: center;
 }
 
+#preview {
+  width: 100%;  /* コンテナに収める */
+  max-width: 300px; /* 最大サイズ */
+  height: auto; /* 縦横比を維持 */
+  margin-top: 20px;
+  border-radius: 8px;
+  display: none;
+}
+
 /* ✅ ボタンデザイン */
 button {
   width: 100%;

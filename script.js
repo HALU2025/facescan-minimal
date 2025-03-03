@@ -161,9 +161,15 @@ document.addEventListener("DOMContentLoaded", () => {
       canvas.height = video.videoHeight;
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       
-      currentImageData = canvas.toDataURL('image/webp', 0.7);
-      preview.src = currentImageData;
-      preview.style.display = "block";
+      // ✅ Base64を使わず、BlobをURL化して使う
+      canvas.toBlob(blob => {
+          if (currentImageData) {
+              URL.revokeObjectURL(currentImageData); // 既存のURLを解放
+          }
+          currentImageData = URL.createObjectURL(blob);
+          preview.src = currentImageData;
+          preview.style.display = "block";
+      }, "image/webp", 0.8); // 画質を調整
 
       video.style.display = "none";
       captureBtn.style.display = "none";
@@ -178,24 +184,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const file = event.target.files[0];
       if (file) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-              currentImageData = e.target.result;
-              preview.src = currentImageData;
-              preview.style.display = "block";
+          if (currentImageData) {
+              URL.revokeObjectURL(currentImageData); // 既存のURLを解放
+          }
+          currentImageData = URL.createObjectURL(file);
+          preview.src = currentImageData;
+          preview.style.display = "block";
 
-              video.style.display = "none";
-              captureBtn.style.display = "none";
-              fileInput.style.display = "none";
-              analyzeBtn.style.display = "block";
-              selectAgainBtn.style.display = "inline-block";
-              takePhotoBtn.style.display = "inline-block";
-          };
-          reader.readAsDataURL(file);
+          video.style.display = "none";
+          captureBtn.style.display = "none";
+          fileInput.style.display = "none";
+          analyzeBtn.style.display = "block";
+          selectAgainBtn.style.display = "inline-block";
+          takePhotoBtn.style.display = "inline-block";
       }
   });
 });
 // ===================== End Section3 =====================
+
 
 
 
