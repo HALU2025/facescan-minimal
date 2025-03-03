@@ -102,24 +102,26 @@ function isMobile() {
 
 
 // ===================== Section3. カメラ起動・ファイル選択の処理 =====================
-// 3-1. 診断開始（カメラ起動）処理
 startScanBtn.addEventListener('click', async () => {
+  resetMainDisplay(); // 画面をリセット（他の要素を非表示）
+
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-    video.srcObject = stream;
-    video.style.display = "block";              // カメラ映像表示
-    captureBtn.style.display = "inline-block";    // 撮影ボタン表示
-    fileInput.style.display = "inline-block";     // 画像参照ボタン表示
-    startScanBtn.style.display = "none";          // 診断開始ボタン非表示
-    await video.play();
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+      video.srcObject = stream;
+      video.style.display = "block";  // ✅ カメラ映像を表示
+      captureBtn.style.display = "inline-block"; // ✅ 撮影ボタンを表示
+      fileInput.style.display = "inline-block";  // ✅ 画像選択ボタンも表示
+      startScanBtn.style.display = "none"; // ✅ 診断開始ボタンを非表示
+
+      await video.play();
   } catch (err) {
-    alert("カメラのアクセスが許可されていません。設定を確認してください。");
-    console.error("カメラ起動エラー:", err);
+      alert("カメラのアクセスが許可されていません。設定を確認してください。");
   }
 });
 
-// 3-2. 撮影処理（カメラ映像から画像キャプチャ）
+// ✅ 撮影処理（カメラ映像から画像キャプチャ）
 captureBtn.addEventListener('click', () => {
+  resetMainDisplay();
   const ctx = canvas.getContext('2d');
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
@@ -137,28 +139,29 @@ captureBtn.addEventListener('click', () => {
   reCaptureBtn.style.display = "inline-block";
 });
 
-// 3-3. ファイル選択処理（画像参照）
+// ✅ ファイル選択処理（画像参照）
 fileInput.addEventListener('change', (event) => {
   const file = event.target.files[0];
   if (file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      currentImageData = e.target.result;
-      preview.src = currentImageData;
-      preview.style.display = "block";
-      
-      mode = "file"; // 画像参照モード
-      video.style.display = "none";
-      captureBtn.style.display = "none";
-      fileInput.style.display = "none";
-      analyzeBtn.style.display = "block";
-      selectAgainBtn.style.display = "inline-block";
-      takePhotoBtn.style.display = "inline-block";
-    };
-    reader.readAsDataURL(file);
+      const reader = new FileReader();
+      reader.onload = function(e) {
+          currentImageData = e.target.result;
+          preview.src = currentImageData;
+          preview.style.display = "block";
+          
+          mode = "file"; // 画像参照モード
+          video.style.display = "none";
+          captureBtn.style.display = "none";
+          fileInput.style.display = "none";
+          analyzeBtn.style.display = "block";
+          selectAgainBtn.style.display = "inline-block";
+          takePhotoBtn.style.display = "inline-block";
+      };
+      reader.readAsDataURL(file);
   }
 });
 // ===================== End Section3 =====================
+
 
 
 
