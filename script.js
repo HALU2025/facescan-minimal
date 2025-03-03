@@ -539,3 +539,19 @@ if (!isMobile()) {
   });
 }
 // ===================== End Section8 =====================
+
+
+// ===================== Section9. 画面切り替え処理 =====================
+document.getElementById("change").addEventListener("click", () => {
+  const container1 = document.querySelector(".container");
+  const container2 = document.querySelector(".container2");
+
+  if (container1.style.display === "none") {
+    container1.style.display = "block";
+    container2.style.display = "none";
+  } else {
+    container1.style.display = "none";
+    container2.style.display = "block";
+  }
+});
+// ===================== End Section9 =====================
