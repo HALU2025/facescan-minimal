@@ -1,55 +1,17 @@
 // ===================== Section1. 初期設定と DOM 要素の取得 =====================
-const startScanBtn = document.createElement('button');
-startScanBtn.id = "startScan";
-startScanBtn.textContent = "診断を開始";
+const startScanBtn = document.getElementById('startScan'); // 「診断を開始」ボタン
+const video = document.getElementById('video');            // カメラ映像用の video 要素
+const captureBtn = document.getElementById('capture');       // 撮影ボタン
+const analyzeBtn = document.getElementById('analyze');       // 「この写真で診断」ボタン
+const canvas = document.getElementById('canvas');            // 撮影結果用の canvas
+const preview = document.getElementById('preview');          // プレビュー画像
 
-const captureBtn = document.createElement('button');
-captureBtn.id = "capture";
-captureBtn.textContent = "撮影";
-captureBtn.style.display = "none";
+// グローバル変数
+let currentImageData = "";   // 撮影または選択した画像データ
+let currentResult = "";      // AI診断結果のテキスト（HTML形式の文字列）
+let mode = "";               // 状態: "capture"（撮影）または "file"（画像参照）など
 
-const analyzeBtn = document.createElement('button');
-analyzeBtn.id = "analyze";
-analyzeBtn.textContent = "この写真で診断";
-analyzeBtn.style.display = "none";
-
-const retryBtn = document.createElement('button');
-retryBtn.id = "retryBtn";
-retryBtn.textContent = "もう一回診断する";
-retryBtn.style.display = "none";
-
-const shareBtn = document.createElement('button');
-shareBtn.id = "shareBtn";
-shareBtn.textContent = "診断結果を画像で保存";
-shareBtn.style.display = "none";
-
-const twitterBtn = document.createElement('button');
-twitterBtn.id = "twitterBtn";
-twitterBtn.textContent = "Xでシェア";
-twitterBtn.style.display = "none";
-
-const fbBtn = document.createElement('button');
-fbBtn.id = "fbBtn";
-fbBtn.textContent = "Facebookでシェア";
-fbBtn.style.display = "none";
-
-const instaBtn = document.createElement('button');
-instaBtn.id = "instaBtn";
-instaBtn.textContent = "Instagramでシェア";
-instaBtn.style.display = "none";
-
-// ✅ `buttonArea` にすべてのボタンを追加
-const buttonArea = document.getElementById('buttonArea');
-buttonArea.appendChild(startScanBtn);
-buttonArea.appendChild(captureBtn);
-buttonArea.appendChild(analyzeBtn);
-buttonArea.appendChild(retryBtn);
-buttonArea.appendChild(shareBtn);
-buttonArea.appendChild(twitterBtn);
-buttonArea.appendChild(fbBtn);
-buttonArea.appendChild(instaBtn);
-
-// ✅ ファイル選択用の input は `body` に直接追加（UIには表示しない）
+// 動的に生成する追加UI要素（初期状態は非表示）
 const fileInput = document.createElement('input');
 fileInput.type = "file";
 fileInput.id = "fileInput";
@@ -57,25 +19,46 @@ fileInput.accept = "image/*";
 fileInput.style.display = "none";
 document.body.appendChild(fileInput);
 
-// ✅ 再撮影・画像選択用ボタン（`buttonArea` ではなく、診断画面で切り替え）
 const reCaptureBtn = document.createElement('button');
 reCaptureBtn.textContent = "再撮影する";
 reCaptureBtn.style.display = "none";
+document.body.appendChild(reCaptureBtn);
 
 const selectAgainBtn = document.createElement('button');
 selectAgainBtn.textContent = "画像を選びなおす";
 selectAgainBtn.style.display = "none";
+document.body.appendChild(selectAgainBtn);
 
 const takePhotoBtn = document.createElement('button');
 takePhotoBtn.textContent = "写真を撮影する";
 takePhotoBtn.style.display = "none";
-
-// ✅ 追加ボタンは `buttonArea` ではなく `document.body` に直接追加
-document.body.appendChild(reCaptureBtn);
-document.body.appendChild(selectAgainBtn);
 document.body.appendChild(takePhotoBtn);
-// ===================== End Section1 =====================
 
+const retryBtn = document.createElement('button');
+retryBtn.textContent = "もう一回診断する";
+retryBtn.style.display = "none";
+document.body.appendChild(retryBtn);
+
+const shareBtn = document.createElement('button');
+shareBtn.textContent = "診断結果を画像で保存";
+shareBtn.style.display = "none";
+document.body.appendChild(shareBtn);
+
+const twitterBtn = document.createElement('button');
+twitterBtn.textContent = "Xでシェア";
+twitterBtn.style.display = "none";
+document.body.appendChild(twitterBtn);
+
+const fbBtn = document.createElement('button');
+fbBtn.textContent = "Facebookでシェア";
+fbBtn.style.display = "none";
+document.body.appendChild(fbBtn);
+
+const instaBtn = document.createElement('button');
+instaBtn.textContent = "Instagramでシェア";
+instaBtn.style.display = "none";
+document.body.appendChild(instaBtn);
+// ===================== End Section1 =====================
 
 
 
