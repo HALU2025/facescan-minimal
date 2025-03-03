@@ -541,17 +541,22 @@ if (!isMobile()) {
 // ===================== End Section8 =====================
 
 
-// ===================== Section9. 画面切り替え処理 =====================
-document.getElementById("change").addEventListener("click", () => {
-  const container1 = document.querySelector(".container");
-  const container2 = document.querySelector(".container2");
+// ===================== Section9. 画面遷移の処理 =====================
 
-  if (container1.style.display === "none") {
-    container1.style.display = "block";
-    container2.style.display = "none";
-  } else {
-    container1.style.display = "none";
-    container2.style.display = "block";
-  }
+// ✅ すべての画面を非表示にする
+function showScreen(screenId) {
+  document.querySelectorAll(".container").forEach(screen => {
+    screen.style.display = "none";
+  });
+  document.getElementById(screenId).style.display = "block";
+}
+
+// ✅ 診断開始ボタン → 撮影画面
+document.getElementById("startScan").addEventListener("click", () => {
+  showScreen("camera");
 });
+
+// ✅ 初期状態: 撮影画面は非表示
+document.getElementById("camera").style.display = "none";
+
 // ===================== End Section9 =====================
