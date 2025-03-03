@@ -422,7 +422,6 @@ function displayResultHTML(resultText) {
 
 
 
-
   
   
 
