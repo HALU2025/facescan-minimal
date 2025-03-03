@@ -203,42 +203,57 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // ===================== Section4. 診断実行（API 呼び出し） =====================
-analyzeBtn.addEventListener('click', () => {
+analyzeBtn.addEventListener('click', async () => {
+  console.log("✅ 診断開始（画像送信）");
+
   if (!currentImageData) {
-    alert("画像を撮影または参照してください！");
-    return;
+      alert("画像を撮影または参照してください！");
+      return;
   }
 
-  fetch('/api/upload', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ image: currentImageData })
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`HTTPエラー! ステータス: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then(result => {
-    console.log("APIからのレスポンス:", result); // 追加
+  try {
+      const response = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: currentImageData })
+      });
 
-    currentResult = result.result;  // 診断結果（HTML形式の文字列）を保存
-    displayResultHTML(currentResult);
-    analyzeBtn.style.display = "none";  
-    retryBtn.style.display = "block";
-    reCaptureBtn.style.display = "none";
-    selectAgainBtn.style.display = "none";
-    takePhotoBtn.style.display = "none";
-    mode = "result";
-    updateShareUI();
-  })
-  .catch(error => {
-    console.error('エラー発生:', error);
-    alert(`診断に失敗しました。\n詳細: ${error.message}`);
-  });
+      if (!response.ok) {
+          throw new Error(`HTTPエラー! ステータス: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("✅ APIからのレスポンス:", result);
+
+      if (!result.result) {
+          throw new Error("診断結果が取得できませんでした。");
+      }
+
+      currentResult = result.result;
+      displayResultHTML(currentResult);
+
+      // ✅ 診断結果エリアを確実に表示（レイアウト変更に対応）
+      const resultContainer = document.getElementById('resultContainer');
+      if (resultContainer) {
+          resultContainer.style.display = "block";
+      }
+
+      // ✅ UIの切り替え（診断結果表示後）
+      analyzeBtn.style.display = "none";
+      retryBtn.style.display = "block";
+      reCaptureBtn.style.display = "none";
+      selectAgainBtn.style.display = "none";
+      takePhotoBtn.style.display = "none";
+      mode = "result";
+      updateShareUI();
+  } catch (error) {
+      console.error('❌ 診断エラー:', error);
+      alert(`診断に失敗しました。\n詳細: ${error.message}`);
+  }
 });
 // ===================== End Section4 =====================
+
+
 
 
 
