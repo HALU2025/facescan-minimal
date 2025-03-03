@@ -65,36 +65,48 @@ document.body.appendChild(instaBtn);
 
 // ===================== Section2. ユーティリティ関数と状態リセット =====================
 function resetToInitial() {
-    // 既存の UI 部品の表示状態をリセット
-    startScanBtn.style.display = "block";
-    video.style.display = "none";
-    captureBtn.style.display = "none";
-    fileInput.style.display = "none";
-    analyzeBtn.style.display = "none";
-    reCaptureBtn.style.display = "none";
-    selectAgainBtn.style.display = "none";
-    takePhotoBtn.style.display = "none";
-    retryBtn.style.display = "none";
-    shareBtn.style.display = "none";
-    twitterBtn.style.display = "none";
-    fbBtn.style.display = "none";
-    instaBtn.style.display = "none";
-    preview.style.display = "none";
-    
-    // global variables reset
-    currentImageData = "";
-    currentResult = "";
-    mode = "";
-    
-    // もし診断結果エリアが存在すれば削除する
-    const resultContainer = document.getElementById('resultContainer');
-    if (resultContainer) {
-      resultContainer.remove();
-    }
+  // 既存の UI 部品の表示状態をリセット
+  startScanBtn.style.display = "block";
+  video.style.display = "none";
+  captureBtn.style.display = "none";
+  fileInput.style.display = "none";
+  analyzeBtn.style.display = "none";
+  reCaptureBtn.style.display = "none";
+  selectAgainBtn.style.display = "none";
+  takePhotoBtn.style.display = "none";
+  retryBtn.style.display = "none";
+  shareBtn.style.display = "none";
+  twitterBtn.style.display = "none";
+  fbBtn.style.display = "none";
+  instaBtn.style.display = "none";
+  preview.style.display = "none";
+  
+  // global variables reset
+  currentImageData = "";
+  currentResult = "";
+  mode = "";
+  
+  // もし診断結果エリアが存在すれば削除する
+  const resultContainer = document.getElementById('resultContainer');
+  if (resultContainer) {
+    resultContainer.remove();
   }
+}
+
+// ✅ 診断画面だけをリセット（カメラ起動時に使用）
+function resetMainDisplay() {
+  console.log("✅ 画面をリセット");
+  video.style.display = "none";
+  preview.style.display = "none";
+  
+  const resultContainer = document.getElementById('resultContainer');
+  if (resultContainer) {
+      resultContainer.style.display = "none";
+  }
+}
 
 function isMobile() {
-  return /Mobi|Android/i.test(navigator.userAgent);
+return /Mobi|Android/i.test(navigator.userAgent);
 }
 // ===================== End Section2 =====================
 
@@ -102,65 +114,89 @@ function isMobile() {
 
 
 // ===================== Section3. カメラ起動・ファイル選択の処理 =====================
-startScanBtn.addEventListener('click', async () => {
-  resetMainDisplay(); // 画面をリセット（他の要素を非表示）
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("✅ DOMContentLoaded - JavaScriptが正しく読み込まれました");
 
-  try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-      video.srcObject = stream;
-      video.style.display = "block";  // ✅ カメラ映像を表示
-      captureBtn.style.display = "inline-block"; // ✅ 撮影ボタンを表示
-      fileInput.style.display = "inline-block";  // ✅ 画像選択ボタンも表示
-      startScanBtn.style.display = "none"; // ✅ 診断開始ボタンを非表示
+  const startScanBtn = document.getElementById('startScan'); 
+  const video = document.getElementById('video');            
+  const captureBtn = document.getElementById('capture');       
+  const analyzeBtn = document.getElementById('analyze');       
+  const canvas = document.getElementById('canvas');            
+  const preview = document.getElementById('preview');          
+  const resultContainer = document.getElementById('resultContainer');
+  const retryBtn = document.getElementById('retryBtn');
+  const fileInput = document.getElementById('fileInput');
 
-      await video.play();
-  } catch (err) {
-      alert("カメラのアクセスが許可されていません。設定を確認してください。");
-  }
-});
+  console.log("startScanBtn:", startScanBtn);
 
-// ✅ 撮影処理（カメラ映像から画像キャプチャ）
-captureBtn.addEventListener('click', () => {
-  resetMainDisplay();
-  const ctx = canvas.getContext('2d');
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  
-  currentImageData = canvas.toDataURL('image/webp', 0.7);
-  preview.src = currentImageData;
-  preview.style.display = "block";
-  
-  mode = "capture"; // 撮影モード
-  video.style.display = "none";
-  captureBtn.style.display = "none";
-  fileInput.style.display = "none";
-  analyzeBtn.style.display = "block";
-  reCaptureBtn.style.display = "inline-block";
-});
+  // ✅ 診断開始ボタンを押したときの処理（カメラ起動 & UI 切り替え）
+  startScanBtn.addEventListener('click', async () => {
+      console.log("✅ 診断開始ボタンが押されました");
 
-// ✅ ファイル選択処理（画像参照）
-fileInput.addEventListener('change', (event) => {
-  const file = event.target.files[0];
-  if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-          currentImageData = e.target.result;
-          preview.src = currentImageData;
-          preview.style.display = "block";
-          
-          mode = "file"; // 画像参照モード
-          video.style.display = "none";
-          captureBtn.style.display = "none";
-          fileInput.style.display = "none";
-          analyzeBtn.style.display = "block";
-          selectAgainBtn.style.display = "inline-block";
-          takePhotoBtn.style.display = "inline-block";
-      };
-      reader.readAsDataURL(file);
-  }
+      resetMainDisplay(); // ✅ 画面をリセット
+
+      try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+          video.srcObject = stream;
+          video.style.display = "block";  
+          captureBtn.style.display = "inline-block"; 
+          fileInput.style.display = "inline-block";  
+          startScanBtn.style.display = "none"; 
+
+          await video.play();
+          console.log("✅ カメラが起動しました");
+      } catch (err) {
+          alert("カメラのアクセスが許可されていません。設定を確認してください。");
+          console.error("カメラ起動エラー:", err);
+      }
+  });
+
+  // ✅ 撮影処理（カメラ映像から画像キャプチャ）
+  captureBtn.addEventListener('click', () => {
+      console.log("✅ 撮影ボタンが押されました");
+
+      resetMainDisplay(); // ✅ 画面をリセット
+      const ctx = canvas.getContext('2d');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      currentImageData = canvas.toDataURL('image/webp', 0.7);
+      preview.src = currentImageData;
+      preview.style.display = "block";
+
+      video.style.display = "none";
+      captureBtn.style.display = "none";
+      fileInput.style.display = "none";
+      analyzeBtn.style.display = "block";
+      reCaptureBtn.style.display = "inline-block";
+  });
+
+  // ✅ ファイル選択処理（画像参照）
+  fileInput.addEventListener('change', (event) => {
+      console.log("✅ 画像ファイルが選択されました");
+
+      const file = event.target.files[0];
+      if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+              currentImageData = e.target.result;
+              preview.src = currentImageData;
+              preview.style.display = "block";
+
+              video.style.display = "none";
+              captureBtn.style.display = "none";
+              fileInput.style.display = "none";
+              analyzeBtn.style.display = "block";
+              selectAgainBtn.style.display = "inline-block";
+              takePhotoBtn.style.display = "inline-block";
+          };
+          reader.readAsDataURL(file);
+      }
+  });
 });
 // ===================== End Section3 =====================
+
 
 
 
