@@ -8,22 +8,26 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
   <div class="container">
-    <!-- カメラ映像を表示するためのvideo要素（初期は非表示） -->
-    <video id="video" autoplay playsinline muted style="display: none;"></video>
-    <!-- 撮影結果を保持するcanvas要素（非表示） -->
-    <canvas id="canvas" style="display: none;"></canvas>
-    
-    <!-- 診断開始ボタン：カメラを起動する -->
-    <button id="startScan">診断を開始</button>
-    <!-- 撮影ボタン：撮影後、画像をキャプチャする -->
-    <button id="capture" style="display: none;">撮影</button>
-    <!-- 撮影または参照した画像のプレビュー表示 -->
-    <img id="preview" style="width:300px; margin-top:20px; border-radius:8px; display: none;">
-    <!-- この写真で診断ボタン：撮影または参照した画像で診断を実行 -->
-    <button id="analyze" style="display: none;">この写真で診断</button>
+    <!-- ✅ 上のエリア（メイン画面） -->
+    <div id="mainDisplay">
+      <video id="video" autoplay playsinline muted style="display: none;"></video>
+      <canvas id="canvas" style="display: none;"></canvas>
+      <img id="preview" style="display: none; width:300px; margin-top:20px; border-radius:8px;">
+      <div id="resultContainer" style="display: none;"></div>
+    </div>
+
+    <!-- ✅ 下のエリア（ボタンエリア） -->
+    <div id="buttonArea">
+      <button id="startScan">診断を開始</button>
+      <button id="capture" style="display: none;">撮影</button>
+      <button id="analyze" style="display: none;">この写真で診断</button>
+      <button id="retryBtn" style="display: none;">もう一回診断する</button>
+    </div>
   </div>
-  
+
   <script src="script.js"></script>
+
 </body>
 </html>

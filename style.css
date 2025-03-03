@@ -1,47 +1,41 @@
 body {
-    font-family: sans-serif;
-    background-color: #f0f4f8;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .container {
-    width: 90%;
-    max-width: 600px;
-    margin: 50px auto;
-    text-align: center;
-  }
-  
-  button {
-    padding: 10px 20px;
-    font-size: 16px;
-    margin-top: 20px;
-    cursor: pointer;
-  }
-  .result-thumbnail {
-    width: 150px;     /* 任意の正方形サイズ */
-    height: 150px;
-    overflow: hidden;
-    margin-bottom: 20px;
-  }
-  
-  .result-thumbnail img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* アスペクト比を保ちつつ中央をトリミング */
-    border: 2px solid #ccc;
-    border-radius: 4px;
-  }
-  .clabel {
-    display: inline-block;
-  }
+  font-family: sans-serif;
+  background-color: #f0f4f8;
+  margin: 0;
+  padding: 0;
+}
 
-  .beauty-score{
-    font-size: 40px;
-  }
-  .beauty-score span{
-    font-size: 25px;
-  }
-  .beauty-score .clabel{
-    font-size: 20px;
-  }
+.container {
+  width: 90%;
+  max-width: 600px;
+  margin: 50px auto;
+  text-align: center;
+}
+
+/* ✅ 上のエリア（メイン画面） */
+#mainDisplay {
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* ✅ 下のエリア（ボタンエリア） */
+#buttonArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 10px;
+  cursor: pointer;
+}
