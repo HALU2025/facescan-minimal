@@ -19,8 +19,18 @@
     </div>
 
     <!-- ✅ 下のエリア（ボタンエリア） -->
-    <div id="buttonArea"></div>
+    <div id="buttonArea">
+      <button id="startScan">診断を開始</button>
+      <button id="capture" style="display: none;">撮影</button>
+      <button id="analyze" style="display: none;">この写真で診断</button>
+      <button id="retryBtn" style="display: none;">もう一回診断する</button>
 
+      <!-- ✅ シェアボタン -->
+      <button id="shareBtn" style="display: none;">診断結果を画像で保存</button>
+      <button id="twitterBtn" style="display: none;">Xでシェア</button>
+      <button id="fbBtn" style="display: none;">Facebookでシェア</button>
+      <button id="instaBtn" style="display: none;">Instagramでシェア</button>
+    </div>
   </div>
 
   <script src="script.js"></script>
