@@ -8,21 +8,21 @@ body {
 .container {
   width: 90%;
   max-width: 600px;
-  margin: 50px auto;
+  margin: 20px auto;
   text-align: center;
 }
 
 /* ✅ 上のエリア（メイン画面） */
 #mainDisplay {
   width: 100%;
-  min-height: 300px;
+  min-height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: white;
   border-radius: 8px;
   border: 2px solid #ccc;
-  padding: 20px;
+  padding: 10px;
   margin-bottom: 20px;
   overflow: hidden;
 }
@@ -30,7 +30,6 @@ body {
 /* ✅ 画像・動画・診断結果の表示設定 */
 #video, #preview, #resultContainer {
   max-width: 100%;
-  max-height: 280px;
   border-radius: 8px;
 }
 
@@ -43,7 +42,6 @@ body {
 
 #preview {
   width: 100%;  /* コンテナに収める */
-  max-width: 300px; /* 最大サイズ */
   height: auto; /* 縦横比を維持 */
   margin-top: 20px;
   border-radius: 8px;
