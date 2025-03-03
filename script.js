@@ -368,6 +368,8 @@ function transformResultToHTML(resultText) {
 
 function displayResultHTML(resultText) {
   let resultContainer = document.getElementById('resultContainer');
+
+  // ✅ 診断結果エリアがない場合は作成し、`mainDisplay` の中に追加
   if (!resultContainer) {
       resultContainer = document.createElement('div');
       resultContainer.id = 'resultContainer';
@@ -386,7 +388,11 @@ function displayResultHTML(resultText) {
           thumbDiv.appendChild(thumbImg);
           resultContainer.appendChild(thumbDiv);
       }
-      document.querySelector('.container').appendChild(resultContainer);
+
+      const mainDisplay = document.getElementById('mainDisplay');
+      if (mainDisplay) {
+          mainDisplay.appendChild(resultContainer);
+      }
   } else {
       resultContainer.innerHTML = "";
       if (currentImageData) {
@@ -406,6 +412,7 @@ function displayResultHTML(resultText) {
 }
 
 // ===================== End Section5 =====================
+
 
 
 
