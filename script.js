@@ -125,18 +125,6 @@ document.getElementById("retake").addEventListener("click", () => {
 
 // ===================== Section4. 画像選択 =====================
 
-// ✅ トップ画面 → 画像選択ダイアログを開く
-document.getElementById("selectImage").addEventListener("click", () => {
-  // すでに画像がある場合は開かない
-  if (currentImageData) return;
-
-  // 連続選択を防ぐために fileInput の値をリセット
-  fileInput.value = "";
-  
-  // 遅延を入れてクリックを実行
-  setTimeout(() => fileInput.click(), 100);
-});
-
 // ✅ 画像選択 → プレビュー画面
 document.getElementById("fileInput").addEventListener("change", async (event) => {
   const file = event.target.files[0];
@@ -164,21 +152,14 @@ document.getElementById("fileInput").addEventListener("change", async (event) =>
       }, 100);
 
       // ✅ 連続選択防止のためにリセット
-      fileInput.value = "";
+      event.target.value = "";
     };
     reader.readAsDataURL(file);
   }
 });
 
-// ✅ 画像プレビューから選び直し（ダイアログのみ開く・画面はそのまま）
-document.getElementById("reselect").addEventListener("click", () => {
-  // 連続選択防止のためにリセット
-  fileInput.value = "";
-  
-  setTimeout(() => fileInput.click(), 100);
-});
-
 // ===================== End Section4 =====================
+
 
 
 // ===================== Section5. 診断処理 =====================
