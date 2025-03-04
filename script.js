@@ -119,84 +119,83 @@ function isMobile() {
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ DOMContentLoaded - JavaScriptが正しく読み込まれました");
 
-  const startScanBtn = document.getElementById('startScan'); 
-  const video = document.getElementById('video');            
-  const captureBtn = document.getElementById('capture');       
-  const analyzeBtn = document.getElementById('analyze');       
-  const canvas = document.getElementById('canvas');            
-  const preview = document.getElementById('preview');          
-  const resultContainer = document.getElementById('resultContainer');
-  const retryBtn = document.getElementById('retryBtn');
-  const fileInput = document.getElementById('fileInput');
+  const startScanBtn = document.getElementById("startScan");
+  const video = document.getElementById("video");
+  const captureBtn = document.getElementById("capture");
+  const fileInput = document.getElementById("fileInput");
 
   console.log("startScanBtn:", startScanBtn);
 
-  // ✅ 診断開始ボタンを押したときの処理（カメラ起動 & UI 切り替え）
-  startScanBtn.addEventListener('click', async () => {
-      console.log("✅ 診断開始ボタンが押されました");
+  // ✅ トップ画面 → 撮影画面
+  startScanBtn.addEventListener("click", () => {
+    showScreen("camera");
+  });
 
-      resetMainDisplay(); // ✅ 画面をリセット
+  // ✅ 撮影画面が表示された後にカメラを起動
+  document.getElementById("camera").addEventListener("transitionend", async () => {
+    console.log("✅ 撮影画面が表示されたのでカメラを起動");
 
-      try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-          video.srcObject = stream;
-          video.style.display = "block";  
-          captureBtn.style.display = "inline-block"; 
-          fileInput.style.display = "inline-block";  
-          startScanBtn.style.display = "none"; 
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user" },
+      });
+      video.srcObject = stream;
+      video.style.display = "block";
+      captureBtn.style.display = "inline-block";
+      fileInput.style.display = "inline-block";
+      startScanBtn.style.display = "none";
 
-          await video.play();
-          console.log("✅ カメラが起動しました");
-      } catch (err) {
-          alert("カメラのアクセスが許可されていません。設定を確認してください。");
-          console.error("カメラ起動エラー:", err);
-      }
+      console.log("✅ カメラが起動しました");
+    } catch (err) {
+      console.error("❌ カメラ起動エラー:", err);
+      alert("カメラの起動に失敗しました。");
+    }
   });
 
   // ✅ 撮影処理（カメラ映像から画像キャプチャ）
-  captureBtn.addEventListener('click', () => {
-      console.log("✅ 撮影ボタンが押されました");
+  captureBtn.addEventListener("click", () => {
+    console.log("✅ 撮影ボタンが押されました");
 
-      resetMainDisplay(); // ✅ 画面をリセット
-      const ctx = canvas.getContext('2d');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      
-      currentImageData = canvas.toDataURL('image/webp', 0.7);
-      preview.src = currentImageData;
-      preview.style.display = "block";
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      video.style.display = "none";
-      captureBtn.style.display = "none";
-      fileInput.style.display = "none";
-      analyzeBtn.style.display = "block";
-      reCaptureBtn.style.display = "inline-block";
+    currentImageData = canvas.toDataURL("image/webp", 0.7);
+    document.getElementById("preview").src = currentImageData;
+    document.getElementById("preview").style.display = "block";
+
+    video.style.display = "none";
+    captureBtn.style.display = "none";
+    fileInput.style.display = "none";
+
+    showScreen("result"); // ✅ 診断結果画面に遷移
   });
 
   // ✅ ファイル選択処理（画像参照）
-  fileInput.addEventListener('change', (event) => {
-      console.log("✅ 画像ファイルが選択されました");
+  fileInput.addEventListener("change", (event) => {
+    console.log("✅ 画像ファイルが選択されました");
 
-      const file = event.target.files[0];
-      if (file) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-              currentImageData = e.target.result;
-              preview.src = currentImageData;
-              preview.style.display = "block";
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        currentImageData = e.target.result;
+        document.getElementById("preview").src = currentImageData;
+        document.getElementById("preview").style.display = "block";
 
-              video.style.display = "none";
-              captureBtn.style.display = "none";
-              fileInput.style.display = "none";
-              analyzeBtn.style.display = "block";
-              selectAgainBtn.style.display = "inline-block";
-              takePhotoBtn.style.display = "inline-block";
-          };
-          reader.readAsDataURL(file);
-      }
+        video.style.display = "none";
+        captureBtn.style.display = "none";
+        fileInput.style.display = "none";
+
+        showScreen("result"); // ✅ 診断結果画面に遷移
+      };
+      reader.readAsDataURL(file);
+    }
   });
 });
+
 // ===================== End Section3 =====================
 
 
