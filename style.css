@@ -134,40 +134,40 @@ div#result .mainDisplay {
 .age {
   position: absolute;
   font-family: 'myfont', sans-serif;
-  left: 170px;
-  top: 25%;
+  right: 6.2%;
+  top: 39%;
   color: #ffffff;
+  font-size: 25px;
 }
 .age .clabel {
   color: #9cb3c7;
 }
-.result .score:nth-of-type(4){
+
+.result .score:nth-of-type(4) .clabel,.result .score:nth-of-type(5) .clabel,.result .score:nth-of-type(6) .clabel{
   position: absolute;
   font-family: 'myfont', sans-serif;
-    right: 6.2%;
-    top: 45%;
-    color: #ffffff;
+  font-size: 25px;
+  right: 6.2%;
+  top: 55%;
+  color: #ffffff;
+}
+.result .score:nth-of-type(4){
+  top: 45%;
 }
 .result .score:nth-of-type(5) {
-  position: absolute;
-  font-family: 'myfont', sans-serif;
-    right: 6.2%;
-    top: 50%;
-    color: #ffffff;
+  top: 50%;
 }
 .result .score:nth-of-type(6){
-  position: absolute;
-  font-family: 'myfont', sans-serif;
-    right: 6.2%;
-    top: 55%;
-    color: #ffffff;
+  top: 55%;
 }
 .result .score:nth-of-type(4) .clabel,.result .score:nth-of-type(5) .clabel,.result .score:nth-of-type(6) .clabel{
   color: #9cb3c7;
+  font-size: 18px;
 }
 .result .score:nth-of-type(4) span,.result .score:nth-of-type(5) span,.result .score:nth-of-type(6) span{
   font-family: 'myfont', sans-serif;
   color: #ffffff;
+  font-size: 18px;
 }
 .celeb {
   position: absolute;
