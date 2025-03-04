@@ -128,7 +128,7 @@ document.getElementById("retake").addEventListener("click", () => {
 // ===================== End Section3 =====================
 
 
-// ===================== Section4. 画像選択 =====================
+// ===================== Section4. 画像選択処理 =====================
 
 // ✅ 画像選択 → プレビュー画面
 fileInput.addEventListener("change", async function (event) {
@@ -142,6 +142,9 @@ fileInput.addEventListener("change", async function (event) {
       // ✅ 画像をプレビューに反映
       previewRef.src = currentImageData;
       previewRef.style.display = "block";
+
+      // ✅ `analyze` ボタンを有効化
+      document.getElementById("analyze").style.display = "block";
 
       // ✅ プレビュー画面へ遷移
       showScreen("reference-preview");
@@ -158,7 +161,7 @@ fileInput.addEventListener("change", async function (event) {
 
 // ===================== Section5. 診断処理 =====================
 
-// ✅ 撮影プレビュー or 画像プレビュー → 診断結果画面
+// ✅ 診断実行ボタンのイベント
 document.getElementById("analyze").addEventListener("click", async () => {
   if (!currentImageData) {
     alert("画像を撮影または選択してください！");
@@ -181,7 +184,7 @@ document.getElementById("analyze").addEventListener("click", async () => {
     const result = await response.json();
     console.log("APIレスポンス:", result);
 
-    // ✅ 診断結果を保存
+    // 診断結果を保存
     currentResult = result.result;
 
     // ✅ 診断結果画面へ遷移
@@ -197,6 +200,7 @@ document.getElementById("analyze").addEventListener("click", async () => {
 });
 
 // ===================== End Section5 =====================
+
 
 
 
