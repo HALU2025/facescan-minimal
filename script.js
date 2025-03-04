@@ -212,10 +212,12 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
 // ===================== Section6. 診断結果のHTML表示 =====================
 
 // ✅ 美人度/イケメン度のスコア調整
+// ✅ 美人度/イケメン度のスコア調整（85点以下の -10 調整を削除）
 function calculateBeautyScore(rawScore) {
   let finalScore;
   if (rawScore < 85.0) {
       finalScore = rawScore - 10;
+      finalScore = rawScore; // ✅ 85点以下の減点処理を削除
   } else {
       finalScore = (rawScore - 85.0) * (14.9 / 10.9) + 85.0;
   }
@@ -223,10 +225,12 @@ function calculateBeautyScore(rawScore) {
 }
 
 // ✅ 評価軸スコアの調整
+// ✅ 評価軸スコアの調整（85点以下の -10 調整を削除）
 function calculateEvaluationScore(rawScore) {
   let finalScore;
   if (rawScore < 85.0) {
       finalScore = rawScore - 10;
+      finalScore = rawScore; // ✅ 85点以下の減点処理を削除
   } else {
       finalScore = (rawScore - 85.0) * (14.9 / 10.9) + 85.0;
   }
@@ -293,17 +297,11 @@ function transformResultToHTML(resultText) {
           const label = parts.shift().trim();
           let content = parts.join(":").trim();
 
-          // ✅ 評価軸のラベルを適切に置き換える
           // ✅ 評価軸のラベルを適切に置き換え、数値が入らないよう修正
           if (key.includes("評価軸")) {
-              content = calculateScoreWithRandomFraction(parseFloat(content.replace(/[^0-9.]/g, "")), "evaluation")
-                  .replace(/(\d+)(\.\d+)/, (match, intPart, fracPart) => {
-                      return `<div class="clabel">${label.replace("評価軸", content.split(" ")[0])}:</div> ${intPart}<span>${fracPart}</span>`;
-                  });
-              html += `<div class="score">${content}</div>`;
               let [axisLabel, score] = content.split(/(\d+\.?\d*)/); // 評価軸名と数値を分割
               score = calculateScoreWithRandomFraction(parseFloat(score), "evaluation");
-              
+
               let formattedScore = score.replace(/(\d+)(\.\d+)/, (match, intPart, fracPart) => {
                   return `${intPart}<span>${fracPart}</span>`;
               });
@@ -325,6 +323,8 @@ function transformResultToHTML(resultText) {
 
 function displayResultHTML(resultText) {
   let resultContainer = document.getElementById('resultContainer');
+
+  // ✅ 診断結果エリアがない場合は作成し、`mainDisplay` の中に追加
   if (!resultContainer) {
       resultContainer = document.createElement('div');
       resultContainer.id = 'resultContainer';
@@ -343,7 +343,11 @@ function displayResultHTML(resultText) {
           thumbDiv.appendChild(thumbImg);
           resultContainer.appendChild(thumbDiv);
       }
-      document.querySelector('.container').appendChild(resultContainer);
+
+      const mainDisplay = document.getElementById('mainDisplay');
+      if (mainDisplay) {
+          mainDisplay.appendChild(resultContainer);
+      }
   } else {
       resultContainer.innerHTML = "";
       if (currentImageData) {
@@ -360,6 +364,7 @@ function displayResultHTML(resultText) {
   // ✅ ここでスコア調整を適用してから表示
   resultContainer.innerHTML += transformResultToHTML(resultText);
 }
+
 
 // ===================== End Section7 =====================
 
