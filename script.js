@@ -252,9 +252,12 @@ function transformResultToHTML(resultText) {
     if (fields[key]) {
       // スコアの処理
       if (key.includes("イケメン度") || key.includes("美人度") || key.includes("評価軸")) {
-        value = calculateScoreWithRandomFraction(value);
+        value = calculateScoreWithRandomFraction(value)
+          .replace(/(\d+)(\.\d+)/, (match, intPart, fracPart) => {
+            return `${intPart}<span>${fracPart}</span>`;
+          });
       }
-      html += `<div class="${fields[key]}"><strong>${key}</strong>: ${value}</div>`;
+      html += `<div class='${fields[key]}'><strong>${key}</strong>: ${value}</div>`;
     }
   });
 
@@ -288,6 +291,7 @@ function displayResultHTML(resultText) {
 }
 
 // ===================== End Section6 =====================
+
 
 
 
