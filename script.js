@@ -77,8 +77,7 @@ document.getElementById("retake").addEventListener("click", () => {
 
 // ✅ トップ画面 → 画像選択画面
 document.getElementById("selectImage").addEventListener("click", () => {
-  console.log("✅ 画像選択画面へ遷移");
-  showScreen("reference");
+  document.getElementById("fileInput").click();
 });
 
 // ✅ 画像選択 → プレビュー画面
@@ -88,10 +87,25 @@ document.getElementById("fileInput").addEventListener("change", (event) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       currentImageData = e.target.result;
+
+      // ✅ previewRef が存在するか確認し、なければ作成
+      let previewRef = document.getElementById("previewRef");
+      if (!previewRef) {
+        previewRef = document.createElement("img");
+        previewRef.id = "previewRef";
+        previewRef.style.maxWidth = "100%";
+        document.getElementById("reference-preview").appendChild(previewRef);
+      }
+
       previewRef.src = currentImageData;
-      previewRef.style.display = "block"; // ✅ 追加: プレビューを確実に表示
-      console.log("✅ 画像が選択されました:", currentImageData);
-      showScreen("reference-preview");
+      previewRef.style.display = "block";
+
+      // ✅ reference-preview 画面が存在するか確認
+      if (document.getElementById("reference-preview")) {
+        showScreen("reference-preview");
+      } else {
+        console.error("❌ reference-preview が見つかりません");
+      }
     };
     reader.readAsDataURL(file);
   }
@@ -99,11 +113,11 @@ document.getElementById("fileInput").addEventListener("change", (event) => {
 
 // ✅ 画像プレビューから選び直し
 document.getElementById("reselect").addEventListener("click", () => {
-  console.log("✅ 画像選び直し");
   showScreen("reference");
 });
 
 // ===================== End Section4 =====================
+
 
 
 // ===================== Section5. 診断処理 =====================
