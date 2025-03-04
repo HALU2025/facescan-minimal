@@ -126,29 +126,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
   console.log("startScanBtn:", startScanBtn);
 
-  // ✅ トップ画面 → 撮影画面
-  startScanBtn.addEventListener("click", () => {
-    showScreen("camera");
-  });
+  // ✅ トップ画面 → 撮影画面（カメラ起動）
+  startScanBtn.addEventListener("click", async () => {
+    console.log("✅ 診断開始ボタンが押されました");
 
-  // ✅ 撮影画面が表示された後にカメラを起動
-  document.getElementById("camera").addEventListener("transitionend", async () => {
-    console.log("✅ 撮影画面が表示されたのでカメラを起動");
+    showScreen("camera"); // 画面遷移
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user" },
       });
+
       video.srcObject = stream;
       video.style.display = "block";
       captureBtn.style.display = "inline-block";
       fileInput.style.display = "inline-block";
       startScanBtn.style.display = "none";
 
+      await video.play(); // ✅ 確実に動画を再生
       console.log("✅ カメラが起動しました");
     } catch (err) {
       console.error("❌ カメラ起動エラー:", err);
-      alert("カメラの起動に失敗しました。");
+      alert("カメラの起動に失敗しました。設定を確認してください。");
     }
   });
 
@@ -195,6 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
 
 // ===================== End Section3 =====================
 
