@@ -126,3 +126,64 @@ document.getElementById("retry").addEventListener("click", () => {
 });
 
 // ===================== End Section5 =====================
+
+
+
+
+// ===================== Section9. 画面遷移とイベント設定 =====================
+
+// ✅ 画面を切り替える関数
+function showScreen(screenId) {
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.style.display = "none";
+  });
+  document.getElementById(screenId).style.display = "block";
+}
+
+// ✅ 初期設定：home 画面を表示、他を非表示
+document.addEventListener("DOMContentLoaded", () => {
+  showScreen("home");
+});
+
+// ✅ トップ画面 → 撮影画面
+document.getElementById("startCamera").addEventListener("click", () => {
+  showScreen("camera");
+  startCamera();
+});
+
+// ✅ トップ画面 → 画像選択
+document.getElementById("selectImage").addEventListener("click", () => {
+  document.getElementById("fileInput").click();
+});
+
+// ✅ 画像選択時にプレビュー画面へ遷移
+document.getElementById("fileInput").addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById("preview").src = e.target.result;
+      showScreen("reference-preview");
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// ✅ 撮影ボタンを押したときにカメラプレビューへ遷移
+document.getElementById("capture").addEventListener("click", () => {
+  captureImage();
+  showScreen("camera-preview");
+});
+
+// ✅ プレビュー画面 → 診断結果画面
+document.getElementById("analyze").addEventListener("click", () => {
+  showScreen("result");
+  analyzeImage();
+});
+
+// ✅ ホームへ戻るボタン（全画面共通）
+document.querySelectorAll(".homeBtn").forEach(button => {
+  button.addEventListener("click", () => showScreen("home"));
+});
+
+// ===================== End Section9 =====================
