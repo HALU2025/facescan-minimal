@@ -150,10 +150,10 @@ fileInput.addEventListener("change", async (event) => {
   }
 });
 
-// ✅ 画像プレビューから選び直し（ダイアログのみ開く）
+// ✅ 画像プレビューから選び直し（ダイアログのみ開く・画面はそのまま）
 document.getElementById("reselect").addEventListener("click", () => {
-  fileInput.value = ""; // 連続選択防止
-  fileInput.click();
+  document.getElementById("fileInput").value = ""; // リセット
+  document.getElementById("fileInput").click();
 });
 
 // ===================== End Section4 =====================
