@@ -92,6 +92,20 @@ button:hover {
   background-color: #a82c6e;
 }
 
+
+.mainDisplay {
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+div#resultContainer {
+  position: relative;
+  height: 500px;
+  width: 480px;
+}
+
+
+
 /* ✅ 診断結果のサムネイル */
 .result-thumbnail {
   width: 150px; /* 任意の正方形サイズ */
@@ -126,11 +140,11 @@ button:hover {
 .beauty-score {
   font-size: 60px;
   position: absolute;
-  right: 0;
+  left: 170px;
 }
 .catchphrase {
   position: absolute;
-  left: 40%;
+  left: 170px;
   top: 20%;
 }
 .age {
@@ -138,28 +152,28 @@ button:hover {
   left: 170px;
   top: 25%;
 }
-.score:first-child {
+.score:nth-child(1) {
   position: absolute;
   left: 0;
   top: 30%;
 }
-.score:second-child {
+.score:nth-child(2) {
   position: absolute;
   left: 0;
   top: 35%;
 }
-.score:last-child {
+.score:nth-child(3) {
   position: absolute;
   left: 0;
   top: 40%;
 }
 .celeb {
   position: absolute;
-  left: 170px;
+  left: 0;
   top: 45%;
 }
 .comment {
   position: absolute;
   left: 0;
-  top: 45%;
+  top: 50%;
 }
