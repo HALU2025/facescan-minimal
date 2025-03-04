@@ -162,41 +162,45 @@ fileInput.addEventListener("change", async function (event) {
 // ===================== Section5. 診断処理 =====================
 
 // ✅ 診断実行ボタンのイベント
-document.getElementById("analyze").addEventListener("click", async () => {
-  if (!currentImageData) {
-    alert("画像を撮影または選択してください！");
-    return;
-  }
-
-  try {
-    console.log("APIへ画像を送信中...");
-
-    const response = await fetch("/api/upload", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ image: currentImageData }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTPエラー! ステータス: ${response.status}`);
+document.querySelectorAll(".analyze-btn").forEach(button => {
+  button.addEventListener("click", async () => {
+    if (!currentImageData) {
+      alert("画像を撮影または選択してください！");
+      return;
     }
 
-    const result = await response.json();
-    console.log("APIレスポンス:", result);
+    console.log("診断実行 - currentImageData:", currentImageData); // デバッグ用
 
-    // 診断結果を保存
-    currentResult = result.result;
+    try {
+      console.log("APIへ画像を送信中...");
 
-    // ✅ 診断結果画面へ遷移
-    showScreen("result");
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: currentImageData }),
+      });
 
-    // ✅ 結果を画面に反映
-    displayResultHTML(currentResult);
+      if (!response.ok) {
+        throw new Error(`HTTPエラー! ステータス: ${response.status}`);
+      }
 
-  } catch (error) {
-    console.error("診断エラー:", error);
-    alert("診断に失敗しました。ネットワーク状況を確認してください。");
-  }
+      const result = await response.json();
+      console.log("APIレスポンス:", result);
+
+      // 診断結果を保存
+      currentResult = result.result;
+
+      // ✅ 診断結果画面へ遷移
+      showScreen("result");
+
+      // ✅ 結果を画面に反映
+      displayResultHTML(currentResult);
+
+    } catch (error) {
+      console.error("診断エラー:", error);
+      alert("診断に失敗しました。ネットワーク状況を確認してください。");
+    }
+  });
 });
 
 // ===================== End Section5 =====================
