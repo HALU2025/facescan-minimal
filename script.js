@@ -51,7 +51,6 @@ function compressImage(imageData, maxSize = 512, quality = 0.7) {
 // ===================== End Section1 =====================
 
 
-
 // ===================== Section2. 画面遷移の管理 =====================
 
 // ✅ 画面を切り替える関数
@@ -109,7 +108,6 @@ function captureImage() {
   const ctx = canvas.getContext("2d");
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-  // 撮影画像の圧縮処理を適用
   compressImage(canvas.toDataURL("image/png")).then(compressedData => {
     currentImageData = compressedData;
     preview.src = currentImageData;
@@ -125,71 +123,50 @@ document.getElementById("retake").addEventListener("click", () => {
 // ===================== End Section3 =====================
 
 
-
 // ===================== Section4. 画像選択 =====================
 
 // ✅ トップ画面 → 画像選択ダイアログを開く
 document.getElementById("selectImage").addEventListener("click", () => {
-  document.getElementById("fileInput").click();
+  fileInput.value = ""; // 連続選択防止
+  fileInput.click();
 });
 
 // ✅ 画像選択 → プレビュー画面
-document.getElementById("fileInput").addEventListener("change", async (event) => {
+fileInput.addEventListener("change", async (event) => {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
     reader.onload = async (e) => {
-      // ✅ 画像を圧縮
       currentImageData = await compressImage(e.target.result);
 
-      // ✅ previewRef が存在するか確認し、なければ作成
-      let previewRef = document.getElementById("previewRef");
-      if (!previewRef) {
-        previewRef = document.createElement("img");
-        previewRef.id = "previewRef";
-        previewRef.style.maxWidth = "100%";
-        document.getElementById("reference-preview").appendChild(previewRef);
-      }
-
+      // ✅ プレビュー画像を更新
       previewRef.src = currentImageData;
       previewRef.style.display = "block";
 
-      // ✅ 画像の読み込みを確実に待ってから遷移
-      setTimeout(() => {
-        showScreen("reference-preview");
-      }, 100); // 少し待ってから遷移
-
-      // ✅ 連続選択防止のためにリセット
-      document.getElementById("fileInput").value = "";
+      // ✅ プレビュー画面へ遷移
+      showScreen("reference-preview");
     };
     reader.readAsDataURL(file);
   }
 });
 
-// ✅ 画像プレビューから選び直し（ダイアログのみ開く・画面はそのまま）
+// ✅ 画像プレビューから選び直し（ダイアログのみ開く）
 document.getElementById("reselect").addEventListener("click", () => {
-  document.getElementById("fileInput").click();
+  fileInput.value = ""; // 連続選択防止
+  fileInput.click();
 });
 
 // ===================== End Section4 =====================
 
 
-
-
-
-
-
 // ===================== Section5. 診断処理 =====================
 
 // ✅ 撮影プレビュー or 画像プレビュー → 診断結果画面
-document.getElementById("analyze").addEventListener("click", () => {
-  showScreen("result");
-  analyzeImage();
-});
-
-document.getElementById("analyzeRef").addEventListener("click", () => {
-  showScreen("result");
-  analyzeImage();
+document.querySelectorAll("#analyze").forEach(button => {
+  button.addEventListener("click", () => {
+    showScreen("result");
+    analyzeImage();
+  });
 });
 
 function analyzeImage() {
@@ -197,8 +174,9 @@ function analyzeImage() {
   // API に送信して結果を取得する処理を後で追加
 }
 
-
 // ===================== End Section5 =====================
+
+
 
 
 
