@@ -1,5 +1,5 @@
 html {
-  background-color: #f0f4f8;
+  background-color: #052035;
 }
 body {
   font-family: sans-serif;
@@ -74,7 +74,7 @@ div#result .mainDisplay {
   background: url(images/deepscan-ui4.png) top center no-repeat;
   background-size: cover;
   width:100%;
-  
+
 }
 .result{
   width: 100%;
@@ -83,39 +83,39 @@ div#result .mainDisplay {
 }
 
 .result-thumbnail {
-  width: 150px;
-  height: 150px;
-  overflow: hidden;
-  position: absolute;
+  width: 185px;
+    height: 185px;
+    overflow: hidden;
+    position: absolute;
+    top: 14%;
+    left: 4.6%;
 }
 
 .result-thumbnail img {
   width: 100%;
   height: 100%;
   object-fit: cover; /* アスペクト比を保ちつつ中央をトリミング */
-  border: 2px solid #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 /* ✅ 診断結果のラベル */
 .clabel {
   display: inline-block;
+  margin-right:10px;
 }
 
 /* ✅ 診断結果のスコア表示 */
-.beauty-score {
-  font-size: 60px;
-}
 .beauty-score span {
-  font-size: 25px;
+  font-size: 30px;
 }
 .beauty-score .clabel {
-  font-size: 20px;
+  display:none;
 }
 .beauty-score {
-  font-size: 60px;
+  font-size: 50px;
   position: absolute;
-  left: 170px;
+  right: 8.3%;
+  top: 19.0%;
 }
 .catchphrase {
   position: absolute;
@@ -129,26 +129,38 @@ div#result .mainDisplay {
 }
 .result .score:nth-of-type(4){
   position: absolute;
-  left: 0;
-  top: 30%;
+    right: 6.2%;
+    top: 45%;
+    color: #ffffff;
 }
 .result .score:nth-of-type(5) {
   position: absolute;
-  left: 0;
-  top: 35%;
+    right: 6.2%;
+    top: 50%;
+    color: #ffffff;
 }
 .result .score:nth-of-type(6){
   position: absolute;
-  left: 0;
-  top: 40%;
+    right: 6.2%;
+    top: 55%;
+    color: #ffffff;
+}
+.result .score:nth-of-type(4) .clabel,.result .score:nth-of-type(5) .clabel,.result .score:nth-of-type(6) .clabel{
+  color: #9cb3c7;
+}
+.result .score:nth-of-type(4) span,.result .score:nth-of-type(5) span,.result .score:nth-of-type(6) span{
+  color: #ffffff;
 }
 .celeb {
   position: absolute;
-  left: 0;
-  top: 45%;
+  left: 6.2%;
+  top: 84.5%;
+  color: #9cb3c7;
 }
 .comment {
   position: absolute;
-  left: 0;
-  top: 50%;
+  left: 6.2%;
+  top: 65%;
+  color: #9cb3c7;
+  width: 88%;
 }
