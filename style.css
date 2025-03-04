@@ -52,45 +52,9 @@ body {
 
 /* ✅ ボタンデザイン */
 button {
-  width: 100%;
-  max-width: 300px;
-  padding: 12px;
-  font-size: 16px;
-  margin-top: 20px;
-  cursor: pointer;
-  border: none;
-  border-radius: 5px;
-  background-color: #007BFF;
-  color: white;
-  font-weight: bold;
-  transition: 0.3s;
+  width: 300px;
 }
 
-button:hover {
-  background-color: #0056b3;
-}
-
-/* ✅ シェアボタン（色を分ける） */
-#twitterBtn {
-  background-color: #1DA1F2;
-}
-#twitterBtn:hover {
-  background-color: #0d8aec;
-}
-
-#fbBtn {
-  background-color: #1877F2;
-}
-#fbBtn:hover {
-  background-color: #125abe;
-}
-
-#instaBtn {
-  background-color: #C13584;
-}
-#instaBtn:hover {
-  background-color: #a82c6e;
-}
 
 .screen {
   padding: 20px;
@@ -109,12 +73,12 @@ div#resultContainer {
 
 
 
-/* ✅ 診断結果のサムネイル */
 .result-thumbnail {
-  width: 150px; /* 任意の正方形サイズ */
+  width: 150px;
   height: 150px;
   overflow: hidden;
   margin-bottom: 20px;
+  position: absolute;
 }
 
 .result-thumbnail img {
@@ -155,17 +119,17 @@ div#resultContainer {
   left: 170px;
   top: 25%;
 }
-.score:nth-child(1) {
+.score:nth-of-type(1) {
   position: absolute;
   left: 0;
   top: 30%;
 }
-.score:nth-child(2) {
+.score:nth-of-type(2) {
   position: absolute;
   left: 0;
   top: 35%;
 }
-.score:nth-child(3) {
+.score:nth-of-type(3){
   position: absolute;
   left: 0;
   top: 40%;
