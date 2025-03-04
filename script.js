@@ -161,11 +161,11 @@ document.getElementById("fileInput").addEventListener("change", async (event) =>
   }
 });
 
-// ✅ 画像プレビューから選び直し
+// ✅ 画像プレビューから選び直し（ダイアログのみ開く・画面はそのまま）
 document.getElementById("reselect").addEventListener("click", () => {
   document.getElementById("fileInput").click();
-  showScreen("reference"); // **正しい画面に戻す**
 });
+
 
 // ===================== End Section4 =====================
 
