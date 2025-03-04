@@ -128,7 +128,7 @@ document.getElementById("retake").addEventListener("click", () => {
 
 // ===================== Section4. 画像選択 =====================
 
-// ✅ トップ画面 → 画像選択画面
+// ✅ トップ画面 → 画像選択ダイアログを開く
 document.getElementById("selectImage").addEventListener("click", () => {
   document.getElementById("fileInput").click();
 });
@@ -139,7 +139,7 @@ document.getElementById("fileInput").addEventListener("change", async (event) =>
   if (file) {
     const reader = new FileReader();
     reader.onload = async (e) => {
-      // 画像を圧縮
+      // ✅ 画像を圧縮
       currentImageData = await compressImage(e.target.result);
 
       // ✅ previewRef が存在するか確認し、なければ作成
@@ -154,8 +154,13 @@ document.getElementById("fileInput").addEventListener("change", async (event) =>
       previewRef.src = currentImageData;
       previewRef.style.display = "block";
 
-      // ✅ プレビュー画面へ遷移
-      showScreen("reference-preview");
+      // ✅ 画像の読み込みを確実に待ってから遷移
+      setTimeout(() => {
+        showScreen("reference-preview");
+      }, 100); // 少し待ってから遷移
+
+      // ✅ 連続選択防止のためにリセット
+      document.getElementById("fileInput").value = "";
     };
     reader.readAsDataURL(file);
   }
@@ -166,8 +171,8 @@ document.getElementById("reselect").addEventListener("click", () => {
   document.getElementById("fileInput").click();
 });
 
-
 // ===================== End Section4 =====================
+
 
 
 
