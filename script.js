@@ -115,88 +115,34 @@ function isMobile() {
 
 
 
-// ===================== Section3. カメラ起動・ファイル選択の処理 =====================
+// ===================== Section3. 画面遷移のテスト =====================
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ DOMContentLoaded - JavaScriptが正しく読み込まれました");
 
   const startScanBtn = document.getElementById("startScan");
-  const video = document.getElementById("video");
   const captureBtn = document.getElementById("capture");
-  const fileInput = document.getElementById("fileInput");
 
-  console.log("startScanBtn:", startScanBtn);
-
-  // ✅ トップ画面 → 撮影画面（カメラ起動）
-  startScanBtn.addEventListener("click", async () => {
-    console.log("✅ 診断開始ボタンが押されました");
-
-    showScreen("camera"); // 画面遷移
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user" },
+  function showScreen(screenId) {
+      document.querySelectorAll(".container").forEach(screen => {
+          screen.style.display = "none";
       });
+      document.getElementById(screenId).style.display = "block";
+  }
 
-      video.srcObject = stream;
-      video.style.display = "block";
-      captureBtn.style.display = "inline-block";
-      fileInput.style.display = "inline-block";
-      startScanBtn.style.display = "none";
-
-      await video.play(); // ✅ 確実に動画を再生
-      console.log("✅ カメラが起動しました");
-    } catch (err) {
-      console.error("❌ カメラ起動エラー:", err);
-      alert("カメラの起動に失敗しました。設定を確認してください。");
-    }
+  // ✅ トップ画面 → 撮影画面
+  startScanBtn.addEventListener("click", () => {
+      console.log("✅ 診断を開始 → 撮影画面");
+      showScreen("camera");
   });
 
-  // ✅ 撮影処理（カメラ映像から画像キャプチャ）
+  // ✅ 撮影画面 → トップ画面
   captureBtn.addEventListener("click", () => {
-    console.log("✅ 撮影ボタンが押されました");
-
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    currentImageData = canvas.toDataURL("image/webp", 0.7);
-    document.getElementById("preview").src = currentImageData;
-    document.getElementById("preview").style.display = "block";
-
-    video.style.display = "none";
-    captureBtn.style.display = "none";
-    fileInput.style.display = "none";
-
-    showScreen("result"); // ✅ 診断結果画面に遷移
-  });
-
-  // ✅ ファイル選択処理（画像参照）
-  fileInput.addEventListener("change", (event) => {
-    console.log("✅ 画像ファイルが選択されました");
-
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        currentImageData = e.target.result;
-        document.getElementById("preview").src = currentImageData;
-        document.getElementById("preview").style.display = "block";
-
-        video.style.display = "none";
-        captureBtn.style.display = "none";
-        fileInput.style.display = "none";
-
-        showScreen("result"); // ✅ 診断結果画面に遷移
-      };
-      reader.readAsDataURL(file);
-    }
+      console.log("✅ 撮影完了 → トップ画面");
+      showScreen("home");
   });
 });
-
-
 // ===================== End Section3 =====================
+
 
 
 
