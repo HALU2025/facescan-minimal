@@ -181,13 +181,13 @@ document.getElementById("analyze").addEventListener("click", async () => {
     const result = await response.json();
     console.log("APIレスポンス:", result);
 
-    // 診断結果を保存
+    // ✅ 診断結果を保存
     currentResult = result.result;
 
-    // 診断結果画面へ遷移
+    // ✅ 診断結果画面へ遷移
     showScreen("result");
 
-    // 結果を画面に反映
+    // ✅ 結果を画面に反映
     displayResultHTML(currentResult);
 
   } catch (error) {
@@ -197,6 +197,7 @@ document.getElementById("analyze").addEventListener("click", async () => {
 });
 
 // ===================== End Section5 =====================
+
 
 
 
