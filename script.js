@@ -115,30 +115,30 @@ function isMobile() {
 
 
 
-// ===================== Section3. 画面遷移のテスト =====================
+// ===================== Section3. カメラ起動・ファイル選択の処理 =====================
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ DOMContentLoaded - JavaScriptが正しく読み込まれました");
 
+  const homeScreen = document.getElementById("home");
+  const cameraScreen = document.getElementById("camera");
   const startScanBtn = document.getElementById("startScan");
   const captureBtn = document.getElementById("capture");
 
-  function showScreen(screenId) {
-      document.querySelectorAll(".container").forEach(screen => {
-          screen.style.display = "none";
-      });
-      document.getElementById(screenId).style.display = "block";
-  }
+  // ✅ 初期状態で `#camera` を非表示
+  cameraScreen.style.display = "none";
 
-  // ✅ トップ画面 → 撮影画面
+  // ✅ 診断開始ボタンを押したときの処理（トップ画面 → 撮影画面）
   startScanBtn.addEventListener("click", () => {
-      console.log("✅ 診断を開始 → 撮影画面");
-      showScreen("camera");
+    console.log("✅ 診断開始ボタンが押されました");
+    homeScreen.style.display = "none";
+    cameraScreen.style.display = "block";
   });
 
-  // ✅ 撮影画面 → トップ画面
+  // ✅ 撮影ボタンを押したときの処理（撮影画面 → トップ画面）
   captureBtn.addEventListener("click", () => {
-      console.log("✅ 撮影完了 → トップ画面");
-      showScreen("home");
+    console.log("✅ 撮影ボタンが押されました");
+    cameraScreen.style.display = "none";
+    homeScreen.style.display = "block";
   });
 });
 // ===================== End Section3 =====================
