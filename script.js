@@ -134,7 +134,7 @@ document.getElementById("selectImage").addEventListener("click", () => {
 });
 
 // ✅ 画像選択 → プレビュー画面
-document.getElementById("fileInput").addEventListener("change", (event) => {
+document.getElementById("fileInput").addEventListener("change", async (event) => {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
@@ -154,12 +154,8 @@ document.getElementById("fileInput").addEventListener("change", (event) => {
       previewRef.src = currentImageData;
       previewRef.style.display = "block";
 
-      // ✅ reference-preview 画面が存在するか確認
-      if (document.getElementById("reference-preview")) {
-        showScreen("reference-preview");
-      } else {
-        console.error("❌ reference-preview が見つかりません");
-      }
+      // ✅ プレビュー画面へ遷移
+      showScreen("reference-preview");
     };
     reader.readAsDataURL(file);
   }
@@ -167,14 +163,12 @@ document.getElementById("fileInput").addEventListener("change", (event) => {
 
 // ✅ 画像プレビューから選び直し
 document.getElementById("reselect").addEventListener("click", () => {
-  if (document.getElementById("reference")) {
-    showScreen("reference");
-  } else {
-    console.error("❌ reference 画面が見つかりません");
-  }
+  document.getElementById("fileInput").click();
+  showScreen("reference"); // **正しい画面に戻す**
 });
 
 // ===================== End Section4 =====================
+
 
 
 
