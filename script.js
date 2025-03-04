@@ -544,23 +544,24 @@ if (!isMobile()) {
 
 
 // ===================== Section9. 画面遷移処理 =====================
+document.addEventListener("DOMContentLoaded", () => {
+  function showScreen(screenId) {
+    document.querySelectorAll(".screen").forEach(screen => {
+      screen.style.display = "none";
+    });
+    document.getElementById(screenId).style.display = "block";
+  }
 
-function showScreen(screenId) {
-  document.querySelectorAll(".container").forEach(screen => {
-    screen.style.display = "none";
+  // ✅ トップ画面 → 撮影画面
+  document.getElementById("startScan").addEventListener("click", () => {
+    showScreen("camera");
   });
-  document.getElementById(screenId).style.display = "block";
-}
 
-// ✅ トップ画面 → 撮影画面
-document.getElementById("startScan").addEventListener("click", () => {
-  showScreen("camera");
+  // ✅ 撮影画面 → トップ画面
+  document.getElementById("capture").addEventListener("click", () => {
+    showScreen("home");
+  });
 });
-
-// ✅ 撮影画面 → トップ画面（仮で遷移戻し）
-document.getElementById("capture").addEventListener("click", () => {
-  showScreen("home");
-});
-
 // ===================== End Section9 =====================
+
 
