@@ -61,11 +61,8 @@ function showScreen(screenId) {
   document.getElementById(screenId).style.display = "block";
 
   // ✅ プレビュー画面なら previewRef を確実に表示
-  if (screenId === "reference-preview") {
-    let previewRef = document.getElementById("previewRef");
-    if (previewRef && currentImageData) {
-      previewRef.style.display = "block";
-    }
+  if (screenId === "reference-preview" && currentImageData) {
+    previewRef.style.display = "block";
   }
 }
 
@@ -131,8 +128,10 @@ document.getElementById("retake").addEventListener("click", () => {
 // ===================== End Section3 =====================
 
 
+// ===================== Section4. 画像選択 =====================
+
 // ✅ 画像選択 → プレビュー画面
-document.getElementById("fileInput").addEventListener("change", async function handleFileSelect(event) {
+fileInput.addEventListener("change", async function (event) {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
@@ -140,37 +139,21 @@ document.getElementById("fileInput").addEventListener("change", async function h
       // ✅ 画像を圧縮
       currentImageData = await compressImage(e.target.result);
 
-      // ✅ previewRef が存在するか確認し、なければ作成
-      let previewRef = document.getElementById("previewRef");
-      if (!previewRef) {
-        previewRef = document.createElement("img");
-        previewRef.id = "previewRef";
-        previewRef.style.maxWidth = "100%";
-        document.getElementById("reference-preview").appendChild(previewRef);
-      }
-
-      // ✅ 画像を確実にセットしてから画面遷移
+      // ✅ 画像をプレビューに反映
       previewRef.src = currentImageData;
       previewRef.style.display = "block";
-      console.log("✅ previewRef に画像をセット:", previewRef.src);
 
-      // ✅ `fileInput` を完全にリセット（次回も確実に `change` を発火させる）
-      event.target.value = "";
-
-      // ✅ 画像の読み込みを確実に待ってから遷移
+      // ✅ プレビュー画面へ遷移
       showScreen("reference-preview");
+
+      // ✅ `fileInput` をリセット
+      event.target.value = "";
     };
     reader.readAsDataURL(file);
   }
 });
 
-// ✅ 画像プレビューから選び直し（ダイアログのみ開く・画面はそのまま）
-document.getElementById("reselect").addEventListener("click", () => {
-  document.getElementById("fileInput").click();
-});
-
-
-
+// ===================== End Section4 =====================
 
 
 // ===================== Section5. 診断処理 =====================
