@@ -59,6 +59,14 @@ function showScreen(screenId) {
     screen.style.display = "none";
   });
   document.getElementById(screenId).style.display = "block";
+
+  // ✅ プレビュー画面なら previewRef を確実に表示
+  if (screenId === "reference-preview") {
+    let previewRef = document.getElementById("previewRef");
+    if (previewRef && currentImageData) {
+      previewRef.style.display = "block";
+    }
+  }
 }
 
 // ✅ どの画面からもホームに戻る
@@ -126,7 +134,7 @@ document.getElementById("retake").addEventListener("click", () => {
 // ===================== Section4. 画像選択 =====================
 
 // ✅ 画像選択 → プレビュー画面
-document.getElementById("fileInput").addEventListener("change", async function handleFileSelect(event) {
+document.getElementById("fileInput").addEventListener("change", async (event) => {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
@@ -134,7 +142,7 @@ document.getElementById("fileInput").addEventListener("change", async function h
       // ✅ 画像を圧縮
       currentImageData = await compressImage(e.target.result);
 
-      // ✅ previewRef が存在するか確認し、なければ作成
+      // ✅ previewRef を更新
       let previewRef = document.getElementById("previewRef");
       if (!previewRef) {
         previewRef = document.createElement("img");
@@ -146,21 +154,20 @@ document.getElementById("fileInput").addEventListener("change", async function h
       previewRef.src = currentImageData;
       previewRef.style.display = "block";
 
-      // ✅ 画像の読み込みを確実に待ってから遷移
+      // ✅ 画像の読み込み後に遷移
       setTimeout(() => {
         showScreen("reference-preview");
       }, 100);
 
-      // ✅ `fileInput` を完全にリセットし、再選択可能にする
+      // ✅ `fileInput` をリセットし、連続選択に対応
       event.target.value = "";
-      event.target.removeEventListener("change", handleFileSelect);
-      event.target.addEventListener("change", handleFileSelect);
     };
     reader.readAsDataURL(file);
   }
 });
 
 // ===================== End Section4 =====================
+
 
 
 
