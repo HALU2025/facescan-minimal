@@ -126,7 +126,7 @@ document.getElementById("retake").addEventListener("click", () => {
 // ===================== Section4. 画像選択 =====================
 
 // ✅ 画像選択 → プレビュー画面
-document.getElementById("fileInput").addEventListener("change", async (event) => {
+document.getElementById("fileInput").addEventListener("change", async function handleFileSelect(event) {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
@@ -151,8 +151,10 @@ document.getElementById("fileInput").addEventListener("change", async (event) =>
         showScreen("reference-preview");
       }, 100);
 
-      // ✅ 連続選択防止のためにリセット
+      // ✅ `fileInput` を完全にリセットし、再選択可能にする
       event.target.value = "";
+      event.target.removeEventListener("change", handleFileSelect);
+      event.target.addEventListener("change", handleFileSelect);
     };
     reader.readAsDataURL(file);
   }
