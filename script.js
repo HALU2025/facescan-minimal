@@ -91,3 +91,35 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
+
+
+// ===================== Section3. カメラ起動・ファイル選択の処理 =====================
+
+// ✅ 撮影処理（カメラ映像から画像キャプチャ）
+captureBtn.addEventListener("click", () => {
+  console.log("✅ 撮影ボタンが押されました");
+
+  const ctx = canvas.getContext("2d");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  // 撮影した画像をプレビュー表示
+  currentImageData = canvas.toDataURL("image/webp", 0.7);
+  preview.src = currentImageData;
+  preview.style.display = "block";
+
+  // ✅ 「この写真で診断」ボタンを表示
+  analyzeBtn.style.display = "block";
+
+  // ✅ カメラ映像を非表示
+  video.style.display = "none";
+  captureBtn.style.display = "none";
+});
+
+// ✅ 「この写真で診断」ボタンを押したときの処理
+analyzeBtn.addEventListener("click", () => {
+  console.log("✅ 診断開始");
+});
