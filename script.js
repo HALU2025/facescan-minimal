@@ -1,125 +1,128 @@
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("✅ DOMContentLoaded - JavaScriptが正しく読み込まれました");
+// ===================== Section1. 初期設定と DOM 要素の取得 =====================
+const video = document.getElementById("video");
+const preview = document.getElementById("preview");
+const previewRef = document.getElementById("previewRef");
+const fileInput = document.getElementById("fileInput");
 
-  const homeScreen = document.getElementById("home");
-  const previewScreen = document.getElementById("previewScreen");
-  const startCameraBtn = document.getElementById("startCamera");
-  const selectImageBtn = document.getElementById("selectImage");
-  const fileInput = document.getElementById("fileInput");
-  const video = document.getElementById("video");
-  const captureBtn = document.getElementById("capture");
-  const preview = document.getElementById("preview");
-  const retryBtn = document.getElementById("retry");
+let currentImageData = ""; // 撮影または選択した画像データ
 
-  let stream = null; // カメラストリーム用
+// ===================== End Section1 =====================
 
-  // ✅ 画面遷移処理（home → previewScreen）
-  function showPreviewScreen() {
-    homeScreen.style.display = "none";
-    previewScreen.style.display = "block";
-  }
 
-  // ✅ 撮影開始ボタンが押されたとき
-  startCameraBtn.addEventListener("click", async () => {
-    console.log("✅ 撮影開始");
+// ===================== Section2. 画面遷移の管理 =====================
 
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+// ✅ 画面を切り替える関数
+function showScreen(screenId) {
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.style.display = "none";
+  });
+  document.getElementById(screenId).style.display = "block";
+}
+
+// ✅ どの画面からもホームに戻る
+document.querySelectorAll("#backToHome").forEach(button => {
+  button.addEventListener("click", () => showScreen("home"));
+});
+
+// ===================== End Section2 =====================
+
+
+// ===================== Section3. カメラ起動 =====================
+
+// ✅ トップ画面 → 撮影画面
+document.getElementById("startCamera").addEventListener("click", () => {
+  showScreen("camera");
+  startCamera();
+});
+
+function startCamera() {
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+    .then(stream => {
       video.srcObject = stream;
       video.style.display = "block";
-      captureBtn.style.display = "block";
-      preview.style.display = "none";
-      showPreviewScreen();
-      await video.play();
-    } catch (err) {
+    })
+    .catch(err => {
       alert("カメラのアクセスが許可されていません。設定を確認してください。");
-      console.error("❌ カメラ起動エラー:", err);
-    }
-  });
+      console.error("カメラ起動エラー:", err);
+    });
+}
 
-  // ✅ 撮影処理（カメラ映像から画像キャプチャ）
-  captureBtn.addEventListener("click", () => {
-    console.log("✅ 撮影ボタンが押されました");
-
-    const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    preview.src = canvas.toDataURL("image/webp", 0.7);
-    preview.style.display = "block";
-    video.style.display = "none";
-    captureBtn.style.display = "none";
-
-    // カメラ停止
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-    }
-  });
-
-  // ✅ 画像選択ボタンが押されたとき
-  selectImageBtn.addEventListener("click", () => {
-    fileInput.click();
-  });
-
-  // ✅ ファイル選択時の処理
-  fileInput.addEventListener("change", (event) => {
-    console.log("✅ 画像が選択されました");
-
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        preview.src = e.target.result;
-        preview.style.display = "block";
-        video.style.display = "none";
-        captureBtn.style.display = "none";
-        showPreviewScreen();
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-
-  // ✅ もう一度撮影 or 画像選択に戻る
-  retryBtn.addEventListener("click", () => {
-    previewScreen.style.display = "none";
-    homeScreen.style.display = "block";
-
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-      stream = null;
-    }
-  });
+// ✅ 撮影画面 → プレビュー画面
+document.getElementById("capture").addEventListener("click", () => {
+  captureImage();
+  showScreen("camera-preview");
 });
 
-
-
-
-// ===================== Section3. カメラ起動・ファイル選択の処理 =====================
-
-// ✅ 撮影処理（カメラ映像から画像キャプチャ）
-captureBtn.addEventListener("click", () => {
-  console.log("✅ 撮影ボタンが押されました");
-
-  const ctx = canvas.getContext("2d");
+function captureImage() {
+  const canvas = document.createElement("canvas");
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
+  const ctx = canvas.getContext("2d");
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-  // 撮影した画像をプレビュー表示
-  currentImageData = canvas.toDataURL("image/webp", 0.7);
+  
+  currentImageData = canvas.toDataURL("image/png");
   preview.src = currentImageData;
   preview.style.display = "block";
+}
 
-  // ✅ 「この写真で診断」ボタンを表示
-  analyzeBtn.style.display = "block";
-
-  // ✅ カメラ映像を非表示
-  video.style.display = "none";
-  captureBtn.style.display = "none";
+// ✅ 撮影プレビューから撮り直し
+document.getElementById("retake").addEventListener("click", () => {
+  showScreen("camera");
 });
 
-// ✅ 「この写真で診断」ボタンを押したときの処理
-analyzeBtn.addEventListener("click", () => {
-  console.log("✅ 診断開始");
+// ===================== End Section3 =====================
+
+
+// ===================== Section4. 画像選択 =====================
+
+// ✅ トップ画面 → 画像選択画面
+document.getElementById("selectImage").addEventListener("click", () => {
+  showScreen("reference");
 });
+
+// ✅ 画像選択 → プレビュー画面
+fileInput.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      currentImageData = e.target.result;
+      previewRef.src = currentImageData;
+      showScreen("reference-preview");
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// ✅ 画像プレビューから選び直し
+document.getElementById("reselect").addEventListener("click", () => {
+  showScreen("reference");
+});
+
+// ===================== End Section4 =====================
+
+
+// ===================== Section5. 診断処理 =====================
+
+// ✅ 撮影プレビュー or 画像プレビュー → 診断結果画面
+document.getElementById("analyze").addEventListener("click", () => {
+  showScreen("result");
+  analyzeImage();
+});
+
+document.getElementById("analyzeRef").addEventListener("click", () => {
+  showScreen("result");
+  analyzeImage();
+});
+
+function analyzeImage() {
+  console.log("診断処理開始...");
+  // API に送信して結果を取得する処理を後で追加
+}
+
+// ✅ 診断結果からもう一度診断
+document.getElementById("retry").addEventListener("click", () => {
+  showScreen("home");
+});
+
+// ===================== End Section5 =====================
