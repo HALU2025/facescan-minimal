@@ -9,25 +9,21 @@
 </head>
 <body>
 
-  <div id="home" class="container"> 
-    <!-- ✅ 上のエリア（メイン画面） -->
+  <!-- ✅ トップ画面 -->
+  <div id="home" class="container">
     <div id="mainDisplay">
       faceScan
     </div>
-
-    <!-- ✅ 下のエリア（ボタンエリア） -->
     <div id="buttonArea">
       <button id="startScan">診断を開始</button>
     </div>
   </div>
 
-  <div id="camera" class="container"> 
-    <!-- ✅ 上のエリア（メイン画面） -->
+  <!-- ✅ 撮影画面 -->
+  <div id="camera" class="container" style="display: none;">
     <div id="mainDisplay">
       <video id="video" autoplay playsinline muted></video>
     </div>
-
-    <!-- ✅ 下のエリア（ボタンエリア） -->
     <div id="buttonArea">
       <button id="capture">撮影</button>
     </div>

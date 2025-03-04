@@ -543,34 +543,24 @@ if (!isMobile()) {
 // ===================== End Section8 =====================
 
 
-// ===================== Section9. 画面遷移の処理 =====================
-
 // ===================== Section9. 画面遷移処理 =====================
 
-// ✅ 画面の切り替え処理
 function showScreen(screenId) {
   document.querySelectorAll(".container").forEach(screen => {
     screen.style.display = "none";
   });
-  const targetScreen = document.getElementById(screenId);
-  if (targetScreen) {
-    targetScreen.style.display = "block";
-  } else {
-    console.error(`❌ 指定された画面が見つかりません: ${screenId}`);
-  }
+  document.getElementById(screenId).style.display = "block";
 }
 
-// ✅ DOMが完全に読み込まれてからイベントを設定
-document.addEventListener("DOMContentLoaded", () => {
-  // ✅ 診断開始ボタン → 撮影画面へ
-  const startScanBtn = document.getElementById("startScan");
-  if (startScanBtn) {
-    startScanBtn.addEventListener("click", () => {
-      showScreen("camera");
-    });
-  } else {
-    console.error("❌ startScanボタンが見つかりません");
-  }
+// ✅ トップ画面 → 撮影画面
+document.getElementById("startScan").addEventListener("click", () => {
+  showScreen("camera");
+});
+
+// ✅ 撮影画面 → トップ画面（仮で遷移戻し）
+document.getElementById("capture").addEventListener("click", () => {
+  showScreen("home");
 });
 
 // ===================== End Section9 =====================
+
