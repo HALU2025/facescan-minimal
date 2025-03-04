@@ -203,15 +203,80 @@ document.getElementById("analyze").addEventListener("click", async () => {
 
 // ===================== Section6. 診断結果のHTML表示 =====================
 
+/**
+ * スコアを 99.999 形式に統一する（小数点以下3桁をランダム追加）
+ * @param {number} rawScore - 元のスコア
+ * @returns {string} - 99.999 形式のスコア
+ */
+function calculateScoreWithRandomFraction(rawScore) {
+  const baseScore = parseFloat(rawScore);
+  const randomFraction = Math.floor(Math.random() * 1000) / 1000; // 0.000 ～ 0.999
+  let finalScore = baseScore + randomFraction;
+  finalScore = Math.min(finalScore, 99.999); // 99.999 を超えないようにする
+  return finalScore.toFixed(3);
+}
+
+/**
+ * 診断結果のテキストをHTMLに変換（スコア処理付き）
+ * @param {string} resultText - APIからの診断結果
+ * @returns {string} - 変換されたHTML
+ */
+function transformResultToHTML(resultText) {
+  const lines = resultText.split("\n").filter(line => line.trim() !== "");
+  let html = "<div class='result'>";
+
+  const fields = {
+      "イケメン度": "beauty-score",
+      "美人度": "beauty-score",
+      "キャッチフレーズ": "catchphrase",
+      "推定年齢": "age",
+      "評価軸1": "score1",
+      "評価軸2": "score2",
+      "評価軸3": "score3",
+      "似ている芸能人": "celeb",
+      "コメント": "comment"
+  };
+
+  lines.forEach(line => {
+    const [key, ...valueParts] = line.split(":");
+    let value = valueParts.join(":").trim();
+
+    if (fields[key]) {
+      // スコアの処理
+      if (key.includes("イケメン度") || key.includes("美人度") || key.includes("評価軸")) {
+        value = calculateScoreWithRandomFraction(value);
+      }
+      html += `<div class="${fields[key]}"><strong>${key}</strong>: ${value}</div>`;
+    }
+  });
+
+  html += "</div>";
+  return html;
+}
+
+/**
+ * 診断結果を画面に表示（サムネイル付き）
+ * @param {string} resultText - AI診断結果のテキスト
+ */
 function displayResultHTML(resultText) {
   const resultContainer = document.getElementById("resultContainer");
   if (!resultContainer) return;
 
-  // 以前の結果をクリア
   resultContainer.innerHTML = "";
 
-  // ✅ 診断結果を HTML に変換して表示
-  resultContainer.innerHTML = transformResultToHTML(resultText);
+  // サムネイル画像を追加
+  if (currentImageData) {
+    const thumbDiv = document.createElement("div");
+    thumbDiv.className = "result-thumbnail";
+    const thumbImg = document.createElement("img");
+    thumbImg.src = currentImageData;
+    thumbImg.alt = "診断対象のサムネイル";
+    thumbDiv.appendChild(thumbImg);
+    resultContainer.appendChild(thumbDiv);
+  }
+
+  // 診断結果のHTMLを追加
+  resultContainer.innerHTML += transformResultToHTML(resultText);
 }
 
 // ===================== End Section6 =====================
