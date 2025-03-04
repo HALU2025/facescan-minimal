@@ -77,17 +77,20 @@ document.getElementById("retake").addEventListener("click", () => {
 
 // ✅ トップ画面 → 画像選択画面
 document.getElementById("selectImage").addEventListener("click", () => {
+  console.log("✅ 画像選択画面へ遷移");
   showScreen("reference");
 });
 
 // ✅ 画像選択 → プレビュー画面
-fileInput.addEventListener("change", (event) => {
+document.getElementById("fileInput").addEventListener("change", (event) => {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
     reader.onload = (e) => {
       currentImageData = e.target.result;
       previewRef.src = currentImageData;
+      previewRef.style.display = "block"; // ✅ 追加: プレビューを確実に表示
+      console.log("✅ 画像が選択されました:", currentImageData);
       showScreen("reference-preview");
     };
     reader.readAsDataURL(file);
@@ -96,6 +99,7 @@ fileInput.addEventListener("change", (event) => {
 
 // ✅ 画像プレビューから選び直し
 document.getElementById("reselect").addEventListener("click", () => {
+  console.log("✅ 画像選び直し");
   showScreen("reference");
 });
 
