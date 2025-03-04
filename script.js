@@ -63,7 +63,7 @@ function showScreen(screenId) {
 }
 
 // ✅ どの画面からもホームに戻る
-document.querySelectorAll("#backToHome").forEach(button => {
+document.querySelectorAll(".backToHome").forEach(button => {
   button.addEventListener("click", () => showScreen("home"));
 });
 
@@ -192,10 +192,6 @@ function analyzeImage() {
   // API に送信して結果を取得する処理を後で追加
 }
 
-// ✅ 診断結果からもう一度診断
-document.getElementById("retry").addEventListener("click", () => {
-  showScreen("home");
-});
 
 // ===================== End Section5 =====================
 
