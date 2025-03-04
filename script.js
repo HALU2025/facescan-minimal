@@ -1,4 +1,5 @@
 // ===================== Section1. 初期設定と DOM 要素の取得 =====================
+
 const video = document.getElementById("video");
 const preview = document.getElementById("preview");
 const previewRef = document.getElementById("previewRef");
@@ -6,7 +7,49 @@ const fileInput = document.getElementById("fileInput");
 
 let currentImageData = ""; // 撮影または選択した画像データ
 
+/**
+ * 画像のリサイズ＆圧縮処理
+ * @param {string} imageData - Base64画像データ
+ * @param {number} maxSize - 最大サイズ（px）
+ * @param {number} quality - 圧縮品質（0.1～1.0）
+ * @returns {Promise<string>} - 圧縮されたBase64データ
+ */
+function compressImage(imageData, maxSize = 512, quality = 0.7) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.src = imageData;
+        img.onload = () => {
+            const canvas = document.createElement("canvas");
+            let width = img.width;
+            let height = img.height;
+
+            // アスペクト比を維持してリサイズ
+            if (width > height) {
+                if (width > maxSize) {
+                    height *= maxSize / width;
+                    width = maxSize;
+                }
+            } else {
+                if (height > maxSize) {
+                    width *= maxSize / height;
+                    height = maxSize;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // 画像を圧縮（WebP形式で品質指定）
+            const compressedData = canvas.toDataURL("image/webp", quality);
+            resolve(compressedData);
+        };
+    });
+}
+
 // ===================== End Section1 =====================
+
 
 
 // ===================== Section2. 画面遷移の管理 =====================
@@ -35,6 +78,9 @@ document.getElementById("startCamera").addEventListener("click", () => {
   startCamera();
 });
 
+/**
+ * カメラを起動し、映像を取得
+ */
 function startCamera() {
   navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
     .then(stream => {
@@ -53,16 +99,22 @@ document.getElementById("capture").addEventListener("click", () => {
   showScreen("camera-preview");
 });
 
+/**
+ * 撮影画像を取得し、圧縮処理を適用
+ */
 function captureImage() {
   const canvas = document.createElement("canvas");
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
   const ctx = canvas.getContext("2d");
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  
-  currentImageData = canvas.toDataURL("image/png");
-  preview.src = currentImageData;
-  preview.style.display = "block";
+
+  // 撮影画像の圧縮処理を適用
+  compressImage(canvas.toDataURL("image/png")).then(compressedData => {
+    currentImageData = compressedData;
+    preview.src = currentImageData;
+    preview.style.display = "block";
+  });
 }
 
 // ✅ 撮影プレビューから撮り直し
@@ -71,6 +123,7 @@ document.getElementById("retake").addEventListener("click", () => {
 });
 
 // ===================== End Section3 =====================
+
 
 
 // ===================== Section4. 画像選択 =====================
@@ -85,8 +138,9 @@ document.getElementById("fileInput").addEventListener("change", (event) => {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
-    reader.onload = (e) => {
-      currentImageData = e.target.result;
+    reader.onload = async (e) => {
+      // 画像を圧縮
+      currentImageData = await compressImage(e.target.result);
 
       // ✅ previewRef が存在するか確認し、なければ作成
       let previewRef = document.getElementById("previewRef");
@@ -117,6 +171,7 @@ document.getElementById("reselect").addEventListener("click", () => {
 });
 
 // ===================== End Section4 =====================
+
 
 
 
