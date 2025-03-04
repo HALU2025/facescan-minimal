@@ -159,19 +159,45 @@ fileInput.addEventListener("change", async function (event) {
 // ===================== Section5. 診断処理 =====================
 
 // ✅ 撮影プレビュー or 画像プレビュー → 診断結果画面
-document.querySelectorAll("#analyze").forEach(button => {
-  button.addEventListener("click", () => {
+document.getElementById("analyze").addEventListener("click", async () => {
+  if (!currentImageData) {
+    alert("画像を撮影または選択してください！");
+    return;
+  }
+
+  try {
+    console.log("APIへ画像を送信中...");
+
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image: currentImageData }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTPエラー! ステータス: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log("APIレスポンス:", result);
+
+    // 診断結果を保存
+    currentResult = result.result;
+
+    // 診断結果画面へ遷移
     showScreen("result");
-    analyzeImage();
-  });
+
+    // 結果を画面に反映
+    displayResultHTML(currentResult);
+
+  } catch (error) {
+    console.error("診断エラー:", error);
+    alert("診断に失敗しました。ネットワーク状況を確認してください。");
+  }
 });
 
-function analyzeImage() {
-  console.log("診断処理開始...");
-  // API に送信して結果を取得する処理を後で追加
-}
-
 // ===================== End Section5 =====================
+
 
 
 
