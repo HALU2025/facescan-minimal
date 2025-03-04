@@ -35,7 +35,7 @@
   <!-- ✅ 撮影プレビュー画面 -->
   <div id="camera-preview" class="screen" style="display: none;">
     <div class="mainDisplay">
-      <img id="preview" style="max-width: 100%;">
+      <img id="preview" style="max-width: 100%; display: none;">
     </div>
     <div class="buttonArea">
       <button id="analyze">🧐 この写真で診断</button>
@@ -47,10 +47,10 @@
   <!-- ✅ 画像参照プレビュー画面 -->
   <div id="reference-preview" class="screen" style="display: none;">
     <div class="mainDisplay">
-      <img id="previewRef" style="max-width: 100%; display: block;">
+      <img id="previewRef" style="max-width: 100%; display: none;">
     </div>
     <div class="buttonArea">
-      <button id="analyzeRef">🧐 この写真で診断</button>  <!-- ✅ ID修正 -->
+      <button id="analyze">🧐 この写真で診断</button>
       <button id="reselect">📂 別の画像を選ぶ</button>
       <button class="backToHome">🏠 ホームに戻る</button>
     </div>
