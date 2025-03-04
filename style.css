@@ -92,6 +92,9 @@ button:hover {
   background-color: #a82c6e;
 }
 
+.screen {
+  padding: 20px;
+}
 
 .mainDisplay {
   max-width: 500px;
