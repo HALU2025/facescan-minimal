@@ -218,10 +218,13 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
  */
 function calculateScoreWithRandomFraction(rawScore) {
   const baseScore = parseFloat(rawScore);
+  if (isNaN(baseScore)) return rawScore; // スコアでないものはそのまま返す
   const randomFraction = Math.floor(Math.random() * 1000) / 1000; // 0.000 ～ 0.999
   let finalScore = baseScore + randomFraction;
   finalScore = Math.min(finalScore, 99.999); // 99.999 を超えないようにする
-  return finalScore.toFixed(3);
+  return finalScore.toFixed(3).replace(/(\d+)(\.\d+)/, (match, intPart, fracPart) => {
+    return `${intPart}<span>${fracPart}</span>`;
+  });
 }
 
 /**
@@ -234,8 +237,8 @@ function transformResultToHTML(resultText) {
   let html = "<div class='result'>";
 
   const fields = {
-      "イケメン度": "beauty-score",
       "美人度": "beauty-score",
+      "イケメン度": "beauty-score",
       "キャッチフレーズ": "catchphrase",
       "推定年齢": "age",
       "評価軸1": "score1",
@@ -250,12 +253,9 @@ function transformResultToHTML(resultText) {
     let value = valueParts.join(":").trim();
 
     if (fields[key]) {
-      // スコアの処理
-      if (key.includes("イケメン度") || key.includes("美人度") || key.includes("評価軸")) {
-        value = calculateScoreWithRandomFraction(value)
-          .replace(/(\d+)(\.\d+)/, (match, intPart, fracPart) => {
-            return `${intPart}<span>${fracPart}</span>`;
-          });
+      // スコアを 99.999 形式にする
+      if (key.includes("美人度") || key.includes("イケメン度") || key.includes("評価軸")) {
+        value = calculateScoreWithRandomFraction(value);
       }
       html += `<div class='${fields[key]}'><strong>${key}</strong>: ${value}</div>`;
     }
@@ -291,7 +291,6 @@ function displayResultHTML(resultText) {
 }
 
 // ===================== End Section6 =====================
-
 
 
 
