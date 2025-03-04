@@ -9,17 +9,25 @@
 </head>
 <body>
 
-  <!-- ✅ トップ画面 -->
-  <div id="home" class="screen">
-    <div class="mainDisplay">
-      <h1>FaceScan</h1>
-    </div>
-    <div class="buttonArea">
-      <button id="startCamera">📷 撮影する</button>
-      <input type="file" id="fileInput" accept="image/*" style="display: none;">
-      <button id="selectImage">📂 画像を選ぶ</button>
+<!-- ✅ トップ画面 -->
+<div id="home" class="screen">
+  <div class="mainDisplay">
+    <h1>FaceScan</h1>
+  </div>
+  <div class="buttonArea">
+    <div class="file">
+      <label class="file-label">
+        <input class="file-input" type="file" id="fileInput" accept="image/*">
+        <span class="file-cta">
+          <span class="file-icon">
+            <i class="fas fa-upload"></i>
+          </span>
+          <span class="file-label"> 画像をえらぶ </span>
+        </span>
+      </label>
     </div>
   </div>
+</div>
 
   <!-- ✅ 撮影画面 -->
   <div id="camera" class="screen" style="display: none;">
@@ -45,16 +53,28 @@
   </div>
 
   <!-- ✅ 画像参照プレビュー画面 -->
-  <div id="reference-preview" class="screen" style="display: none;">
-    <div class="mainDisplay">
-      <img id="previewRef" style="max-width: 100%; display: none;">
-    </div>
-    <div class="buttonArea">
-      <button id="analyze">🧐 この写真で診断</button>
-      <button id="reselect">📂 別の画像を選ぶ</button>
-      <button class="backToHome">🏠 ホームに戻る</button>
-    </div>
+<div id="reference-preview" class="screen" style="display: none;">
+  <div class="mainDisplay">
+    <img id="previewRef" style="max-width: 100%; display: none;">
   </div>
+  <div class="buttonArea">
+    <button id="analyze">🧐 この写真で診断</button>
+    
+    <div class="file">
+      <label class="file-label">
+        <input class="file-input" type="file" id="fileInput" accept="image/*">
+        <span class="file-cta">
+          <span class="file-icon">
+            <i class="fas fa-upload"></i>
+          </span>
+          <span class="file-label"> 📂 別の画像を選ぶ </span>
+        </span>
+      </label>
+    </div>
+
+    <button class="backToHome">🏠 ホームに戻る</button>
+  </div>
+</div>
 
   <!-- ✅ 診断結果画面 -->
   <div id="result" class="screen" style="display: none;">
