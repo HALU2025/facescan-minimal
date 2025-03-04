@@ -131,10 +131,8 @@ document.getElementById("retake").addEventListener("click", () => {
 // ===================== End Section3 =====================
 
 
-// ===================== Section4. 画像選択 =====================
-
 // ✅ 画像選択 → プレビュー画面
-document.getElementById("fileInput").addEventListener("change", async (event) => {
+document.getElementById("fileInput").addEventListener("change", async function handleFileSelect(event) {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
@@ -142,7 +140,7 @@ document.getElementById("fileInput").addEventListener("change", async (event) =>
       // ✅ 画像を圧縮
       currentImageData = await compressImage(e.target.result);
 
-      // ✅ previewRef を更新
+      // ✅ previewRef が存在するか確認し、なければ作成
       let previewRef = document.getElementById("previewRef");
       if (!previewRef) {
         previewRef = document.createElement("img");
@@ -151,22 +149,26 @@ document.getElementById("fileInput").addEventListener("change", async (event) =>
         document.getElementById("reference-preview").appendChild(previewRef);
       }
 
+      // ✅ 画像を確実にセットしてから画面遷移
       previewRef.src = currentImageData;
       previewRef.style.display = "block";
+      console.log("✅ previewRef に画像をセット:", previewRef.src);
 
-      // ✅ 画像の読み込み後に遷移
-      setTimeout(() => {
-        showScreen("reference-preview");
-      }, 100);
-
-      // ✅ `fileInput` をリセットし、連続選択に対応
+      // ✅ `fileInput` を完全にリセット（次回も確実に `change` を発火させる）
       event.target.value = "";
+
+      // ✅ 画像の読み込みを確実に待ってから遷移
+      showScreen("reference-preview");
     };
     reader.readAsDataURL(file);
   }
 });
 
-// ===================== End Section4 =====================
+// ✅ 画像プレビューから選び直し（ダイアログのみ開く・画面はそのまま）
+document.getElementById("reselect").addEventListener("click", () => {
+  document.getElementById("fileInput").click();
+});
+
 
 
 
