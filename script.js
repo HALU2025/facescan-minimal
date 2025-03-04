@@ -490,31 +490,65 @@ if (!isMobile()) {
 
 // ===================== Section9. 画面遷移とイベント設定 =====================
 
+// ===================== Section9. 画面遷移とイベント設定 =====================
+
 // ✅ 画面遷移処理
 function showScreen(screenId) {
   document.querySelectorAll(".screen").forEach(screen => {
     screen.style.display = "none";
   });
-  document.getElementById(screenId).style.display = "block";
+
+  const targetScreen = document.getElementById(screenId);
+  if (targetScreen) {
+    targetScreen.style.display = "block";
+  } else {
+    console.error(`❌ 画面遷移エラー: ${screenId} が見つかりません。`);
+  }
 }
 
 // ✅ トップ画面 → 撮影画面
 document.getElementById("startScan").addEventListener("click", () => {
+  console.log("✅ 診断開始ボタンが押されました");
   showScreen("camera");
-  startCamera();
+
+  // カメラ起動
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+    .then(stream => {
+      const video = document.getElementById("video");
+      video.srcObject = stream;
+      video.style.display = "block";
+      video.play();
+    })
+    .catch(err => {
+      alert("カメラのアクセスが許可されていません。設定を確認してください。");
+      console.error("カメラ起動エラー:", err);
+    });
 });
 
 // ✅ 撮影画面 → 診断結果画面
 document.getElementById("capture").addEventListener("click", () => {
-  captureImage();
-  showScreen("result"); // ✅ トップ画面ではなく診断結果画面へ遷移
+  console.log("✅ 撮影ボタンが押されました");
+
+  const video = document.getElementById("video");
+  const canvas = document.createElement("canvas");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  const preview = document.getElementById("preview");
+  preview.src = canvas.toDataURL("image/png");
+  preview.style.display = "block";
+
+  // ✅ 診断結果画面へ遷移
+  showScreen("result");
 });
 
-// ✅ もう一度診断（診断結果 → トップ画面）
+// ✅ 診断結果画面 → トップ画面
 document.getElementById("retryBtn").addEventListener("click", () => {
+  console.log("✅ もう一回診断ボタンが押されました");
   showScreen("home");
 });
-
 
 
 
