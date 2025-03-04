@@ -507,13 +507,14 @@ document.getElementById("startScan").addEventListener("click", () => {
 // ✅ 撮影画面 → 診断結果画面
 document.getElementById("capture").addEventListener("click", () => {
   captureImage();
-  showScreen("result"); // ✅ トップ画面ではなく診断結果画面へ遷移
+  setTimeout(() => showScreen("result"), 500); // ✅ 画像処理の遅延を考慮し0.5秒後に遷移
 });
 
 // ✅ もう一度診断（診断結果 → トップ画面）
 document.getElementById("retryBtn").addEventListener("click", () => {
   showScreen("home");
 });
+
 
 
 // ===================== End Section9 =====================
