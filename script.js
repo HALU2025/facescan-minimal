@@ -127,24 +127,44 @@ document.getElementById("retake").addEventListener("click", () => {
 
 // ✅ トップ画面 → 画像選択ダイアログを開く
 document.getElementById("selectImage").addEventListener("click", () => {
-  fileInput.value = ""; // 連続選択防止
-  fileInput.click();
+  // すでに画像がある場合は開かない
+  if (currentImageData) return;
+
+  // 連続選択を防ぐために fileInput の値をリセット
+  fileInput.value = "";
+  
+  // 遅延を入れてクリックを実行
+  setTimeout(() => fileInput.click(), 100);
 });
 
 // ✅ 画像選択 → プレビュー画面
-fileInput.addEventListener("change", async (event) => {
+document.getElementById("fileInput").addEventListener("change", async (event) => {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
     reader.onload = async (e) => {
+      // ✅ 画像を圧縮
       currentImageData = await compressImage(e.target.result);
 
-      // ✅ プレビュー画像を更新
+      // ✅ previewRef が存在するか確認し、なければ作成
+      let previewRef = document.getElementById("previewRef");
+      if (!previewRef) {
+        previewRef = document.createElement("img");
+        previewRef.id = "previewRef";
+        previewRef.style.maxWidth = "100%";
+        document.getElementById("reference-preview").appendChild(previewRef);
+      }
+
       previewRef.src = currentImageData;
       previewRef.style.display = "block";
 
-      // ✅ プレビュー画面へ遷移
-      showScreen("reference-preview");
+      // ✅ 画像の読み込みを確実に待ってから遷移
+      setTimeout(() => {
+        showScreen("reference-preview");
+      }, 100);
+
+      // ✅ 連続選択防止のためにリセット
+      fileInput.value = "";
     };
     reader.readAsDataURL(file);
   }
@@ -152,8 +172,10 @@ fileInput.addEventListener("change", async (event) => {
 
 // ✅ 画像プレビューから選び直し（ダイアログのみ開く・画面はそのまま）
 document.getElementById("reselect").addEventListener("click", () => {
-  document.getElementById("fileInput").value = ""; // リセット
-  document.getElementById("fileInput").click();
+  // 連続選択防止のためにリセット
+  fileInput.value = "";
+  
+  setTimeout(() => fileInput.click(), 100);
 });
 
 // ===================== End Section4 =====================
