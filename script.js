@@ -212,12 +212,10 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
 // ===================== Section6. 診断結果のHTML表示 =====================
 
 // ✅ 美人度/イケメン度のスコア調整
-// ✅ 美人度/イケメン度のスコア調整（85点以下の -10 調整を削除）
 function calculateBeautyScore(rawScore) {
   let finalScore;
   if (rawScore < 85.0) {
-      finalScore = rawScore - 10;
-      finalScore = rawScore; // ✅ 85点以下の減点処理を削除
+      finalScore = rawScore;
   } else {
       finalScore = (rawScore - 85.0) * (14.9 / 10.9) + 85.0;
   }
@@ -225,12 +223,10 @@ function calculateBeautyScore(rawScore) {
 }
 
 // ✅ 評価軸スコアの調整
-// ✅ 評価軸スコアの調整（85点以下の -10 調整を削除）
 function calculateEvaluationScore(rawScore) {
   let finalScore;
   if (rawScore < 85.0) {
-      finalScore = rawScore - 10;
-      finalScore = rawScore; // ✅ 85点以下の減点処理を削除
+      finalScore = rawScore; 
   } else {
       finalScore = (rawScore - 85.0) * (14.9 / 10.9) + 85.0;
   }
