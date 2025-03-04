@@ -115,11 +115,51 @@ button:hover {
 
 /* ✅ 診断結果のスコア表示 */
 .beauty-score {
-  font-size: 40px;
+  font-size: 60px;
 }
 .beauty-score span {
   font-size: 25px;
 }
 .beauty-score .clabel {
   font-size: 20px;
+}
+.beauty-score {
+  font-size: 60px;
+  position: absolute;
+  right: 0;
+}
+.catchphrase {
+  position: absolute;
+  left: 40%;
+  top: 20%;
+}
+.age {
+  position: absolute;
+  left: 170px;
+  top: 25%;
+}
+.score:first-child {
+  position: absolute;
+  left: 0;
+  top: 30%;
+}
+.score:second-child {
+  position: absolute;
+  left: 0;
+  top: 35%;
+}
+.score:last-child {
+  position: absolute;
+  left: 0;
+  top: 40%;
+}
+.celeb {
+  position: absolute;
+  left: 170px;
+  top: 45%;
+}
+.comment {
+  position: absolute;
+  left: 0;
+  top: 45%;
 }
