@@ -64,28 +64,27 @@ document.body.appendChild(instaBtn);
 
 
 // ===================== Section2. ユーティリティ関数と状態リセット =====================
+
 function resetToInitial() {
   // 既存の UI 部品の表示状態をリセット
-  startScanBtn.style.display = "block";
-  video.style.display = "none";
-  captureBtn.style.display = "none";
-  fileInput.style.display = "none";
-  analyzeBtn.style.display = "none";
-  reCaptureBtn.style.display = "none";
-  selectAgainBtn.style.display = "none";
-  takePhotoBtn.style.display = "none";
-  retryBtn.style.display = "none";
-  shareBtn.style.display = "none";
-  twitterBtn.style.display = "none";
-  fbBtn.style.display = "none";
-  instaBtn.style.display = "none";
-  preview.style.display = "none";
-  
+  const elementsToHide = [
+    "startScan", "video", "capture", "fileInput", "analyze", "reCaptureBtn",
+    "selectAgainBtn", "takePhotoBtn", "retryBtn", "shareBtn",
+    "twitterBtn", "fbBtn", "instaBtn", "preview"
+  ];
+
+  elementsToHide.forEach(id => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.style.display = "none";
+    }
+  });
+
   // global variables reset
   currentImageData = "";
   currentResult = "";
   mode = "";
-  
+
   // もし診断結果エリアが存在すれば削除する
   const resultContainer = document.getElementById('resultContainer');
   if (resultContainer) {
@@ -96,19 +95,22 @@ function resetToInitial() {
 // ✅ 診断画面だけをリセット（カメラ起動時に使用）
 function resetMainDisplay() {
   console.log("✅ 画面をリセット");
-  video.style.display = "none";
-  preview.style.display = "none";
-  
-  const resultContainer = document.getElementById('resultContainer');
-  if (resultContainer) {
-      resultContainer.style.display = "none";
-  }
+
+  const video = document.getElementById("video");
+  const preview = document.getElementById("preview");
+  const resultContainer = document.getElementById("resultContainer");
+
+  if (video) video.style.display = "none";
+  if (preview) preview.style.display = "none";
+  if (resultContainer) resultContainer.style.display = "none";
 }
 
 function isMobile() {
-return /Mobi|Android/i.test(navigator.userAgent);
+  return /Mobi|Android/i.test(navigator.userAgent);
 }
+
 // ===================== End Section2 =====================
+
 
 
 
@@ -543,20 +545,32 @@ if (!isMobile()) {
 
 // ===================== Section9. 画面遷移の処理 =====================
 
-// ✅ すべての画面を非表示にする
+// ===================== Section9. 画面遷移処理 =====================
+
+// ✅ 画面の切り替え処理
 function showScreen(screenId) {
   document.querySelectorAll(".container").forEach(screen => {
     screen.style.display = "none";
   });
-  document.getElementById(screenId).style.display = "block";
+  const targetScreen = document.getElementById(screenId);
+  if (targetScreen) {
+    targetScreen.style.display = "block";
+  } else {
+    console.error(`❌ 指定された画面が見つかりません: ${screenId}`);
+  }
 }
 
-// ✅ 診断開始ボタン → 撮影画面
-document.getElementById("startScan").addEventListener("click", () => {
-  showScreen("camera");
+// ✅ DOMが完全に読み込まれてからイベントを設定
+document.addEventListener("DOMContentLoaded", () => {
+  // ✅ 診断開始ボタン → 撮影画面へ
+  const startScanBtn = document.getElementById("startScan");
+  if (startScanBtn) {
+    startScanBtn.addEventListener("click", () => {
+      showScreen("camera");
+    });
+  } else {
+    console.error("❌ startScanボタンが見つかりません");
+  }
 });
-
-// ✅ 初期状態: 撮影画面は非表示
-document.getElementById("camera").style.display = "none";
 
 // ===================== End Section9 =====================
