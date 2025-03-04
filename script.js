@@ -167,10 +167,15 @@ document.getElementById("fileInput").addEventListener("change", (event) => {
 
 // ✅ 画像プレビューから選び直し
 document.getElementById("reselect").addEventListener("click", () => {
-  showScreen("reference");
+  if (document.getElementById("reference")) {
+    showScreen("reference");
+  } else {
+    console.error("❌ reference 画面が見つかりません");
+  }
 });
 
 // ===================== End Section4 =====================
+
 
 
 
