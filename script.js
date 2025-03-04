@@ -488,25 +488,101 @@ if (!isMobile()) {
 // ===================== End Section8 =====================
 
 
-// ===================== Section9. 画面遷移処理 =====================
-document.addEventListener("DOMContentLoaded", () => {
-  function showScreen(screenId) {
-    document.querySelectorAll(".screen").forEach(screen => {
-      screen.style.display = "none";
-    });
-    document.getElementById(screenId).style.display = "block";
-  }
+// ===================== Section9. 画面遷移とイベント設定 =====================
 
-  // ✅ トップ画面 → 撮影画面
+// ✅ 画面切り替え
+function showScreen(screenId) {
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.style.display = "none";
+  });
+  document.getElementById(screenId).style.display = "block";
+}
+
+// ✅ 診断開始 → 撮影画面
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("✅ DOM読み込み完了");
+
   document.getElementById("startScan").addEventListener("click", () => {
+    console.log("✅ 診断を開始 → 撮影画面へ");
     showScreen("camera");
+    startCamera();
   });
 
-  // ✅ 撮影画面 → トップ画面
   document.getElementById("capture").addEventListener("click", () => {
+    console.log("✅ 撮影ボタン押下 → 画像キャプチャ → 診断API呼び出し");
+    captureImage();
+  });
+
+  document.getElementById("retryBtn").addEventListener("click", () => {
+    console.log("✅ 診断結果 → トップ画面へ戻る");
     showScreen("home");
   });
 });
+
+// ✅ カメラ起動
+function startCamera() {
+  const video = document.getElementById("video");
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+    .then(stream => {
+      video.srcObject = stream;
+      video.style.display = "block";
+    })
+    .catch(err => {
+      alert("カメラのアクセスが許可されていません。");
+      console.error("カメラ起動エラー:", err);
+    });
+}
+
+// ✅ 撮影処理 & 診断API呼び出し
+function captureImage() {
+  console.log("✅ 画像をキャプチャ");
+  
+  const video = document.getElementById("video");
+  const canvas = document.createElement("canvas");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  
+  // ✅ 画像データ取得
+  const imageData = canvas.toDataURL("image/webp", 0.7);
+  
+  // ✅ 診断API呼び出し
+  analyzeImage(imageData);
+}
+
+// ✅ 診断API呼び出し
+async function analyzeImage(imageData) {
+  try {
+    console.log("✅ 診断APIに送信中...");
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image: imageData })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTPエラー! ステータス: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log("✅ 診断結果:", result);
+
+    if (!result.result) {
+      throw new Error("診断結果が取得できませんでした。");
+    }
+
+    // ✅ 診断結果を表示
+    document.getElementById("resultContainer").innerText = result.result;
+    showScreen("result");
+
+  } catch (error) {
+    console.error("❌ 診断エラー:", error);
+    alert(`診断に失敗しました。\n詳細: ${error.message}`);
+  }
+}
+
 // ===================== End Section9 =====================
+
 
 
