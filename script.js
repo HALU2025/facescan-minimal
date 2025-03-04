@@ -200,6 +200,56 @@ document.getElementById("analyze").addEventListener("click", async () => {
 
 
 
+// ===================== Section6. 診断結果のHTML表示 =====================
+
+function displayResultHTML(resultText) {
+  const resultContainer = document.getElementById("resultContainer");
+  if (!resultContainer) return;
+
+  // 以前の結果をクリア
+  resultContainer.innerHTML = "";
+
+  // ✅ 診断結果を HTML に変換して表示
+  resultContainer.innerHTML = transformResultToHTML(resultText);
+}
+
+// ===================== End Section6 =====================
+
+
+
+// ===================== Section7. 診断結果のフォーマット処理 =====================
+
+function transformResultToHTML(resultText) {
+  const lines = resultText.split("\n").filter(line => line.trim() !== "");
+
+  let html = "<div class='result'>";
+
+  const fields = {
+      "美人度": "beauty-score",
+      "イケメン度": "beauty-score",
+      "キャッチフレーズ:": "catchphrase",
+      "推定年齢:": "age",
+      "評価軸1:": "score1",
+      "評価軸2:": "score2",
+      "評価軸3:": "score3",
+      "似ている芸能人:": "celeb",
+      "コメント:": "comment"
+  };
+
+  lines.forEach(line => {
+    const [label, ...valueParts] = line.split(":");
+    const value = valueParts.join(":").trim();
+
+    if (fields[label]) {
+      html += `<div class="${fields[label]}"><strong>${label}</strong>: ${value}</div>`;
+    }
+  });
+
+  html += "</div>";
+  return html;
+}
+
+// ===================== End Section7 =====================
 
 
 
