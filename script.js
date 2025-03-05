@@ -305,7 +305,7 @@ function transformResultToHTML(resultText) {
               html += `<div class="score"><div class="clabel">${axisLabel.trim()}:</div> ${formattedScore}</div>`;
           } else {
               // ✅ 推定年齢は整数のまま表示
-              if (key === "推定年齢:") {
+              if (key === "顔年齢:") {
                   content = content.replace(/(\d+)\.000/, "$1");
               }
               html += `<div class="${fields[key]}"><div class="clabel">${label}:</div> ${content}</div>`;
