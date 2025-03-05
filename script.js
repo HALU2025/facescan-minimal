@@ -208,7 +208,7 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
       document.body.appendChild(offScreenContainer);
 
       // html2canvas を使用してオフスクリーンコンテナを画像に変換
-      html2canvas(offScreenContainer).then(canvas => {
+      html2canvas(offScreenContainer, { useCORS: true }).then(canvas => {
         const dataURL = canvas.toDataURL('image/png');
 
         // 画像生成後、オフスクリーンコンテナを削除
