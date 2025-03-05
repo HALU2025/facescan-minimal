@@ -83,6 +83,17 @@ div#result .mainDisplay {
   width:100%;
   border: none;
 }
+
+
+#offScreenContainer {
+  width: 750px;
+  height: 841px;
+  position: absolute;
+  background: url(images/bg-result.webp) top center no-repeat;
+  top: 100px;
+}
+
+
 .result{
   width: 100%;
   height: 100%;
@@ -90,12 +101,12 @@ div#result .mainDisplay {
 }
 
 .result-thumbnail {
-  width: 182px;
-    height: 182px;
-    overflow: hidden;
-    position: absolute;
-    top: 14%;
-    left: 5.2%;
+  width: 280px;
+  height: 280px;
+  overflow: hidden;
+  position: absolute;
+  top: 14%;
+  left: 7%;
 }
 
 .result-thumbnail img {
@@ -132,23 +143,23 @@ div#result .mainDisplay {
 }
 .age {
   position: absolute;
-  font-family: 'myfont', sans-serif;
-  right: 6.2%;
-  top: 36.3%;
-  color: #ffffff;
-  font-size: 27px;
+    font-family: 'myfont', sans-serif;
+    right: 8.5%;
+    top: 34%;
+    color: #ffffff;
+    font-size: 40px;
 }
 .age .clabel {
   color: #9cb3c7;
-  font-size: 18px;
+  font-size: 26px;
 }
 
 .result .score:nth-of-type(3),.result .score:nth-of-type(4),.result .score:nth-of-type(5){
   position: absolute;
-  font-family: 'myfont', sans-serif;
-  font-size: 25px;
-  right: 6.2%;
-  color: #ffffff;
+    font-family: 'myfont', sans-serif;
+    font-size: 35px;
+    right: 8.5%;
+    color: #ffffff;
 }
 .result .score:nth-of-type(3){
   top: 45%;
@@ -161,27 +172,27 @@ div#result .mainDisplay {
 }
 .result .score:nth-of-type(3) .clabel,.result .score:nth-of-type(4) .clabel,.result .score:nth-of-type(5) .clabel{
   color: #9cb3c7;
-  font-size: 18px;
+  font-size: 26px;
 }
 .result .score:nth-of-type(3) span,.result .score:nth-of-type(4) span,.result .score:nth-of-type(5) span{
   font-family: 'myfont', sans-serif;
   color: #ffffff;
-  font-size: 18px;
+  font-size: 27px;
 }
 .celeb {
   position: absolute;
-    left: 5.8%;
-    top: 84.5%;
-    color: #9cb3c7;
-    font-size:18px;
+  left: 7%;
+  top: 77.5%;
+  color: #9cb3c7;
+  font-size: 26px;
 }
 .comment {
   position: absolute;
-  left: 5.8%;
-  top: 65%;
+  left: 7%;
+  top: 60%;
   color: #9cb3c7;
-  width: 88%;
-  font-size:18px;
+  width: 86%;
+  font-size: 28px;
 }
 .comment .clabel {
   display:none;
