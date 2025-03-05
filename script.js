@@ -188,7 +188,7 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
       // 診断結果を保存
       currentResult = result.result;
 
-      // 750px x 841px の隠しオフスクリーンコンテナに診断結果HTMLを描画（サムネイル含む）
+      // 750px x 841px のオフスクリーンコンテナを生成
       const offScreenContainer = document.createElement('div');
       offScreenContainer.id = 'resultOffScreen';
       offScreenContainer.style.width = '750px';
@@ -196,6 +196,11 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
       offScreenContainer.style.position = 'absolute';
       offScreenContainer.style.top = '-9999px';
       offScreenContainer.style.left = '-9999px';
+      // inline で背景画像を指定（絶対パスに変更）
+      offScreenContainer.style.backgroundImage = "url('/images/bg-result.webp')";
+      offScreenContainer.style.backgroundPosition = "top center";
+      offScreenContainer.style.backgroundRepeat = "no-repeat";
+      offScreenContainer.style.backgroundSize = "cover";
 
       // サムネイル（顔写真）のHTMLを追加し、その後に transformResultToHTML の結果を追加
       let offScreenContent = "";
@@ -207,8 +212,8 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
 
       document.body.appendChild(offScreenContainer);
 
-      // html2canvas を使用してオフスクリーンコンテナを画像に変換
-      html2canvas(offScreenContainer, { useCORS: true }).then(canvas => {
+      // html2canvas を使用してオフスクリーンコンテナを画像に変換（useCORS と logging オプションを追加）
+      html2canvas(offScreenContainer, { useCORS: true, logging: true }).then(canvas => {
         const dataURL = canvas.toDataURL('image/png');
 
         // 画像生成後、オフスクリーンコンテナを削除
@@ -234,6 +239,7 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
   });
 });
 // ===================== End Section5 =====================
+
 
 
 
