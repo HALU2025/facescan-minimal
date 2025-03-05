@@ -125,18 +125,18 @@ div#result .mainDisplay {
 /* ✅ 診断結果のスコア表示 */
 .beauty-score span {
   font-family: 'myfont', sans-serif;
-  font-size: 40px;
+    font-size: 60px;
 }
 .beauty-score .clabel {
   display:none;
 }
 .beauty-score {
   font-family: 'myfont', sans-serif;
-  font-size: 56px;
-  position: absolute;
-  right: 8.7%;
-  top: 19.0%;
-  color: #fff;
+    font-size: 80px;
+    position: absolute;
+    right: 10%;
+    top: 19.0%;
+    color: #fff;
 }
 .catchphrase {
   display:none;
@@ -162,13 +162,13 @@ div#result .mainDisplay {
     color: #ffffff;
 }
 .result .score:nth-of-type(3){
-  top: 45%;
+  top: 41%;
 }
 .result .score:nth-of-type(4) {
-  top: 50%;
+  top: 46%;
 }
 .result .score:nth-of-type(5){
-  top: 55%;
+  top: 51%;
 }
 .result .score:nth-of-type(3) .clabel,.result .score:nth-of-type(4) .clabel,.result .score:nth-of-type(5) .clabel{
   color: #9cb3c7;
