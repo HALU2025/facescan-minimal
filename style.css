@@ -77,12 +77,6 @@ div#resultContainer {
   height: 500px;
   width: 480px;
 }
-div#result .mainDisplay {
-  background: url(images/bg-result.webp) top center no-repeat;
-  background-size: cover;
-  width:100%;
-  border: none;
-}
 
 
 #offScreenContainer {
@@ -90,7 +84,7 @@ div#result .mainDisplay {
   height: 841px;
   position: absolute;
   background: url(images/bg-result.webp) top center no-repeat;
-  top: 100px;
+  top: -10000px;
 }
 
 
