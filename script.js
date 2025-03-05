@@ -265,7 +265,7 @@ function transformResultToHTML(resultText) {
       "評価軸1:": "score1",
       "評価軸2:": "score2",
       "評価軸3:": "score3",
-      "似ている芸能人:": "celeb",
+      "似ている有名人:": "celeb",
       "コメント:": "comment"
   };
 
