@@ -160,8 +160,6 @@ fileInput.addEventListener("change", async function (event) {
 
 
 // ===================== Section5. 診断処理 =====================
-
-// ✅ 診断実行ボタンのイベント
 document.querySelectorAll(".analyze-btn").forEach(button => {
   button.addEventListener("click", async () => {
     if (!currentImageData) {
@@ -190,11 +188,36 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
       // 診断結果を保存
       currentResult = result.result;
 
-      // ✅ 診断結果画面へ遷移
-      showScreen("result");
+      // 750px幅の隠しオフスクリーンコンテナに診断結果HTMLを描画
+      const offScreenContainer = document.createElement('div');
+      offScreenContainer.id = 'resultOffScreen';
+      offScreenContainer.style.width = '750px';
+      offScreenContainer.style.position = 'absolute';
+      offScreenContainer.style.top = '-9999px';
+      offScreenContainer.style.left = '-9999px';
+      // transformResultToHTML() は既存の関数で診断結果HTMLを生成する
+      offScreenContainer.innerHTML = transformResultToHTML(currentResult);
+      document.body.appendChild(offScreenContainer);
 
-      // ✅ 結果を画面に反映
-      displayResultHTML(currentResult);
+      // html2canvas を使用してオフスクリーンコンテナを画像に変換
+      html2canvas(offScreenContainer).then(canvas => {
+        const dataURL = canvas.toDataURL('image/png');
+
+        // 画像生成後、オフスクリーンコンテナを削除
+        document.body.removeChild(offScreenContainer);
+
+        // 結果表示用コンテナに画像を表示
+        const resultContainer = document.getElementById('resultContainer');
+        resultContainer.innerHTML = ""; // 既存コンテンツをクリア
+        const resultImg = document.createElement('img');
+        resultImg.src = dataURL;
+        resultImg.style.maxWidth = "100%";
+        resultImg.style.display = "block";
+        resultContainer.appendChild(resultImg);
+      });
+
+      // 診断結果画面へ遷移
+      showScreen("result");
 
     } catch (error) {
       console.error("診断エラー:", error);
@@ -202,8 +225,8 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
     }
   });
 });
-
 // ===================== End Section5 =====================
+
 
 
 
@@ -302,7 +325,7 @@ function transformResultToHTML(resultText) {
                   return `${intPart}<span>${fracPart}</span>`;
               });
 
-              html += `<div class="score"><div class="clabel">${axisLabel.trim()}:</div> ${formattedScore}</div>`;
+              html += `<div class="score"><div class="clabel">${axisLabel.trim()} :</div> ${formattedScore}</div>`;
           } else {
               // ✅ 推定年齢は整数のまま表示
               if (key === "顔年齢:") {

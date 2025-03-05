@@ -108,7 +108,7 @@ div#result .mainDisplay {
 /* ✅ 診断結果のラベル */
 .clabel {
   display: inline-block;
-  margin-right:10px;
+  margin-right:5px;
 }
 
 /* ✅ 診断結果のスコア表示 */
@@ -143,27 +143,27 @@ div#result .mainDisplay {
   font-size: 18px;
 }
 
-.result .score:nth-of-type(2),.result .score:nth-of-type(3),.result .score:nth-of-type(4){
+.result .score:nth-of-type(3),.result .score:nth-of-type(4),.result .score:nth-of-type(5){
   position: absolute;
   font-family: 'myfont', sans-serif;
   font-size: 25px;
   right: 6.2%;
   color: #ffffff;
 }
-.result .score:nth-of-type(2){
+.result .score:nth-of-type(3){
   top: 45%;
 }
-.result .score:nth-of-type(3) {
+.result .score:nth-of-type(4) {
   top: 50%;
 }
-.result .score:nth-of-type(4){
+.result .score:nth-of-type(5){
   top: 55%;
 }
-.result .score:nth-of-type(2) .clabel,.result .score:nth-of-type(3) .clabel,.result .score:nth-of-type(4) .clabel{
+.result .score:nth-of-type(3) .clabel,.result .score:nth-of-type(4) .clabel,.result .score:nth-of-type(5) .clabel{
   color: #9cb3c7;
   font-size: 18px;
 }
-.result .score:nth-of-type(2) span,.result .score:nth-of-type(3) span,.result .score:nth-of-type(4) span{
+.result .score:nth-of-type(3) span,.result .score:nth-of-type(4) span,.result .score:nth-of-type(5) span{
   font-family: 'myfont', sans-serif;
   color: #ffffff;
   font-size: 18px;
@@ -173,6 +173,7 @@ div#result .mainDisplay {
     left: 5.8%;
     top: 84.5%;
     color: #9cb3c7;
+    font-size:18px;
 }
 .comment {
   position: absolute;
@@ -180,7 +181,7 @@ div#result .mainDisplay {
   top: 65%;
   color: #9cb3c7;
   width: 88%;
-  font-size:17px;
+  font-size:18px;
 }
 .comment .clabel {
   display:none;
