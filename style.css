@@ -115,16 +115,16 @@ div#result .mainDisplay {
 /* ✅ 診断結果のスコア表示 */
 .beauty-score span {
   font-family: 'myfont', sans-serif;
-  font-size: 30px;
+  font-size: 40px;
 }
 .beauty-score .clabel {
   display:none;
 }
 .beauty-score {
   font-family: 'myfont', sans-serif;
-  font-size: 50px;
+  font-size: 56px;
   position: absolute;
-  right: 8.3%;
+  right: 8.7%;
   top: 19.0%;
   color: #fff;
 }
@@ -135,15 +135,16 @@ div#result .mainDisplay {
   position: absolute;
   font-family: 'myfont', sans-serif;
   right: 6.2%;
-  top: 39%;
+  top: 36.3%;
   color: #ffffff;
-  font-size: 25px;
+  font-size: 27px;
 }
 .age .clabel {
   color: #9cb3c7;
+  font-size: 18px;
 }
 
-.result .score:nth-of-type(4) .clabel,.result .score:nth-of-type(5) .clabel,.result .score:nth-of-type(6) .clabel{
+.result .score:nth-of-type(4),.result .score:nth-of-type(5),.result .score:nth-of-type(6){
   position: absolute;
   font-family: 'myfont', sans-serif;
   font-size: 25px;
@@ -181,4 +182,8 @@ div#result .mainDisplay {
   top: 65%;
   color: #9cb3c7;
   width: 88%;
+  font-size:24px;
+}
+.comment .clabel {
+  display:none;
 }
