@@ -188,14 +188,15 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
       // 診断結果を保存
       currentResult = result.result;
 
-      // 750px幅の隠しオフスクリーンコンテナに診断結果HTMLを描画
+      // 750px x 841px の隠しオフスクリーンコンテナに診断結果HTMLを描画
       const offScreenContainer = document.createElement('div');
       offScreenContainer.id = 'resultOffScreen';
       offScreenContainer.style.width = '750px';
+      offScreenContainer.style.height = '841px';
       offScreenContainer.style.position = 'absolute';
       offScreenContainer.style.top = '-9999px';
       offScreenContainer.style.left = '-9999px';
-      // transformResultToHTML() は既存の関数で診断結果HTMLを生成する
+      // 診断結果HTMLの生成（transformResultToHTML は既存の関数）
       offScreenContainer.innerHTML = transformResultToHTML(currentResult);
       document.body.appendChild(offScreenContainer);
 
@@ -226,6 +227,7 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
   });
 });
 // ===================== End Section5 =====================
+
 
 
 
