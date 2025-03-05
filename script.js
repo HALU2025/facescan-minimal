@@ -261,7 +261,7 @@ function transformResultToHTML(resultText) {
   const fields = {
       "beauty": "beauty-score",
       "キャッチフレーズ:": "catchphrase",
-      "推定年齢:": "age",
+      "顔年齢:": "age",
       "評価軸1:": "score1",
       "評価軸2:": "score2",
       "評価軸3:": "score3",

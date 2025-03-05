@@ -29,9 +29,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: white;
   border-radius: 8px;
-  border: 2px solid #ccc;
+  border: 1px solid #ccc;
   padding: 10px;
   margin-bottom: 20px;
   overflow: hidden;
