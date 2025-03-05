@@ -65,15 +65,16 @@
     </div>
   </div>
 
-  <!-- ✅ 診断結果画面 -->
-  <div id="result" class="screen" style="display: none;">
-    <div class="mainDisplay">
-      <div id="resultContainer"></div>
-    </div>
-    <div class="buttonArea">
-      <button class="backToHome button is-large is-info is-dark">🔄 もう一度診断する</button>
-    </div>
+<!-- ✅ 診断結果画面 -->
+<div id="result" class="screen" style="display: none;">
+  <div class="mainDisplay" style="position: relative; width:750px; height:841px;">
+    <!-- 結果画像を表示するための <img> 要素に変更 -->
+    <img id="resultImage" src="" alt="診断結果画像" style="max-width: 100%; display: block;">
   </div>
+  <div class="buttonArea">
+    <button class="backToHome button is-large is-info is-dark">🔄 もう一度診断する</button>
+  </div>
+</div>
 
   <script src="script.js"></script>
 

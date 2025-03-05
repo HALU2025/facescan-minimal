@@ -188,7 +188,7 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
       // 診断結果を保存
       currentResult = result.result;
 
-      // 750px x 841px の隠しオフスクリーンコンテナに診断結果HTMLを描画
+      // 750px x 841px の隠しオフスクリーンコンテナに診断結果HTMLを描画（サムネイル含む）
       const offScreenContainer = document.createElement('div');
       offScreenContainer.id = 'resultOffScreen';
       offScreenContainer.style.width = '750px';
@@ -196,8 +196,15 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
       offScreenContainer.style.position = 'absolute';
       offScreenContainer.style.top = '-9999px';
       offScreenContainer.style.left = '-9999px';
-      // 診断結果HTMLの生成（transformResultToHTML は既存の関数）
-      offScreenContainer.innerHTML = transformResultToHTML(currentResult);
+
+      // サムネイル（顔写真）のHTMLを追加し、その後に transformResultToHTML の結果を追加
+      let offScreenContent = "";
+      if (currentImageData) {
+        offScreenContent += '<div class="result-thumbnail"><img src="' + currentImageData + '" alt="診断対象のサムネイル"></div>';
+      }
+      offScreenContent += transformResultToHTML(currentResult);
+      offScreenContainer.innerHTML = offScreenContent;
+
       document.body.appendChild(offScreenContainer);
 
       // html2canvas を使用してオフスクリーンコンテナを画像に変換
