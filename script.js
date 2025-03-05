@@ -188,16 +188,43 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
       // 診断結果を保存
       currentResult = result.result;
 
-      // offScreenContainer に診断結果HTMLとサムネイルを表示する
-      const offScreenContainer = document.getElementById("offScreenContainer");
-      let contentHTML = "";
-      if (currentImageData) {
-        contentHTML += '<div class="result-thumbnail"><img src="' + currentImageData + '" alt="診断対象のサムネイル"></div>';
-      }
-      contentHTML += transformResultToHTML(currentResult);
-      offScreenContainer.innerHTML = contentHTML;
+      // 750px x 841px の隠しオフスクリーンコンテナに診断結果HTMLを描画（サムネイル含む）
+      const offScreenContainer = document.createElement('div');
+      offScreenContainer.id = 'resultOffScreen';
+      offScreenContainer.style.width = '750px';
+      offScreenContainer.style.height = '841px';
+      offScreenContainer.style.position = 'absolute';
+      offScreenContainer.style.top = '-9999px';
+      offScreenContainer.style.left = '-9999px';
 
-      // 診断結果画面を表示
+      // サムネイル（顔写真）のHTMLを追加し、その後に transformResultToHTML の結果を追加
+      let offScreenContent = "";
+      if (currentImageData) {
+        offScreenContent += '<div class="result-thumbnail"><img src="' + currentImageData + '" alt="診断対象のサムネイル"></div>';
+      }
+      offScreenContent += transformResultToHTML(currentResult);
+      offScreenContainer.innerHTML = offScreenContent;
+
+      document.body.appendChild(offScreenContainer);
+
+      // html2canvas を使用してオフスクリーンコンテナを画像に変換
+      html2canvas(offScreenContainer).then(canvas => {
+        const dataURL = canvas.toDataURL('image/png');
+
+        // 画像生成後、オフスクリーンコンテナを削除
+        document.body.removeChild(offScreenContainer);
+
+        // 結果表示用コンテナに画像を表示
+        const resultContainer = document.getElementById('resultContainer');
+        resultContainer.innerHTML = ""; // 既存コンテンツをクリア
+        const resultImg = document.createElement('img');
+        resultImg.src = dataURL;
+        resultImg.style.maxWidth = "100%";
+        resultImg.style.display = "block";
+        resultContainer.appendChild(resultImg);
+      });
+
+      // 診断結果画面へ遷移
       showScreen("result");
 
     } catch (error) {
@@ -207,7 +234,6 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
   });
 });
 // ===================== End Section5 =====================
-
 
 
 
