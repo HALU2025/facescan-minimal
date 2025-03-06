@@ -205,7 +205,7 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
       // サムネイル（顔写真）のHTMLを追加し、その後に transformResultToHTML の結果を追加
       let offScreenContent = "";
       if (currentImageData) {
-        offScreenContent += '<div class="result-thumbnail"><img src="' + currentImageData + '" alt="診断対象のサムネイル"></div>';
+        offScreenContent += '<div class="result-thumbnail" style="background-image: url(\'' + currentImageData + '\'); background-size: cover; background-position: center; border-radius: 8px;"></div>';
       }
       offScreenContent += transformResultToHTML(currentResult);
       offScreenContainer.innerHTML = offScreenContent;
