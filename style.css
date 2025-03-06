@@ -79,6 +79,7 @@ div#resultContainer {
   position: relative;
   width: 100%;
   max-width: 500px;
+
 }
 
 
@@ -87,7 +88,7 @@ div#resultContainer {
   height: 841px;
   position: absolute;
   background: url(/images/bg-result.webp) top center no-repeat;
-  top:10000px;
+
 }
 
 
@@ -198,4 +199,27 @@ div#resultContainer {
 }
 .comment .clabel {
   display:none;
+}
+
+
+
+button#startCamera {
+  color: #fff;
+  background-color: #ffffff2e;
+  font-size: 1.3em;
+  font-weight: normal;
+  letter-spacing: 2px;
+  width: 90%;
+  border: 1px solid #ffffff2e;
+}
+
+.file-cta {
+  color: #fff;
+  background-color: #ffffff2e;
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  width: 100%;
+  border: 1px solid #ffffff2e;
+  border-radius: 10px;
 }
