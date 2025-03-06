@@ -426,7 +426,7 @@ document.getElementById("startCamera").addEventListener("click", () => {
   startCamera();
 });
 
-// ✅ トップ画面 → 画像選択
+// ✅ トップ画面 → 画像選択（通常のボタンでファイル入力ダイアログを起動）
 document.getElementById("selectImage").addEventListener("click", () => {
   document.getElementById("fileInput").click();
 });
@@ -462,3 +462,4 @@ document.querySelectorAll(".homeBtn").forEach(button => {
 });
 
 // ===================== End Section9 =====================
+

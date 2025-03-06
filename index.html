@@ -16,18 +16,16 @@
       <h1>FaceScan</h1>
     </div>
     <div class="buttonArea">
-      <button id="startCamera" class="button is-large is-info is-dark">📷 撮影して診断する</button>
-      <div class="file is-large is-primary">
-        <label class="file-label">
-          <input class="file-input" type="file" id="fileInput" accept="image/*">
-          <span class="file-cta">
-            <span class="file-icon">
-              <i class="fas fa-upload"></i>
-            </span>
-            <span class="file-label"> 📂 画像を選んで診断する </span>
-          </span>
-        </label>
-      </div>
+      <button id="startCamera" class="button is-large is-info is-dark">📷 撮影して診断</button>
+
+      <!-- 通常のボタン -->
+      <button id="selectImage" class="button is-large is-info is-dark">
+  📂 画像を選んで診断
+      </button>
+      <input type="file" id="fileInput" accept="image/*" style="display: none;">
+
+
+      
     </div>
   </div>
 
