@@ -474,6 +474,22 @@ document.getElementById("analyze").addEventListener("click", () => {
   analyzeImage();
 });
 
+// ✅ 診断結果ダウンロードボタンのイベント設定
+document.getElementById("downloadResult").addEventListener("click", () => {
+  const resultImg = document.querySelector("#resultContainer img");
+  if (resultImg && resultImg.src) {
+    const dataURL = resultImg.src;
+    const a = document.createElement("a");
+    a.href = dataURL;
+    a.download = "diagnosis_result.png"; // 任意のファイル名
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } else {
+    alert("ダウンロードする画像が見つかりません。");
+  }
+});
+
 // ✅ ホームへ戻るボタン（全画面共通）
 document.querySelectorAll(".homeBtn").forEach(button => {
   button.addEventListener("click", () => showScreen("home"));
