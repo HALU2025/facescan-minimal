@@ -28,6 +28,7 @@ body {
   min-height: 60vh;
   margin: 0 0 20px;
   display: flex;
+  align-items: center; 
   justify-content: center;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -66,8 +67,10 @@ div#result .mainDisplay {
   display: none;
 }
 #previewRef {
-  width: 100%;  /* コンテナに収める */
-  height: auto; /* 縦横比を維持 */
+  max-width: 100%;
+  height: auto;
+  /* 必要に応じて object-fit を追加 */
+  object-fit: contain;
   border-radius: 8px;
 }
 
