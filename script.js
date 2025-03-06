@@ -474,25 +474,22 @@ document.getElementById("analyze").addEventListener("click", () => {
   analyzeImage();
 });
 
-// ✅ 診断結果ダウンロードボタンのイベント設定
+// ✅ 診断結果ダウンロードボタンのイベント設定（モーダル表示）
 document.getElementById("downloadResult").addEventListener("click", () => {
   const resultImg = document.querySelector("#resultContainer img");
   if (resultImg && resultImg.src) {
-    const dataURL = resultImg.src;
-    const a = document.createElement("a");
-    if (typeof a.download === "undefined") {
-      // download 属性がサポートされていない場合のフォールバック：画像を新しいタブで開く
-      window.open(dataURL, "_blank");
-    } else {
-      a.href = dataURL;
-      a.download = "diagnosis_result.png"; // 任意のファイル名
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
+    // モーダル内の画像に結果画像のsrcを設定
+    document.getElementById("modalImage").src = resultImg.src;
+    // モーダルを表示
+    document.getElementById("downloadModal").style.display = "block";
   } else {
     alert("ダウンロードする画像が見つかりません。");
   }
+});
+
+// ✅ モーダルのクローズボタンのイベント設定
+document.getElementById("modalClose").addEventListener("click", () => {
+  document.getElementById("downloadModal").style.display = "none";
 });
 
 
