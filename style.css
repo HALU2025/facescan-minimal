@@ -65,7 +65,7 @@ div#result .mainDisplay {
   border-radius: 8px;
   display: none;
 }
-#preview {
+#previewRef {
   width: 100%;  /* コンテナに収める */
   height: auto; /* 縦横比を維持 */
   border-radius: 8px;
@@ -240,7 +240,7 @@ button#toggleCamera {
   width: 90%;
   border: 1px solid #ffffff2e;
 }
-button.analyze {
+button.analyze-btn {
   color: #fff;
   background-color: #ffffff2e;
   font-size: 1.3em;
