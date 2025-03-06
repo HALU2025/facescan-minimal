@@ -67,10 +67,7 @@ div#result .mainDisplay {
   display: none;
 }
 
-/* ✅ ボタンデザイン */
-button {
-  width: 300px;
-}
+
 
 
 
@@ -213,6 +210,36 @@ button#startCamera {
   border: 1px solid #ffffff2e;
 }
 
+button#capture {
+  color: #fff;
+  background-color: #ffffff2e;
+  font-size: 1.3em;
+  font-weight: normal;
+  letter-spacing: 2px;
+  width: 90%;
+  border: 1px solid #ffffff2e;
+}
+
+#camera button.backToHome, #camera-preview button.backToHome, #reference-preview button.backToHome {
+  color: #fff;
+  background-color: #ffffff2e;
+  font-size: 1.3em;
+  font-weight: normal;
+  letter-spacing: 2px;
+  width: 90%;
+  border: 1px solid #ffffff2e;
+}
+#camera-preview button#retake {
+  color: #fff;
+  background-color: #ffffff2e;
+  font-size: 1.3em;
+  font-weight: normal;
+  letter-spacing: 2px;
+  width: 90%;
+  border: 1px solid #ffffff2e;
+}
+
+
 .file-cta {
   color: #fff;
   background-color: #ffffff2e;
@@ -222,4 +249,14 @@ button#startCamera {
   width: 100%;
   border: 1px solid #ffffff2e;
   border-radius: 10px;
+}
+
+#result button.backToHome {
+  color: #fff;
+  background-color: #ffffff2e;
+  font-size: 1.3em;
+  font-weight: normal;
+  letter-spacing: 2px;
+  width: 90%;
+  border: 1px solid #ffffff2e;
 }
