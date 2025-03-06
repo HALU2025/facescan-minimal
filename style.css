@@ -62,11 +62,14 @@ div#result .mainDisplay {
 #preview {
   width: 100%;  /* コンテナに収める */
   height: auto; /* 縦横比を維持 */
-  margin-top: 20px;
   border-radius: 8px;
   display: none;
 }
-
+#preview {
+  width: 100%;  /* コンテナに収める */
+  height: auto; /* 縦横比を維持 */
+  border-radius: 8px;
+}
 
 
 
