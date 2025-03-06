@@ -88,7 +88,7 @@ div#resultContainer {
   height: 841px;
   position: absolute;
   background: url(/images/bg-result.webp) top center no-repeat;
-
+  top:-10000px;
 }
 
 

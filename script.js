@@ -188,8 +188,21 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
       // 診断結果を保存
       currentResult = result.result;
 
-      // offScreenContainer に診断結果HTMLとサムネイルを直接表示する
-      const offScreenContainer = document.getElementById("offScreenContainer");
+      // 750px x 841px のオフスクリーンコンテナを生成
+      const offScreenContainer = document.createElement('div');
+      offScreenContainer.id = 'resultOffScreen';
+      offScreenContainer.style.width = '750px';
+      offScreenContainer.style.height = '841px';
+      offScreenContainer.style.position = 'absolute';
+      offScreenContainer.style.top = '-9999px';
+      offScreenContainer.style.left = '-9999px';
+      // inline で背景画像を指定（絶対パスに変更）
+      offScreenContainer.style.backgroundImage = "url('/images/bg-result.webp')";
+      offScreenContainer.style.backgroundPosition = "top center";
+      offScreenContainer.style.backgroundRepeat = "no-repeat";
+      offScreenContainer.style.backgroundSize = "cover";
+
+      // サムネイル（顔写真）のHTMLを追加し、その後に transformResultToHTML の結果を追加
       let offScreenContent = "";
       if (currentImageData) {
         offScreenContent += '<div class="result-thumbnail"><img src="' + currentImageData + '" alt="診断対象のサムネイル"></div>';
@@ -197,9 +210,24 @@ document.querySelectorAll(".analyze-btn").forEach(button => {
       offScreenContent += transformResultToHTML(currentResult);
       offScreenContainer.innerHTML = offScreenContent;
 
-      // 結果表示用の resultContainer をクリア（必要に応じて）
-      const resultContainer = document.getElementById("resultContainer");
-      resultContainer.innerHTML = "";
+      document.body.appendChild(offScreenContainer);
+
+      // html2canvas を使用してオフスクリーンコンテナを画像に変換（useCORS と logging オプションを追加）
+      html2canvas(offScreenContainer, { useCORS: true, logging: true }).then(canvas => {
+        const dataURL = canvas.toDataURL('image/png');
+
+        // 画像生成後、オフスクリーンコンテナを削除
+        document.body.removeChild(offScreenContainer);
+
+        // 結果表示用コンテナに画像を表示
+        const resultContainer = document.getElementById('resultContainer');
+        resultContainer.innerHTML = ""; // 既存コンテンツをクリア
+        const resultImg = document.createElement('img');
+        resultImg.src = dataURL;
+        resultImg.style.maxWidth = "100%";
+        resultImg.style.display = "block";
+        resultContainer.appendChild(resultImg);
+      });
 
       // 診断結果画面へ遷移
       showScreen("result");
