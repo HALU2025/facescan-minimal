@@ -89,6 +89,7 @@ div#resultContainer {
   height: 841px;
   position: absolute;
   background: url(/images/bg-result.webp) top center no-repeat;
+  top:10000px;
 }
 
 
@@ -103,7 +104,7 @@ div#resultContainer {
   height: 280px;
   overflow: hidden;
   position: absolute;
-  top: 14%;
+  top: 9.5%;
   left: 7%;
   display: flex;
   align-items: center;
@@ -137,7 +138,7 @@ div#resultContainer {
     font-size: 80px;
     position: absolute;
     right: 10%;
-    top: 19.0%;
+    top: 15.1%;
     color: #fff;
 }
 .catchphrase {
@@ -147,7 +148,7 @@ div#resultContainer {
   position: absolute;
     font-family: 'myfont', sans-serif;
     right: 8.5%;
-    top: 34%;
+    top: 30.3%;
     color: #ffffff;
     font-size: 40px;
 }
@@ -164,13 +165,13 @@ div#resultContainer {
     color: #ffffff;
 }
 .result .score:nth-of-type(3){
-  top: 41%;
+  top: 36.3%;
 }
 .result .score:nth-of-type(4) {
-  top: 46%;
+  top: 41.3%;
 }
 .result .score:nth-of-type(5){
-  top: 51%;
+  top: 46.3%;
 }
 .result .score:nth-of-type(3) .clabel,.result .score:nth-of-type(4) .clabel,.result .score:nth-of-type(5) .clabel{
   color: #9cb3c7;
@@ -183,15 +184,16 @@ div#resultContainer {
 }
 .celeb {
   position: absolute;
-  left: 7%;
-  top: 77.5%;
-  color: #9cb3c7;
-  font-size: 26px;
+    left: 7%;
+    top: 81.8%;
+    color: #9cb3c7;
+    font-size: 28px;
+    width: 86%;
 }
 .comment {
   position: absolute;
   left: 7%;
-  top: 60%;
+  top: 55.5%;
   color: #9cb3c7;
   width: 86%;
   font-size: 28px;
