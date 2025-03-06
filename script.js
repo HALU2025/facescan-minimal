@@ -74,7 +74,11 @@ document.querySelectorAll(".backToHome").forEach(button => {
 // ===================== End Section2 =====================
 
 
-// ===================== Section3. カメラ起動 =====================
+// ===================== Section3. カメラ起動（カメラ切り替え対応） =====================
+
+// グローバル変数の追加
+let currentStream = null;   // 現在のストリームを保存する
+let cameraFacing = "user";    // 初期は前面カメラ
 
 // ✅ トップ画面 → 撮影画面
 document.getElementById("startCamera").addEventListener("click", () => {
@@ -83,11 +87,17 @@ document.getElementById("startCamera").addEventListener("click", () => {
 });
 
 /**
- * カメラを起動し、映像を取得
+ * カメラを起動し、映像を取得（カメラ切り替え対応）
  */
 function startCamera() {
-  navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+  // すでにカメラが起動している場合はストリームを停止する
+  if (currentStream) {
+    currentStream.getTracks().forEach(track => track.stop());
+  }
+  
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: cameraFacing } })
     .then(stream => {
+      currentStream = stream;
       video.srcObject = stream;
       video.style.display = "block";
     })
@@ -126,6 +136,7 @@ document.getElementById("retake").addEventListener("click", () => {
 });
 
 // ===================== End Section3 =====================
+
 
 
 // ===================== Section4. 画像選択処理 =====================
@@ -423,6 +434,13 @@ document.addEventListener("DOMContentLoaded", () => {
 // ✅ トップ画面 → 撮影画面
 document.getElementById("startCamera").addEventListener("click", () => {
   showScreen("camera");
+  startCamera();
+});
+
+// ✅ カメラ切り替えボタンのクリックイベント
+document.getElementById("toggleCamera").addEventListener("click", () => {
+  // facingMode を切り替える（"user" ⇔ "environment"）
+  cameraFacing = (cameraFacing === "user") ? "environment" : "user";
   startCamera();
 });
 

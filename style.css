@@ -228,6 +228,26 @@ button#capture {
   width: 90%;
   border: 1px solid #ffffff2e;
 }
+button#toggleCamera {
+  color: #fff;
+  background-color: #ffffff2e;
+  font-size: 1.3em;
+  font-weight: normal;
+  letter-spacing: 2px;
+  width: 90%;
+  border: 1px solid #ffffff2e;
+}
+button.analyze {
+  color: #fff;
+  background-color: #ffffff2e;
+  font-size: 1.3em;
+  font-weight: normal;
+  letter-spacing: 2px;
+  width: 90%;
+  border: 1px solid #ffffff2e;
+}
+
+
 
 #camera button.backToHome, #camera-preview button.backToHome, #reference-preview button.backToHome {
   color: #fff;
