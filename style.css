@@ -27,7 +27,6 @@ body {
   max-width: 500px;
   min-height: 60vh;
   margin: 0 0 20px;
-  min-height: 300px;
   display: flex;
   justify-content: center;
   border-radius: 8px;
