@@ -335,7 +335,7 @@ button#downloadResult {
 /* クローズボタン */
 .close {
   float: right;
-  font-size: 30px;
+  font-size: 40px;
   font-weight: normal;
   cursor: pointer;
 }
