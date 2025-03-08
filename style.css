@@ -37,6 +37,7 @@ body {
 
 .loading-screen img {
   width: 25%;
+  max-width:220px;
 }
 
 
