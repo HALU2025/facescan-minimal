@@ -15,7 +15,7 @@
   <!-- ✅ トップ画面 -->
   <div id="home" class="screen">
     <div class="mainDisplay">
-      <div class="swiper">
+      <div class="swiper swiper-top">
         <!-- スライド群を包むラッパー -->
         <div class="swiper-wrapper">
           <div class="swiper-slide">Slide 1 の内容</div>
@@ -23,33 +23,9 @@
           <div class="swiper-slide">Slide 3 の内容</div>
           <!-- 必要に応じてスライドを追加 -->
         </div>
-        <!-- ページネーション（オプション） -->
+        <!-- ページネーション -->
         <div class="swiper-pagination"></div>
-        <!-- ナビゲーションボタン（オプション） -->
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
-        <!-- スクロールバー（オプション） -->
-        <div class="swiper-scrollbar"></div>
       </div>
-
-      <script>
-        document.addEventListener("DOMContentLoaded", () => {
-          const swiper = new Swiper('.swiper', {
-            direction: 'horizontal',
-            loop: true,
-            pagination: {
-              el: '.swiper-pagination',
-              clickable: true,
-            },
-            navigation: {
-              nextEl: '.swiper-button-next',
-              prevEl: '.swiper-button-prev',
-            },
-            // 必要に応じて他のオプションを追加
-          });
-        });
-      </script>
-
 
     </div>
     <div class="buttonArea">
@@ -105,7 +81,27 @@
     <div id="offScreenContainer"></div>
 
     <div class="mainDisplay">
-      <div id="resultContainer"></div>
+      
+
+
+      <div class="swiper swiper-result">
+        <!-- スライド群を包むラッパー -->
+        <div class="swiper-wrapper">
+          <div class="swiper-slide"><div id="resultContainer"></div></div>
+          <div class="swiper-slide">Slide 2 の内容</div>
+          <div class="swiper-slide">Slide 3 の内容</div>
+          <!-- 必要に応じてスライドを追加 -->
+        </div>
+        <!-- ページネーション -->
+        <div class="swiper-pagination"></div>
+      </div>
+
+
+
+
+
+
+
     </div>
     <div class="buttonArea">
       <button class="backToHome button mb-4">もう一度診断する</button>
@@ -129,6 +125,36 @@
 
   
   <script src="script.js"></script>
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // 1つ目のスライダーの初期化
+    const swiper1 = new Swiper('.swiper-top', {
+      direction: 'horizontal',
+      loop: true,
+      pagination: {
+        el: '.slider1 .swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.slider1 .swiper-button-next',
+        prevEl: '.slider1 .swiper-button-prev',
+      },
+    });
+  
+    // 2つ目のスライダーの初期化
+    const swiper2 = new Swiper('.swiper-result', {
+      direction: 'horizontal',
+      loop: true,
+      pagination: {
+        el: '.slider2 .swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.slider2 .swiper-button-next',
+        prevEl: '.slider2 .swiper-button-prev',
+      },
+    });
+  });
 
 </body>
 </html>
