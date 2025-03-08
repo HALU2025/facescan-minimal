@@ -28,7 +28,7 @@ body {
   justify-content: center;
   z-index: 9999;
   opacity: 1;
-  transition: opacity 3000s ease-out; /* フェードアウトの時間 */
+  transition: opacity 0.5s ease-out; /* フェードアウトの時間 */
 }
 
 .loading-screen.fade-out {
