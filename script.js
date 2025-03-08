@@ -498,5 +498,18 @@ document.querySelectorAll(".homeBtn").forEach(button => {
   button.addEventListener("click", () => showScreen("home"));
 });
 
+// ✅ ロード画面
+document.addEventListener("DOMContentLoaded", () => {
+  // 1秒後にフェードアウト開始
+  setTimeout(() => {
+    const loadingScreen = document.getElementById("loadingScreen");
+    loadingScreen.classList.add("fade-out");
+    // フェードアウトが完了したら（0.5秒後）要素を削除
+    setTimeout(() => {
+      loadingScreen.remove();
+    }, 500);
+  }, 1000);
+});
+
 // ===================== End Section9 =====================
 

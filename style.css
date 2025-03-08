@@ -15,6 +15,31 @@ body {
   padding: 0;
 }
 
+
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #052035;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.5s ease-out; /* フェードアウトの時間 */
+}
+
+.loading-screen.fade-out {
+  opacity: 0;
+}
+
+.loading-screen img {
+  width: 25%;
+}
+
+
 .screen {
   padding: 20px;
   max-width: 540px;
