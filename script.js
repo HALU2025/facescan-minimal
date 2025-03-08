@@ -507,7 +507,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // フェードアウトが完了したら（0.5秒後）要素を削除
     setTimeout(() => {
       loadingScreen.remove();
-    }, 500);
+    }, 50000);
   }, 1000);
 });
 
