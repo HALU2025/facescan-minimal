@@ -5,15 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FaceScan</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 </head>
 <body>
 
   <!-- ✅ トップ画面 -->
   <div id="home" class="screen">
     <div class="mainDisplay">
-      <h1>FaceScan</h1>
+      <div class="swiper">
+        <!-- スライド群を包むラッパー -->
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">Slide 1 の内容</div>
+          <div class="swiper-slide">Slide 2 の内容</div>
+          <div class="swiper-slide">Slide 3 の内容</div>
+          <!-- 必要に応じてスライドを追加 -->
+        </div>
+        <!-- ページネーション（オプション） -->
+        <div class="swiper-pagination"></div>
+        <!-- ナビゲーションボタン（オプション） -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        <!-- スクロールバー（オプション） -->
+        <div class="swiper-scrollbar"></div>
+      </div>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const swiper = new Swiper('.swiper', {
+            direction: 'horizontal',
+            loop: true,
+            pagination: {
+              el: '.swiper-pagination',
+              clickable: true,
+            },
+            navigation: {
+              nextEl: '.swiper-button-next',
+              prevEl: '.swiper-button-prev',
+            },
+            // 必要に応じて他のオプションを追加
+          });
+        });
+      </script>
+
+
     </div>
     <div class="buttonArea">
       <button id="startCamera" class="button mb-4">撮影して診断</button>
