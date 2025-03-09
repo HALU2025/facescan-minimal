@@ -271,18 +271,6 @@ button#downloadResult {
   gap: 10px;
 }
 
-.share-buttons button#downloadResult {
-  flex: 1;        /* 残りの幅を占める */
-  text-align: center;
-}
-
-.share-buttons button#shareTwitter, .share-buttons button#shareFacebook, .share-buttons button#shareInstagram {
-  flex: 0 0 50px; /* 固定幅50px */
-  text-align: center;
-}
-
-
-
 .file-cta {
   color: #fff;
   background-color: #ffffff2e;
@@ -302,6 +290,16 @@ button#downloadResult {
   letter-spacing: 2px;
   width: 90%;
   border: 1px solid #ffffff2e;
+}
+
+.share-buttons button#downloadResult {
+  flex: 1;        /* 残りの幅を占める */
+  text-align: center;
+}
+
+.share-buttons button#shareTwitter, .share-buttons button#shareFacebook, .share-buttons button#shareInstagram {
+  flex: 0 0 50px; /* 固定幅50px */
+  text-align: center;
 }
 
 
