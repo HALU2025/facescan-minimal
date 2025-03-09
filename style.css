@@ -387,3 +387,9 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
 .swiper-result .swiper-horizontal>.swiper-pagination-bullets, .swiper-result .swiper-pagination-bullets.swiper-pagination-horizontal {
   bottom: -15px;
 }
+
+
+
+.share-button i {
+  font-size: 18px;
+}
