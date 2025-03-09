@@ -58,7 +58,6 @@ body {
   justify-content: center;
   border-radius: 8px;
   border: 1px solid #ccc;
-  padding: 10px;
   overflow: hidden;
 }
 .mainDisplay {
@@ -295,6 +294,8 @@ button#downloadResult {
 .share-buttons button#downloadResult {
   flex: 1;        /* 残りの幅を占める */
   text-align: center;
+  font-size: 1em;
+  letter-spacing: 0;
 }
 
 .share-buttons button#shareTwitter, .share-buttons button#shareFacebook, .share-buttons button#shareInstagram {
