@@ -6,7 +6,7 @@
   <title>FaceScan</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-  <link rel= "stylesheet" href= "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" >
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -38,11 +38,22 @@
       </div>
     </div>
     <div class="buttonArea">
-      <button id="startCamera" class="button mb-4"><i class="las la-camera"></i> 撮影して診断</button>
+      <button id="startCamera" class="button mb-4"> 撮影して診断</button>
 
       <!-- 通常のボタン -->
-      <button id="selectImage" class="button"><i class="las la-image"></i> 画像を選んで診断</button>
+      <button id="selectImage" class="button"> 画像を選んで診断</button>
       <input type="file" id="fileInput" accept="image/*" style="display: none;">
+
+      <div class="share-buttons">
+        <!-- Web Share API を使うメインシェアボタン -->
+        <button id="shareButton" class="button">
+          <i class="la la-share-alt"></i> シェアする
+        </button>
+        <!-- 各SNS用のシェアボタン -->
+        <button id="shareTwitter" class="button"><i class="fa-brands fa-x-twitter"></i></button>
+        <button id="shareFacebook" class="button"><i class="fa-brands fa-facebook-f"></i></button>
+        <button id="shareInstagram" class="button"><i class="fa-brands fa-instagram"></i></button>
+      </div>
 
 
       
