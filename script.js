@@ -1,5 +1,14 @@
 // ===================== Section1. 初期設定と DOM 要素の取得 =====================
 
+document.addEventListener("DOMContentLoaded", () => {
+  const ua = navigator.userAgent;
+  if (/Mobi|Android/i.test(ua)) {
+    document.body.classList.add("sp");
+  } else {
+    document.body.classList.add("pc");
+  }
+});
+
 const video = document.getElementById("video");
 const preview = document.getElementById("preview");
 const previewRef = document.getElementById("previewRef");
