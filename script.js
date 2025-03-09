@@ -538,7 +538,15 @@ document.getElementById("shareTwitter").addEventListener("click", () => {
   const text = encodeURIComponent("この診断結果をチェックしてみてください！");
   const url = encodeURIComponent(window.location.href);
   const shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
-  window.open(shareUrl, "_blank");
+  
+  // ポップアップウィンドウのサイズと位置を計算
+  const width = 600;
+  const height = 400;
+  const left = (window.innerWidth / 2) - (width / 2);
+  const top = (window.innerHeight / 2) - (height / 2);
+  
+  // 新しいポップアップウィンドウを開く
+  window.open(shareUrl, "shareWindow", `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes,status=no`);
 });
 
 // Facebook シェアボタンのイベント設定
