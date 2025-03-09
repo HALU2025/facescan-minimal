@@ -262,10 +262,10 @@ button#downloadResult {
 
 .share-buttons {
   display: flex;
-  justify-content: space-evenly; /* 各要素を均等な間隔で配置 */
-  align-items: center;           /* 垂直方向の中央揃え */
-  flex-wrap: wrap;               /* 必要に応じて折り返し */
-  gap: 10px;                     /* 要素間の余白（任意） */
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
 }
 
 .share-buttons button#downloadResult {
