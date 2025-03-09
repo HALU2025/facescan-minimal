@@ -233,9 +233,7 @@ div#resultContainer {
   display:none;
 }
 
-
-
-button#startCamera {
+button.button {
   color: #fff;
   background-color: #ffffff2e;
   font-size: 1.3em;
@@ -244,72 +242,46 @@ button#startCamera {
   width: 90%;
   border: 1px solid #ffffff2e;
 }
+
+button#startCamera {
+}
 button#selectImage {
-  color: #fff;
-  background-color: #ffffff2e;
-  font-size: 1.3em;
-  font-weight: normal;
-  letter-spacing: 2px;
-  width: 90%;
-  border: 1px solid #ffffff2e;
 }
 
 button#capture {
-  color: #fff;
-  background-color: #ffffff2e;
-  font-size: 1.3em;
-  font-weight: normal;
-  letter-spacing: 2px;
   width: 90%;
   border: 1px solid #ffffff2e;
 }
 button#toggleCamera {
-  color: #fff;
-  background-color: #ffffff2e;
-  font-size: 1.3em;
-  font-weight: normal;
-  letter-spacing: 2px;
   width: 90%;
   border: 1px solid #ffffff2e;
 }
 button.analyze-btn {
-  color: #fff;
-  background-color: #ffffff2e;
-  font-size: 1.3em;
-  font-weight: normal;
-  letter-spacing: 2px;
-  width: 90%;
-  border: 1px solid #ffffff2e;
+
 }
 button#downloadResult {
-  color: #fff;
-  background-color: #ffffff2e;
-  font-size: 1.3em;
-  font-weight: normal;
-  letter-spacing: 2px;
-  width: 90%;
-  border: 1px solid #ffffff2e;
+
 }
 
 
 #camera button.backToHome, #camera-preview button.backToHome, #reference-preview button.backToHome {
-  color: #fff;
-  background-color: #ffffff2e;
-  font-size: 1.3em;
-  font-weight: normal;
-  letter-spacing: 2px;
-  width: 90%;
-  border: 1px solid #ffffff2e;
+  
 }
 #camera-preview button#retake {
-  color: #fff;
-  background-color: #ffffff2e;
-  font-size: 1.3em;
-  font-weight: normal;
-  letter-spacing: 2px;
-  width: 90%;
-  border: 1px solid #ffffff2e;
+  
 }
+
+.share-buttons {
+  display: flex;
+  justify-content: space-evenly; /* 各要素を均等な間隔で配置 */
+  align-items: center;           /* 垂直方向の中央揃え */
+  flex-wrap: wrap;               /* 必要に応じて折り返し */
+  gap: 10px;                     /* 要素間の余白（任意） */
+}
+
+
+
+
 
 
 .file-cta {
