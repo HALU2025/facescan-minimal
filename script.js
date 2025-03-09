@@ -533,32 +533,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ===================== Section8. シェア機能 =====================
 
-// Web Share API を使うシェアボタンのイベント設定
-document.getElementById("shareButton").addEventListener("click", () => {
-  if (navigator.share) {
-    navigator.share({
-      title: document.title,
-      text: "この診断結果をチェックしてみてください！",
-      url: window.location.href,
-    }).then(() => {
-      console.log("シェア成功");
-    }).catch((error) => {
-      console.error("シェアに失敗しました:", error);
-    });
-  } else if (navigator.clipboard) {
-    // Web Share API が使えない場合、URL をコピーする
-    navigator.clipboard.writeText(window.location.href)
-      .then(() => {
-        alert("URLをコピーしました。お好きな方法でシェアしてください。");
-      })
-      .catch((err) => {
-        console.error("クリップボードへのコピーに失敗しました:", err);
-      });
-  } else {
-    alert("シェア機能はこのブラウザではサポートされていません。");
-  }
-});
-
 // Twitter シェアボタンのイベント設定
 document.getElementById("shareTwitter").addEventListener("click", () => {
   const text = encodeURIComponent("この診断結果をチェックしてみてください！");
@@ -574,12 +548,21 @@ document.getElementById("shareFacebook").addEventListener("click", () => {
   window.open(shareUrl, "_blank");
 });
 
-// LINE シェアボタンのイベント設定
-document.getElementById("shareLine").addEventListener("click", () => {
-  const text = encodeURIComponent("この診断結果をチェックしてみてください！");
-  const url = encodeURIComponent(window.location.href);
-  const shareUrl = `https://social-plugins.line.me/lineit/share?url=${url}&text=${text}`;
-  window.open(shareUrl, "_blank");
+// Instagram シェアボタンのイベント設定（公式のシェアURLがないため、リンクコピーを促す）
+document.getElementById("shareInstagram").addEventListener("click", () => {
+  // クリップボードにURLをコピーする処理（navigator.clipboard APIを利用）
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(window.location.href)
+      .then(() => {
+        alert("URLをコピーしました。Instagramアプリでシェアしてください。");
+      })
+      .catch((err) => {
+        console.error("クリップボードへのコピーに失敗しました:", err);
+        alert("コピーに失敗しました。手動でURLをコピーしてください。");
+      });
+  } else {
+    alert("このブラウザではInstagramシェアはサポートされていません。URLをコピーしてシェアしてください。");
+  }
 });
 
 // ===================== End Section8. シェア機能 =====================
