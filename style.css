@@ -384,6 +384,6 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
   opacity: 1;
 }
 
-.swiper-top .swiper-horizontal>.swiper-pagination-bullets, .swiper-top .swiper-pagination-bullets.swiper-pagination-horizontal {
+.swiper-result .swiper-horizontal>.swiper-pagination-bullets, .swiper-result .swiper-pagination-bullets.swiper-pagination-horizontal {
   bottom: -15px;
 }
