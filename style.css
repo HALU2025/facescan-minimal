@@ -240,35 +240,24 @@ button.button {
   font-weight: normal;
   letter-spacing: 2px;
   width: 90%;
+  height: 50px;
   border: 1px solid #ffffff2e;
 }
-
 button#startCamera {
 }
 button#selectImage {
 }
-
 button#capture {
-  width: 90%;
-  border: 1px solid #ffffff2e;
 }
 button#toggleCamera {
-  width: 90%;
-  border: 1px solid #ffffff2e;
 }
 button.analyze-btn {
-
 }
 button#downloadResult {
-
 }
-
-
 #camera button.backToHome, #camera-preview button.backToHome, #reference-preview button.backToHome {
-  
 }
 #camera-preview button#retake {
-  
 }
 
 .share-buttons {
@@ -279,8 +268,15 @@ button#downloadResult {
   gap: 10px;                     /* 要素間の余白（任意） */
 }
 
+.share-buttons button#downloadResult {
+  flex: 1;        /* 残りの幅を占める */
+  text-align: center;
+}
 
-
+.share-buttons button#shareTwitter, .share-buttons button#shareFacebook, .share-buttons button#shareInstagram {
+  flex: 0 0 50px; /* 固定幅50px */
+  text-align: center;
+}
 
 
 
