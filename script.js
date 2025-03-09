@@ -585,3 +585,4 @@ document.getElementById("shareLine").addEventListener("click", () => {
 // ===================== End Section8. シェア機能 =====================
 
 
+
